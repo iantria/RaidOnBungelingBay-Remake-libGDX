@@ -33,7 +33,95 @@ task dist(type: Jar) {
     with jar
 }
 
-
 dist.dependsOn classes
-
 eclipse.project.name = appName + "-desktop"
+
+// creates a slim JDK runtime for distribution
+task createRuntime(type: Exec) {
+    doFirst() {
+        project.delete("${buildDir}/runtime")
+    }
+    String runtimePath = "${buildDir}/runtime"
+
+    workingDir project.projectDir
+    commandLine = [
+            "C:\\Program Files\\Java\\jdk-17.0.1\\bin\\jlink",
+            '--module-path', "C:\\Program Files\\Java\\jdk-17.0.1\\jmods\\",
+            '--add-modules', 'java.base,java.desktop,jdk.unsupported',
+            '--strip-debug',
+            '--no-header-files',
+            '--no-man-pages',
+            '--strip-native-commands',
+            "--vm=server",
+            "--compress=2",
+            '--output', runtimePath
+    ]
+}
+
+// creates application bundle (executable + runtime)
+task jpackage(type: Exec, dependsOn: dist) {
+    doFirst() {
+        project.delete("${buildDir}/distribution/$project.appName")
+    }
+    workingDir project.projectDir
+
+    //dependsOn createRuntime
+    workingDir project.projectDir
+    def commands = [
+            "C:\\Program Files\\Java\\jdk-17.0.1\\bin\\jpackage",
+            '--dest', "${buildDir}\\distribution",
+            '--input', "${buildDir}\\libs",
+            '--type', "app-image",
+            '--name', project.appName,
+            '--main-class', project.mainClassName,
+            '--main-jar', jar.archiveFile.get().asFile.getName(),
+            '--runtime-image', "${buildDir}\\runtime",
+//            '--win-menu',
+//            '--win-shortcut',
+//            '--win-dir-chooser',
+//            '--win-menu-group', "Raid Game",
+//            '--about-url', "http://iantria.com",
+            '--vendor', 'Anthony',
+            '--description', "Raid on Bugeling Bay Remake",
+            '--icon', "C:\\Users\\antho\\Downloads\\Assets-Games\\graphics\\icon.ico"
+    ]
+
+//    if (osName.contains('windows')) {
+//        commands << '--icon'
+//        commands << "${project.projectDir}/logo.ico"
+//        commands << '--java-options'
+//        commands << "-splash:splash.png"
+//    } else if (osName.contains('linux')) {
+//        commands << '--icon'
+//        commands << "${project.projectDir}/logo.png"
+//        commands << '--java-options'
+//        commands << "-splash:splash.png"
+//    } else if (osName.contains('mac')) {
+//        commands << '--icon'
+//        commands << "${project.projectDir}/logo.icns"
+//        commands << '--java-options'
+//        commands << "-XstartOnFirstThread"
+//    }
+
+    commandLine = commands
+}
+
+/*
+"C:\Program Files\Java\jdk-17.0.1\bin\jpackage"
+--dest D:\Archives\Development\Raid\RaidGDX\desktop\build\distribution
+--input D:\Archives\Development\Raid\RaidGDX\desktop\build/libs
+--name RaidGameGDX --main-class com.iantria.raidgame.desktop.DesktopLauncher
+--main-jar desktop-1.0.jar
+--runtime-image D:\Archives\Development\Raid\RaidGDX\desktop\build\runtime
+--type exe
+
+
+..\bin\jlink -p .
+--add-modules "java.base,java.desktop,jdk.unsupported"
+--no-header-files
+--no-man-pages
+--strip-native-commands
+--vm=server
+--compress=2
+--output D:\\ccc
+ */
