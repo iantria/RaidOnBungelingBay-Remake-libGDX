@@ -1,265 +1,65 @@
-
 images.png
-size: 4096, 8192
-format: RGBA8888
-filter: Nearest, Nearest
-repeat: none
+size:4096,8192
+repeat:none
 AAGun
-  rotate: false
-  xy: 2045, 887
-  size: 44, 48
-  orig: 44, 48
-  offset: 0, 0
-  index: -1
+bounds:3095,1386,44,48
 Carrier
-  rotate: false
-  xy: 3200, 7218
-  size: 197, 946
-  orig: 197, 946
-  offset: 0, 0
-  index: -1
+bounds:3200,6488,197,946
 CruiseMissle
-  rotate: false
-  xy: 1024, 54
-  size: 132, 459
-  orig: 132, 459
-  offset: 0, 0
-  index: -1
+bounds:3200,6029,132,459
 Frontsideapache
-  rotate: false
-  xy: 1280, 1601
-  size: 1165, 563
-  orig: 1165, 563
-  offset: 0, 0
-  index: -1
+bounds:0,871,1165,563
 Frontsideapache_blade
-  rotate: false
-  xy: 1280, 1152
-  size: 1165, 75
-  orig: 1165, 75
-  offset: 0, 0
-  index: -1
+bounds:1165,1359,1165,75
 Heli_Blade
-  rotate: false
-  xy: 1834, 672
-  size: 210, 214
-  orig: 210, 214
-  offset: 0, 0
-  index: -1
+bounds:0,32,210,214
 Helicopter
-  rotate: false
-  xy: 3200, 6920
-  size: 118, 298
-  orig: 118, 298
-  offset: 0, 0
-  index: -1
+bounds:3200,5731,118,298
 Sideviewapache
-  rotate: false
-  xy: 1280, 1227
-  size: 1154, 374
-  orig: 1154, 374
-  offset: 0, 0
-  index: -1
+bounds:0,497,1154,374
 Sideviewapache_blade
-  rotate: false
-  xy: 1280, 886
-  size: 765, 49
-  orig: 765, 49
-  offset: 0, 0
-  index: -1
+bounds:2330,1385,765,49
 arrow
-  rotate: false
-  xy: 2261, 1052
-  size: 100, 100
-  orig: 100, 100
-  offset: 0, 0
-  index: -1
+bounds:981,397,100,100
 bomber
-  rotate: false
-  xy: 3609, 7873
-  size: 289, 110
-  orig: 289, 110
-  offset: 0, 0
-  index: -1
+bounds:554,276,289,110
 bullets
-  rotate: false
-  xy: 1834, 640
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
+bounds:0,0,32,32
 bullets2
-  rotate: false
-  xy: 1156, 481
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-carrierIcon
-  rotate: false
-  xy: 2445, 1626
-  size: 200, 58
-  orig: 200, 58
-  offset: 0, 0
-  index: -1
+bounds:3332,6456,32,32
 ddg
-  rotate: false
-  xy: 1280, 935
-  size: 964, 106
-  orig: 964, 106
-  offset: 0, 0
-  index: -1
+bounds:1165,1253,964,106
 ddgIcon
-  rotate: false
-  xy: 1280, 551
-  size: 200, 55
-  orig: 200, 55
-  offset: 0, 0
-  index: -1
+bounds:2129,1304,200,55
 demo_button
-  rotate: false
-  xy: 1280, 606
-  size: 554, 140
-  orig: 554, 140
-  offset: 0, 0
-  index: -1
+bounds:1165,1113,554,140
 emptyBomb
-  rotate: false
-  xy: 1024, 22
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
+bounds:1719,1221,32,32
 enemyFighter
-  rotate: false
-  xy: 3397, 7287
-  size: 158, 228
-  orig: 158, 228
-  offset: 0, 0
-  index: -1
-explosions
-  rotate: false
-  xy: 0, 1
-  size: 1024, 512
-  orig: 1024, 512
-  offset: 0, 0
-  index: -1
+bounds:3397,6736,158,228
 factoryIcon
-  rotate: false
-  xy: 3200, 6890
-  size: 32, 30
-  orig: 32, 30
-  offset: 0, 0
-  index: -1
+bounds:210,216,32,30
 factoryNew
-  rotate: false
-  xy: 3609, 7689
-  size: 200, 184
-  orig: 200, 184
-  offset: 0, 0
-  index: -1
+bounds:3609,7069,200,184
 heliIcon
-  rotate: false
-  xy: 3397, 7694
-  size: 212, 289
-  orig: 212, 289
-  offset: 0, 0
-  index: -1
-help
-  rotate: false
-  xy: 2445, 1684
-  size: 640, 480
-  orig: 640, 480
-  offset: 0, 0
-  index: -1
-lose
-  rotate: false
-  xy: 0, 513
-  size: 1280, 800
-  orig: 1280, 800
-  offset: 0, 0
-  index: -1
-menu
-  rotate: false
-  xy: 0, 1313
-  size: 1280, 851
-  orig: 1280, 851
-  offset: 0, 0
-  index: -1
+bounds:3397,6964,212,289
 modernmap
-  rotate: false
-  xy: 0, 4164
-  size: 3200, 2000
-  orig: 3200, 2000
-  offset: 0, 0
-  index: -1
+bounds:0,3434,3200,2000
 name
-  rotate: false
-  xy: 3397, 7983
-  size: 549, 181
-  orig: 549, 181
-  offset: 0, 0
-  index: -1
-plane
-  rotate: false
-  xy: 3946, 8043
-  size: 89, 121
-  orig: 89, 121
-  offset: 0, 0
-  index: -1
+bounds:3397,7253,549,181
 planeIcon
-  rotate: false
-  xy: 3085, 2043
-  size: 89, 121
-  orig: 89, 121
-  offset: 0, 0
-  index: -1
+bounds:3946,7313,89,121
 play_button
-  rotate: false
-  xy: 1280, 746
-  size: 554, 140
-  orig: 554, 140
-  offset: 0, 0
-  index: -1
+bounds:0,246,554,140
 projectile
-  rotate: false
-  xy: 2434, 1569
-  size: 8, 32
-  orig: 8, 32
-  offset: 0, 0
-  index: -1
+bounds:1154,839,8,32
 retro_map
-  rotate: false
-  xy: 0, 6164
-  size: 3200, 2000
-  orig: 3200, 2000
-  offset: 0, 0
-  index: -1
+bounds:0,5434,3200,2000
 retro_map_green
-  rotate: false
-  xy: 0, 2164
-  size: 3200, 2000
-  orig: 3200, 2000
-  offset: 0, 0
-  index: -1
+bounds:0,1434,3200,2000
 sideBackProps
-  rotate: false
-  xy: 3397, 7515
-  size: 210, 179
-  orig: 210, 179
-  offset: 0, 0
-  index: -1
+bounds:1165,934,210,179
 singlePoint
-  rotate: false
-  xy: 0, 0
-  size: 1, 1
-  orig: 1, 1
-  offset: 0, 0
-  index: -1
+bounds:2330,1384,1,1
 title
-  rotate: false
-  xy: 1280, 1041
-  size: 981, 111
-  orig: 981, 111
-  offset: 0, 0
-  index: -1
+bounds:0,386,981,111

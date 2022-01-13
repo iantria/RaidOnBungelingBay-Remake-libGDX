@@ -81,6 +81,7 @@ task jpackage(type: Exec, dependsOn: dist) {
 //            '--win-dir-chooser',
 //            '--win-menu-group', "Raid Game",
 //            '--about-url', "http://iantria.com",
+            //'--arguments', "-XstartOnFirstThread", // For Mac OSX
             '--vendor', 'Anthony',
             '--description', "Raid on Bugeling Bay Remake",
             '--icon', "C:\\Users\\antho\\Downloads\\Assets-Games\\graphics\\icon.ico"

@@ -86,8 +86,10 @@ public class LoadingScreen implements Screen {
         // Add everything to be loaded, for instance:
 
         //set up the texture atlas for Game
+        assetManager.load("graphics/explosions.png", Texture.class);
         assetManager.load("graphics/images.atlas", TextureAtlas.class);
         assetManager.load("graphics/ddgIcon.gif", Texture.class);
+
         //Sounds
         assetManager.load("sounds/jetcrashfuel.ogg", Music.class);
         assetManager.load("sounds/landhit.ogg", Music.class);
@@ -149,12 +151,11 @@ public class LoadingScreen implements Screen {
 
 
     private void loadExplosionAnimations() {
-        TextureRegion x = new TextureRegion(textureAtlas.findRegion("explosions"));
-        Texture t = x.getTexture();
+        Texture x = assetManager.get("graphics/explosions.png", Texture.class);
         Constants.explosionAnimations = new Animation[8];
 
         //split texture
-        TextureRegion[][] textureLines = TextureRegion.split(t, 64, 64);
+        TextureRegion[][] textureLines = TextureRegion.split(x, 64, 64);
         TextureRegion[] textureLine;
 
         for (int i = 0; i < 8; i++) {
@@ -162,7 +163,7 @@ public class LoadingScreen implements Screen {
             for (int j = 0; j < 16; j++) {
                 textureLine[j] = textureLines[i][j];
             }
-            Constants.explosionAnimations[i] = new Animation<TextureRegion>(1 / 16f, textureLine);  // todo
+            Constants.explosionAnimations[i] = new Animation<>(1 / 16f, textureLine);  // todo
         }
     }
 
@@ -204,7 +205,6 @@ public class LoadingScreen implements Screen {
             Constants.singlePixelTextureRegion = new TextureRegion(textureAtlas.findRegion("singlePoint"));
             Constants.helicopterIcon = new TextureRegion(textureAtlas.findRegion("heliIcon"));
             Constants.factoryIcon = new TextureRegion(textureAtlas.findRegion("factoryIcon"));
-            Constants.carrierIcon = new TextureRegion(textureAtlas.findRegion("carrierIcon"));
             Constants.carrierDirectionArrow = new TextureRegion(textureAtlas.findRegion("arrow"));
             Constants.introScreenSideApache = new TextureRegion(textureAtlas.findRegion("Sideviewapache"));
             Constants.introScreenSideApacheBlade = new TextureRegion(textureAtlas.findRegion("Sideviewapache_blade"));
