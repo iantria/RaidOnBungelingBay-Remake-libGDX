@@ -282,6 +282,8 @@ public class IntroScreen implements Screen {
                             Constants.m61Sound.stop();
                             Statistics.resetScores();
                             Constants.isPlayer = true;
+                            playButton.removeListener(playButton.getListeners().first());
+                            demoButton.removeListener(demoButton.getListeners().first());
                             game.setScreen(new GameScreen(game));
                             return true;
                         }
@@ -314,6 +316,8 @@ public class IntroScreen implements Screen {
                         Constants.m61Sound.stop();
                         Statistics.resetScores();
                         Constants.isPlayer = false;
+                        playButton.removeListener(playButton.getListeners().first());
+                        demoButton.removeListener(demoButton.getListeners().first());
                         game.setScreen(new GameScreen(game));
                         return true;
                     }
@@ -384,6 +388,10 @@ public class IntroScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
+        stage2.dispose();
+        stage3.dispose();
+        demoButtonStage.dispose();
+        playButtonStage.dispose();
     }
 }
