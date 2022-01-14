@@ -9,10 +9,14 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public GwtApplicationConfiguration getConfig () {
+
+                GwtApplicationConfiguration config = new GwtApplicationConfiguration(true);
+                // new GwtApplicationConfiguration(960, 600);
+                //config.antialiasing = true;  // "smoother" rendering (through a "blur" of edges)
                 // Resizable application, uses available space in browser
                 //return new GwtApplicationConfiguration(true);
                 // Fixed size application:
-                return new GwtApplicationConfiguration(960, 600);
+                return config;
         }
 
         @Override
