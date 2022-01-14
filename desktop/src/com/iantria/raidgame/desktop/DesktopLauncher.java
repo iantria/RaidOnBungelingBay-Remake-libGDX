@@ -10,7 +10,8 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(1600,900);
 		config.setTitle("Raid on Ashbridge Bay");
-		//config.setWindowIcon("graphics/icon.ico");
+		config.setWindowIcon("graphics/icon.png");
+		config.setBackBufferConfig(8, 8, 8, 8, 16, 0, 2);
 
 		new Lwjgl3Application(new RaidGame(), config);
 
