@@ -1,8 +1,5 @@
 package com.iantria.raidgame.entity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -120,7 +117,7 @@ public class Helicopter extends Entity {
             fuelElapsedTime = 0;
             fuelCount--;
             if (fuelCount == 30){
-                Constants.combatText.add(new ScrollingCombatText("LowFuel", 1f, new Vector2(Constants.helicopter.position), ("LOW FUEL"), Color.YELLOW, Constants.scrollingCombatFont, true));
+                Constants.combatTextList.add(new ScrollingCombatText("LowFuel", 1f, new Vector2(Constants.helicopter.position), ("LOW FUEL"), Color.YELLOW, Constants.scrollingCombatFont, true));
             }
             Statistics.amountOfFuelUsed++;
         }
@@ -217,7 +214,7 @@ public class Helicopter extends Entity {
                 }
                 bombCount--;
                 if (bombCount == 0)
-                    Constants.combatText.add(new ScrollingCombatText("OutOfBombs", 1f, new Vector2(Constants.helicopter.position), ("OUT OF BOMBS"), Color.YELLOW, Constants.scrollingCombatFont, true));
+                    Constants.combatTextList.add(new ScrollingCombatText("OutOfBombs", 1f, new Vector2(Constants.helicopter.position), ("OUT OF BOMBS"), Color.YELLOW, Constants.scrollingCombatFont, true));
                 Statistics.numberOfBombsDropped++;
                 Projectile bomb = new Projectile("playerBomb" + bombCount, 0.3f, false,
                         //new Vector2(position.x - 9, position.y + 8), rotation, 0f, bullets, Projectile.Type.MY_BOMB);
@@ -355,7 +352,7 @@ public class Helicopter extends Entity {
                 Constants.helicopter.health = Constants.MAX_HIT_POINTS_HELICOPTER;
                 Constants.helicopter.setSpeed(Constants.CARRIER_SPEED);
                 Constants.gameMap.setDirection(Constants.carrier.direction);
-                Constants.combatText.add(new ScrollingCombatText("LandedOnCarrier" + Statistics.numberOfLandings, 1f, new Vector2(Constants.helicopter.position), ("Repaired, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
+                Constants.combatTextList.add(new ScrollingCombatText("LandedOnCarrier" + Statistics.numberOfLandings, 1f, new Vector2(Constants.helicopter.position), ("Repaired, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
             }
         }
 
@@ -390,7 +387,7 @@ public class Helicopter extends Entity {
                 if (Constants.helicopter.fuelCount < 1) Statistics.numberOfRanOutFuel++;
                 if (Constants.helicopter.livesCount <= 0 && !Constants.drumsSound.isPlaying()) {
                     Statistics.carrierSurvived = !Constants.carrier.isDestroyed && !Constants.carrier.isSinking;
-                    Constants.combatText.add(new ScrollingCombatText("YOULOST", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU HAVE BEEN DEFEATED!"), Color.RED, Constants.scrollingCombatFont, false));
+                    Constants.combatTextList.add(new ScrollingCombatText("YOULOST", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU HAVE BEEN DEFEATED!"), Color.RED, Constants.scrollingCombatFont, false));
                     Constants.drumsSound.play();
                 }
             }
@@ -447,7 +444,7 @@ public class Helicopter extends Entity {
                     new Vector2((Constants.gameMap.position.x -old.x) + p.getPosition().x,
                             (Constants.gameMap.position.y -old.y)  + p.getPosition().y));
         }
-        Constants.combatText.add(new ScrollingCombatText("Ready", 1f, new Vector2(Constants.helicopter.position), "READY FOR TAKEOFF!", Color.GREEN, Constants.scrollingCombatFont, true));
+        Constants.combatTextList.add(new ScrollingCombatText("Ready", 1f, new Vector2(Constants.helicopter.position), "READY FOR TAKEOFF!", Color.GREEN, Constants.scrollingCombatFont, true));
     }
 
 

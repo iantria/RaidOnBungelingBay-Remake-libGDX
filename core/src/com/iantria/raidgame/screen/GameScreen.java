@@ -1,23 +1,26 @@
 package com.iantria.raidgame.screen;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.iantria.raidgame.RaidGame;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.entity.ScrollingCombatText;
+import com.iantria.raidgame.util.TouchDirectionPieMenu;
 import com.iantria.raidgame.util.Statistics;
 import com.iantria.raidgame.entity.AAGun;
 import com.iantria.raidgame.entity.Carrier;
@@ -36,30 +39,46 @@ import java.util.ListIterator;
 
 public class GameScreen implements Screen {
 
+    private RaidGame game;
+
     //screen
     private Camera camera;
     private Viewport viewport;
-    private  Viewport miniMapViewPort;
-    private RaidGame game;
+    private TouchDirectionPieMenu touchDirectionPieMenu;
+    private Stage fireButtonStage;
+    private Stage bombButtonStage;
+    private Stage mapButtonStage;
+    private Stage pauseButtonStage;
+    private Stage exitButtonStage;
+    private Image bombButton;
+    private Image fireButton;
+    private Image exitButton;
+    private Image mapButton;
+    private Image pauseButton;
     private boolean paused = false;
-    private  ListIterator<Projectile> projectiles;
 
     //graphics
     private SpriteBatch batch;
+    private  ListIterator<Projectile> projectiles;
 
     // Timers
     public float winDelayTime = 0;
     public float WIN_DELAY_DURATION = 10;
     public float delayTime;
+    public int mapIndex = 1;
 
     public GameScreen(RaidGame game) {
-        this.game = game;
+//        this.game = game;
+
         // Camera and Viewport
         camera = new OrthographicCamera(Constants.MAP_WIDTH,  Constants.MAP_HEIGHT);
+        float aspectRatio = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+        Constants.WINDOW_HEIGHT = (int) ((int) Constants.WINDOW_WIDTH/aspectRatio);
         viewport = new StretchViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT, camera);
         viewport.apply();
+        batch = new SpriteBatch();
 
-        //setting up the map
+        //Map
         Constants.gameMap = new GameMap("Game Map", 1f, true, new Vector2(Constants.WINDOW_WIDTH/2 - 200,0), 0f, Constants.mapTextureRegion);
 
         //Helicopter
@@ -118,10 +137,15 @@ public class GameScreen implements Screen {
 
         Constants.projectileList = new LinkedList<>();
         Constants.removeProjectileList = new LinkedList<>();
-        Constants.combatText.clear();
-        Constants.combatText.add(new ScrollingCombatText("Start", 0.02f, new Vector2(Constants.helicopter.position), ("GOOD LUCK!"), Color.GREEN, Constants.scrollingCombatFont, true));
+        Constants.combatTextList.clear();
+        Constants.removeCombatTextList.clear();
+        Constants.combatTextList.add(new ScrollingCombatText("Start", 0.02f, new Vector2(Constants.helicopter.position), ("GOOD LUCK!"), Color.GREEN, Constants.scrollingCombatFont, true));
         Constants.isReadyToFireCruiseMissile = false;
-        batch = new SpriteBatch();
+        Statistics.resetScores();
+
+        //Mobile Buttons
+        doMobileButtons();
+
     }
 
     @Override
@@ -204,7 +228,7 @@ public class GameScreen implements Screen {
 
         Constants.helicopter.draw(batch);
 
-        for(ScrollingCombatText scr: Constants.combatText){
+        for(ScrollingCombatText scr: Constants.combatTextList){
             scr.render(batch);
         }
         HeadsUpDisplay.draw(batch);
@@ -212,10 +236,13 @@ public class GameScreen implements Screen {
         batch.end();
         // **** End of draw *****
 
+
+        if (Gdx.app.getType().equals(Application.ApplicationType.Android) || Gdx.app.getType().equals(Application.ApplicationType.iOS)) {
+            drawAllMobileButtons();
+        }
     }
 
     private void detectInput(float delta) {
-        //keyboard input
 
         // Map Change
         if(Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
@@ -226,7 +253,7 @@ public class GameScreen implements Screen {
             Constants.gameMap.setImage(Constants.retroGreenMapTextureRegion);
         }
 
-        // Pause
+        // Pause and Exit
         if ((Gdx.input.isKeyPressed(Input.Keys.ESCAPE) && delayTime > 2f)) {
             Constants.oceanSound.stop();
             Constants.chopperSound.stop();
@@ -246,31 +273,49 @@ public class GameScreen implements Screen {
         // Player Controlled
         if (Constants.helicopter.isPlayer) {
             // Landing and taking off
-            if((Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.Z))
-                    && (Constants.helicopter.mode == Helicopter.FlyingMode.FLYING
-                    || Constants.helicopter.mode == Helicopter.FlyingMode.LANDED))
+            if((Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.Z)
+                    || touchDirectionPieMenu.menu.getHighlightedIndex() == 5)
+                    && (Constants.helicopter.mode == Helicopter.FlyingMode.FLYING))
                 Constants.helicopter.checkIfYouCanLand();
-            if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && Constants.helicopter.mode == Helicopter.FlyingMode.LANDED) {
+            if((Gdx.input.isKeyPressed(Input.Keys.SPACE)
+                    || touchDirectionPieMenu.menu.getHighlightedIndex() == 0
+                    || touchDirectionPieMenu.menu.getHighlightedIndex() == 1
+                    || touchDirectionPieMenu.menu.getHighlightedIndex() == 2)
+                    && Constants.helicopter.mode == Helicopter.FlyingMode.LANDED) {
                 Constants.helicopter.mode = Helicopter.FlyingMode.TAKING_OFF;
                 Constants.takeOffSound.play();
             }
 
             // Flying only stuff
             if (Constants.helicopter.mode == Helicopter.FlyingMode.FLYING) {
-                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) Constants.helicopter.tryToFire("fireCannon");
-                if (Gdx.input.isKeyPressed(Input.Keys.Z)) Constants.helicopter.tryToFire("fireBomb");
-                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || fireButton.getColor().a == 1)
+                    Constants.helicopter.tryToFire("fireCannon");
+                if (Gdx.input.isKeyPressed(Input.Keys.Z)  || bombButton.getColor().a == 1)
+                    Constants.helicopter.tryToFire("fireBomb");
+                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 0
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 6
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 7) {
                     Constants.helicopter.rotation += -180f * delta;
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 2
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 3
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 4) {
                     Constants.helicopter.rotation += +180f * delta;
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                if (Gdx.input.isKeyPressed(Input.Keys.UP)
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 1
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 2
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 0) {
                     Constants.helicopter.speed = Constants.helicopter.speed + (75f * delta);
                     if (Constants.helicopter.speed > Constants.MAX_HELICOPTER_SPEED)
                         Constants.helicopter.speed = Constants.MAX_HELICOPTER_SPEED;
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 4
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 5
+                        || touchDirectionPieMenu.menu.getHighlightedIndex() == 6) {
                     Constants.helicopter.speed -=  (75f * delta);;
                     if (Constants.helicopter.speed < Constants.MIN_HELICOPTER_SPEED)
                         Constants.helicopter.speed = Constants.MIN_HELICOPTER_SPEED;
@@ -284,19 +329,16 @@ public class GameScreen implements Screen {
                 }
             }
         } else {
-            //Constants.helicopter.doAIFlying(delta);
+           //  Handled by AI code in helicopter
         }
-
-
-        //touch input (also mouse)
 
     }
 
     public void updateCombatText(float delta) {
-        for(ScrollingCombatText scr: Constants.combatText){
+        for(ScrollingCombatText scr: Constants.combatTextList){
             scr.update(delta);
         }
-        Constants.combatText.removeAll(Constants.removeCombatTextList);
+        Constants.combatTextList.removeAll(Constants.removeCombatTextList);
         Constants.removeCombatTextList.clear();
     }
 
@@ -326,7 +368,7 @@ public class GameScreen implements Screen {
             winDelayTime += delta;
             if (!Constants.youWin.isPlaying()) {
                 Constants.youWin.play();
-                Constants.combatText.add(new ScrollingCombatText("BIGWIN", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("YOU HAVE WON!"), Color.GREEN, Constants.scrollingCombatFont, false));
+                Constants.combatTextList.add(new ScrollingCombatText("BIGWIN", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("YOU HAVE WON!"), Color.GREEN, Constants.scrollingCombatFont, false));
             }
             if (winDelayTime >= WIN_DELAY_DURATION) {
                 winDelayTime = 0;
@@ -346,11 +388,137 @@ public class GameScreen implements Screen {
         }
     }
 
+    private void doMobileButtons() {
+        // Mobile Stuff
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        touchDirectionPieMenu = new TouchDirectionPieMenu(viewport);
+        touchDirectionPieMenu.menu.setPosition(Constants.WINDOW_WIDTH - touchDirectionPieMenu.menu.getWidth() - 8, Constants.WINDOW_HEIGHT/2 - touchDirectionPieMenu.menu.getHeight()/2);
+        inputMultiplexer.addProcessor(touchDirectionPieMenu.stage);
 
+        fireButtonStage = new Stage(viewport);
+        fireButton = new Image(Constants.fireButton);
+        fireButton.setScale(0.10f);
+        fireButton.setColor(1,1,1,0.33f);
+        fireButton.setPosition(8, Constants.WINDOW_HEIGHT*.37f - fireButton.getHeight()/2*fireButton.getScaleY());
+        fireButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchDown(event, x, y, pointer, button);
+                Constants.helicopter.tryToFire("fireCannon");
+                fireButton.setColor(1,1,1,1);
+                return true;
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+                super.touchUp(event, x, y, pointer, button);
+                fireButton.setColor(1,1,1,0.33f);
+            }
+        });
+        fireButton.setBounds(fireButton.getX(), fireButton.getY(), fireButton.getWidth(), fireButton.getHeight());
+        fireButton.setTouchable(Touchable.enabled);
+        inputMultiplexer.addProcessor(fireButtonStage);
+        fireButtonStage.addActor(fireButton);
 
+        bombButtonStage = new Stage(viewport);
+        bombButton = new Image(Constants.bombButton);
+        bombButton.setScale(0.10f);
+        bombButton.setColor(1,1,1,0.33f);
+        bombButton.setPosition(8, Constants.WINDOW_HEIGHT*0.63f - bombButton.getHeight()/2*bombButton.getScaleY());
+        bombButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Constants.helicopter.tryToFire("fireBomb");
+                bombButton.setColor(1,1,1,1);
+                return super.touchDown(event, x, y, pointer, button);
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+                super.touchUp(event, x, y, pointer, button);
+                bombButton.setColor(1,1,1,0.33f);
+            }
+        });
+        bombButton.setBounds(bombButton.getX(), bombButton.getY(), bombButton.getWidth(), bombButton.getHeight());
+        bombButton.setTouchable(Touchable.enabled);
+        inputMultiplexer.addProcessor(bombButtonStage);
+        bombButtonStage.addActor(bombButton);
 
+        mapButtonStage = new Stage(viewport);
+        mapButton = new Image(Constants.mapButton);
+        mapButton.setScale(0.2f);
+        mapButton.setColor(1,1,1,1);
+        mapButton.setPosition(Constants.WINDOW_WIDTH*0.4f - mapButton.getWidth()/2f*mapButton.getScaleX(),
+                Constants.WINDOW_HEIGHT - mapButton.getHeight()*mapButton.getScaleY());
+        mapButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                mapButton.setColor(1,1,1,0.33f);
+                if (mapIndex == 3){
+                    Constants.gameMap.setImage(Constants.mapTextureRegion);
+                    mapIndex = 1;
+                } else if (mapIndex == 1){
+                    Constants.gameMap.setImage(Constants.retroMapTextureRegion);
+                    mapIndex = 2;
+                } else {
+                    Constants.gameMap.setImage(Constants.retroGreenMapTextureRegion);
+                    mapIndex = 3;
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+                mapButton.setColor(1,1,1,1.0f);
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
+        mapButton.setBounds(mapButton.getX(), mapButton.getY(), mapButton.getWidth(), mapButton.getHeight());
+        mapButton.setTouchable(Touchable.enabled);
+        inputMultiplexer.addProcessor(mapButtonStage);
+        mapButtonStage.addActor(mapButton);
 
-        @Override
+        exitButtonStage = new Stage(viewport);
+        exitButton = new Image(Constants.exitButton);
+        exitButton.setScale(0.2f);
+        exitButton.setColor(1,1,1,1);
+        exitButton.setPosition(Constants.WINDOW_WIDTH*0.6f - exitButton.getWidth()/2f*exitButton.getScaleX(),
+                Constants.WINDOW_HEIGHT - exitButton.getHeight()*exitButton.getScaleY());
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Constants.oceanSound.stop();
+                Constants.chopperSound.stop();
+                Constants.takeOffSound.stop();
+                Constants.enemyCruise.stop();
+                Constants.fireCannonEffect.stop();
+                Constants.game.setScreen(new IntroScreen(Constants.game, true));
+                return super.touchDown(event, x, y, pointer, button);
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
+        exitButton.setBounds(exitButton.getX(), exitButton.getY(), exitButton.getWidth(), exitButton.getHeight());
+        exitButton.setTouchable(Touchable.enabled);
+        inputMultiplexer.addProcessor(exitButtonStage);
+        exitButtonStage.addActor(exitButton);
+        
+        Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+
+    private void drawAllMobileButtons() {
+        touchDirectionPieMenu.stage.act();
+        touchDirectionPieMenu.stage.draw();
+        fireButtonStage.act();
+        fireButtonStage.draw();
+        bombButtonStage.act();
+        bombButtonStage.draw();
+        mapButtonStage.act();
+        mapButtonStage.draw();
+        exitButtonStage.act();
+        exitButtonStage.draw();
+    }
+
+    @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
         batch.setProjectionMatrix(camera.combined);
@@ -378,6 +546,10 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
-
+        exitButtonStage.dispose();
+        mapButtonStage.dispose();
+        bombButtonStage.dispose();
+        fireButtonStage.dispose();
+        pauseButtonStage.dispose();
     }
 }

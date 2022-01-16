@@ -2,7 +2,6 @@ package com.iantria.raidgame.screen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -72,7 +71,12 @@ public class IntroScreen implements Screen {
 
     @Override
     public void show() {
+        Statistics.resetScores();
+        float aspectRatio = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+        Constants.WINDOW_HEIGHT = (int) ((int) Constants.WINDOW_WIDTH/aspectRatio);
         viewport = new StretchViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+        viewport.apply();
+        //viewport = new StretchViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 
         front = new Image(Constants.introScreenFrontApache);
         frontBlade = new Image(Constants.introScreenFrontBlade);
@@ -95,9 +99,15 @@ public class IntroScreen implements Screen {
         //group3.addActor(fireAnim);
 
         group3.setScale(0.25f);
-        group3.addAction(sequence(moveTo(Constants.WINDOW_WIDTH*.15f, -Constants.WINDOW_HEIGHT),
-                moveTo(Constants.WINDOW_WIDTH*.15f, Constants.WINDOW_HEIGHT*0.25f, 6f),
+//        group3.addAction(sequence(moveTo(Constants.WINDOW_WIDTH*.15f, -Constants.WINDOW_HEIGHT),
+//                moveTo(Constants.WINDOW_WIDTH*.15f, Constants.WINDOW_HEIGHT*0.25f, 6f),
+//                delay(2.5f)));
+        group3.addAction(sequence(moveTo(Constants.WINDOW_WIDTH/2f - frontBlade.getWidth()/2f*0.25f , -Constants.WINDOW_HEIGHT),
+                moveTo(Constants.WINDOW_WIDTH/2f - frontBlade.getWidth()/2f*0.25f, Constants.WINDOW_HEIGHT*0.25f, 6f),
                 delay(2.5f)));
+
+
+
         stage3.addActor(group3);
 
 
@@ -267,41 +277,40 @@ public class IntroScreen implements Screen {
                 stage2.addActor(name);
 
                 InputMultiplexer inputMultiplexer = new InputMultiplexer();
-                if (Gdx.app.getType() != Application.ApplicationType.Android){
-                    // Play Button
-                    playButton = new Image(Constants.playButton);
-                    playButton.setScale(0.15f);
-                    playButton.setBounds(playButton.getX(), playButton.getY(), playButton.getWidth(), playButton.getHeight());
-                    playButton.setTouchable(Touchable.enabled);
-                    playButton.addListener(new ClickListener() {
-                        @Override
-                        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                            Constants.chopperSound.setLooping(false);
-                            Constants.chopperSound.stop();
-                            Constants.m61Sound.setLooping(false);
-                            Constants.m61Sound.stop();
-                            Statistics.resetScores();
-                            Constants.isPlayer = true;
-                            playButton.removeListener(playButton.getListeners().first());
-                            demoButton.removeListener(demoButton.getListeners().first());
-                            game.setScreen(new GameScreen(game));
-                            return true;
-                        }
+                // Play Button
+                playButton = new Image(Constants.playButton);
+                playButton.setScale(0.15f);
+                playButton.setBounds(playButton.getX(), playButton.getY(), playButton.getWidth(), playButton.getHeight());
+                playButton.setTouchable(Touchable.enabled);
+                playButton.addListener(new ClickListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        Constants.chopperSound.setLooping(false);
+                        Constants.chopperSound.stop();
+                        Constants.m61Sound.setLooping(false);
+                        Constants.m61Sound.stop();
+                        Statistics.resetScores();
+                        Constants.isPlayer = true;
+                        playButton.removeListener(playButton.getListeners().first());
+                        demoButton.removeListener(demoButton.getListeners().first());
+                        game.setScreen(new GameScreen(game));
+                        return true;
+                    }
 
-                        @Override
-                        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                        }
-                    });
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    }
+                });
 
-                    playButtonStage = new Stage(viewport);
-                    playButtonStage.addAction(sequence(fadeOut(0f),
-                            moveTo(Constants.WINDOW_WIDTH - playButton.getWidth() * playButton.getScaleX() - 10, Constants.WINDOW_HEIGHT / 2 - 20),
-                            delay(5f), fadeIn(1.5f)));
+                playButtonStage = new Stage(viewport);
+                playButtonStage.addAction(sequence(fadeOut(0f),
+                        moveTo(Constants.WINDOW_WIDTH - playButton.getWidth() * playButton.getScaleX() - 10, Constants.WINDOW_HEIGHT / 2 - 20),
+                        delay(5f), fadeIn(1.5f)));
 
-                    playButtonStage.addActor(playButton);
-                    Gdx.input.setInputProcessor(playButtonStage);
-                    inputMultiplexer.addProcessor(playButtonStage);
-                }
+                playButtonStage.addActor(playButton);
+                //Gdx.input.setInputProcessor(playButtonStage);
+                inputMultiplexer.addProcessor(playButtonStage);
+
                 // Demo Button
                 demoButton = new Image(Constants.demoButton);
                 demoButton.setScale(0.15f);
@@ -330,10 +339,8 @@ public class IntroScreen implements Screen {
                 demoButtonStage.addAction(sequence(fadeOut(0f),moveTo(10, Constants.WINDOW_HEIGHT/2f - 20),
                         delay(5f),fadeIn(1.5f)));
                 demoButtonStage.addActor(demoButton);
-
                 inputMultiplexer.addProcessor(demoButtonStage);
                 Gdx.input.setInputProcessor(inputMultiplexer);
-
             }
         }
          if (introStep == 5) {
@@ -344,13 +351,10 @@ public class IntroScreen implements Screen {
             stage2.getViewport().apply();
             stage2.act();
             stage2.draw();
-            if (Gdx.app.getType() != Application.ApplicationType.Android) {
-                 playButtonStage.act();
-                 playButtonStage.draw();
-            }
+            playButtonStage.act();
+            playButtonStage.draw();
             demoButtonStage.act();
             demoButtonStage.draw();
-
         }
 
 //        if ((delayTime > 2f) && (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Input.Keys.ANY_KEY))) {

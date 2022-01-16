@@ -87,7 +87,7 @@ public class EnemyBomber extends Entity {
 
 
         if(isAttacking && !Constants.carrierAlarm.isPlaying() && !Constants.carrier.isDestroyed) {
-            Constants.combatText.add(new ScrollingCombatText("BombersAttacking" + Constants.carrier.health, 1f, new Vector2(Constants.helicopter.position), ("CARRIER UNDER ATTACK!"), Color.YELLOW, Constants.scrollingCombatFont, true));
+            Constants.combatTextList.add(new ScrollingCombatText("BombersAttacking" + Constants.carrier.health, 1f, new Vector2(Constants.helicopter.position), ("CARRIER UNDER ATTACK!"), Color.YELLOW, Constants.scrollingCombatFont, true));
             Constants.carrierAlarm.play();
         }
 

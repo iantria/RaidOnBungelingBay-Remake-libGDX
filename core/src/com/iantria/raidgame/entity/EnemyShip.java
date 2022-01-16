@@ -78,7 +78,7 @@ public class EnemyShip extends Entity {
         		speed = Constants.ENEMY_SHIP_SPEED;
         		Statistics.enemyShipWasCompleted = true;
         		isAttacking = true;
-        		Constants.combatText.add(new ScrollingCombatText("EnemyShipCompleted", 1f, new Vector2(Constants.helicopter.position), ("ENEMY SHIP COMPLETED!"), Color.YELLOW, Constants.scrollingCombatFont, true));
+        		Constants.combatTextList.add(new ScrollingCombatText("EnemyShipCompleted", 1f, new Vector2(Constants.helicopter.position), ("ENEMY SHIP COMPLETED!"), Color.YELLOW, Constants.scrollingCombatFont, true));
         	}
         }
 
@@ -136,7 +136,7 @@ public class EnemyShip extends Entity {
 	    	if (isReadyToFire()) {
 				rotation =((float)Constants.getSignedDegreesToCarrier(new Vector2(position.x + image.getRegionWidth()*scale/2, position.y + image.getRegionHeight()*scale/2)));
 	    		fireCruiseMissile(CruiseMissile.MainTarget.CARRIER_IS_TARGET);
-	    		Constants.combatText.add(new ScrollingCombatText("DestroyerAttacking", 1f, new Vector2( Constants.helicopter.position), ("SHIP ATTACKING CARRIER!"), Color.YELLOW, Constants.scrollingCombatFont, true));
+	    		Constants.combatTextList.add(new ScrollingCombatText("DestroyerAttacking", 1f, new Vector2( Constants.helicopter.position), ("SHIP ATTACKING CARRIER!"), Color.YELLOW, Constants.scrollingCombatFont, true));
 	    	}
 	    }
         

@@ -30,6 +30,7 @@ allprojects {
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.1.0'
         shapedrawerVersion = '2.5.0'
+        pieMenuVersion = '5.0.0'  // add this line
     }
 
     repositories {
@@ -86,6 +87,7 @@ project(":html") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion:sources"
+        api "com.github.payne911:PieMenu:$pieMenuVersion:sources"  // add this line
         
     }
 }
@@ -97,5 +99,6 @@ project(":core") {
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
+        api "com.github.payne911:PieMenu:$pieMenuVersion"  // add this line
     }
 }

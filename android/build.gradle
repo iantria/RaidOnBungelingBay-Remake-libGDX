@@ -1,6 +1,13 @@
 android {
     buildToolsVersion "32.0.0"
     compileSdkVersion 32
+
+    // add the following:
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'

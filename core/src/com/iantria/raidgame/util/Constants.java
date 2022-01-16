@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.LinkedList;
 import java.util.Random;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.iantria.raidgame.RaidGame;
 import com.iantria.raidgame.entity.AAGun;
 import com.iantria.raidgame.entity.Carrier;
@@ -125,7 +126,7 @@ public class Constants {
             singlePixelTextureRegion, helicopterIcon, factoryIcon, carrierIcon,enemyShipIcon,
             carrierDirectionArrow, introScreenSideApache, introScreenSideApacheBlade, introScreenBackProps,
             introScreenFrontApache, introScreenFrontBlade, introScreenName, introScreenTitle,
-            playButton, demoButton;
+            playButton, demoButton, fireButton, bombButton, exitButton, mapButton, pauseButton;
 
     //Sounds
     public static Music outOfFuelCrashSound, bulletHitLand, AAGunFireSound, mediumExplosion,
@@ -151,7 +152,7 @@ public class Constants {
     public static LinkedList<Projectile> projectileList;
     public static LinkedList<Projectile> removeProjectileList;
     public static LinkedList<ScrollingCombatText> removeCombatTextList = new LinkedList<ScrollingCombatText>();
-    public static LinkedList<ScrollingCombatText> combatText = new LinkedList<ScrollingCombatText>();
+    public static LinkedList<ScrollingCombatText> combatTextList = new LinkedList<ScrollingCombatText>();
     public static BitmapFont scrollingCombatFont;
     public static BitmapFont HUDFont;
     public static BitmapFont HUDLargeFont;

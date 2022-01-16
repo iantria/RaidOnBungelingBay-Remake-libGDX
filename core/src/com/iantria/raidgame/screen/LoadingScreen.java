@@ -156,10 +156,9 @@ public class LoadingScreen implements Screen {
 
         //split texture
         TextureRegion[][] textureLines = TextureRegion.split(x, 64, 64);
-        TextureRegion[] textureLine;
 
         for (int i = 0; i < 8; i++) {
-            textureLine = new TextureRegion[16];
+            TextureRegion[] textureLine = new TextureRegion[16];
             for (int j = 0; j < 16; j++) {
                 textureLine[j] = textureLines[i][j];
             }
@@ -215,6 +214,11 @@ public class LoadingScreen implements Screen {
             Constants.introScreenName = new TextureRegion(textureAtlas.findRegion("name"));
             Constants.playButton = new TextureRegion(textureAtlas.findRegion("play_button"));
             Constants.demoButton = new TextureRegion(textureAtlas.findRegion("demo_button"));
+            Constants.bombButton = new TextureRegion(textureAtlas.findRegion("bomb_button"));
+            Constants.fireButton = new TextureRegion(textureAtlas.findRegion("fire_button"));
+            Constants.exitButton = new TextureRegion(textureAtlas.findRegion("exit_button"));
+            Constants.pauseButton = new TextureRegion(textureAtlas.findRegion("pause_button"));
+            Constants.mapButton = new TextureRegion(textureAtlas.findRegion("map_button"));
 
             //Sounds
             Constants.outOfFuelCrashSound = assetManager.get("sounds/jetcrashfuel.ogg", Music.class);
@@ -249,10 +253,12 @@ public class LoadingScreen implements Screen {
             if (Gdx.app.getType().equals(Application.ApplicationType.WebGL)) {
                 if (Gdx.input.isTouched()) {
                     // So that audio can work
+                    dispose();
                     game.setScreen(new IntroScreen(game, false));
                 }
             } else {
-                game.setScreen(new IntroScreen(game, false));
+                dispose();
+                game.setScreen(new IntroScreen(game, false)); //true = faster
             }
 
 
@@ -282,6 +288,5 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void dispose() {
-
     }
 }
