@@ -104,10 +104,10 @@ task dist(dependsOn: [clean, compileGwt]) {
             }
             into "build/dist"
         }
-//        copy {
-//            from "war"
-//            into "build/dist"
-//        }
+        copy {
+            from "war"
+            into "build/dist"
+        }
     }
 }
 task distZip(type: Zip, dependsOn: dist){
