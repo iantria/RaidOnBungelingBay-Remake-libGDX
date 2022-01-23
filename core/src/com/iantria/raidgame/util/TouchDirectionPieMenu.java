@@ -1,21 +1,16 @@
 package com.iantria.raidgame.util;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.payne.games.piemenu.PieMenu;
 
@@ -30,7 +25,12 @@ public class TouchDirectionPieMenu {
 
     public TouchDirectionPieMenu(Viewport viewport) {
         /* Setting up the Stage. */
-        skin = new Skin(Gdx.files.internal("skins/skin.json"));
+        //skin = new Skin(Gdx.files.internal("skins/skin.json"));
+        Label.LabelStyle label1Style = new Label.LabelStyle();
+        BitmapFont myFont = new BitmapFont(Constants.HUDFont.getData().fontFile);
+        label1Style.font = myFont;
+        label1Style.fontColor = Color.WHITE;
+
         batch = new PolygonSpriteBatch();
         stage = new Stage(viewport, batch);
 
@@ -71,7 +71,7 @@ public class TouchDirectionPieMenu {
         });
 
         for (int i = 0; i < 8; i++) {
-            Label label = new Label("", skin);
+            Label label = new Label("", label1Style);
             menu.addActor(label);
         }
 

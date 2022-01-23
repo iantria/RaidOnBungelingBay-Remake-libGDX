@@ -48,6 +48,7 @@ public class EnemyBomber extends Entity {
         isAttacking = false;
         isLanded = true;
         updateVectorsForMovingObjects();
+        soundID = -1;
     }
 
 
@@ -67,6 +68,7 @@ public class EnemyBomber extends Entity {
         position.x = Constants.gameMap.position.x + getStartingPosition().x - Constants.WINDOW_WIDTH/2 + 200;
         position.y = Constants.gameMap.position.y + getStartingPosition().y;
         updateVectorsForMovingObjects();
+        soundID = -1;
     }
 
 
@@ -77,19 +79,17 @@ public class EnemyBomber extends Entity {
         position.y = position.y - Constants.map_dy;
 
         if (wasHit || isDestroyed) explosionTimer += delta;
-        bombingExplosionTimer += delta;
-
         updateVectorsForMovingObjects();
 
         if (intersects(Constants.carrier) && !isDestroyed() && !isLanded && !Constants.carrier.isDestroyed) {
+            if (bombingExplosionTimer == 0) {
+                Constants.bombsDroppingSound.play(0.5f);
+            }
             setAttacking(true);
-        }
+        } else {
 
-
-        if(isAttacking && !Constants.carrierAlarm.isPlaying() && !Constants.carrier.isDestroyed) {
-            Constants.combatTextList.add(new ScrollingCombatText("BombersAttacking" + Constants.carrier.health, 1f, new Vector2(Constants.helicopter.position), ("CARRIER UNDER ATTACK!"), Color.YELLOW, Constants.scrollingCombatFont, true));
-            Constants.carrierAlarm.play();
         }
+        bombingExplosionTimer += delta;
 
         if (isDestroyed) {
             isAttacking = false;
@@ -149,8 +149,6 @@ public class EnemyBomber extends Entity {
                     batch.draw(bombsDroppingOnCarrier.getKeyFrame(bombingExplosionTimer),
                             Constants.carrier.position.x + Constants.carrier.image.getRegionWidth()/2*scale  - bombsDroppingOnCarrier.getKeyFrame(explosionTimer).getRegionWidth()/2,
                             Constants.carrier.position.y + random + Constants.carrier.image.getRegionHeight()/2*scale - bombsDroppingOnCarrier.getKeyFrame(explosionTimer).getRegionHeight()/2);
-                    if (!Constants.bombsDroppingSound.isPlaying())
-                        Constants.bombsDroppingSound.play();
                 } else {
                     Constants.carrier.health = Constants.carrier.health - Constants.ENEMY_BOMBER_BOMB_DMG;
                     //Constants.combatText.add(new ScrollingCombatText("BomberDamage" + Constants.carrier.health, 1f, new Vector2(Constants.helicopter.position), ("-" + Constants.ENEMY_BOMBER_BOMB_DMG + " Carrier Health"), Color.YELLOW, Constants.scrollingCombatFont, true));

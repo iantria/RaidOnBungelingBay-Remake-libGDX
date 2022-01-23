@@ -123,13 +123,12 @@ public class AAGun extends Entity {
 
 
     private void fireAAGun() {
-
         if (Constants.isReadyToFireCruiseMissile) {
             Statistics.numberOfTimesCruiseMissileFired++;
             firedCount++;
             CruiseMissile projectile = new CruiseMissile(id + "_CruiseMissile" + firedCount, 0.05f, true,
-                    new Vector2(position.x + image.getRegionWidth()*scale/2 - Constants.cruiseMissileTexture.getRegionWidth()*0.05f/2,
-                            position.y + image.getRegionHeight()*scale/2 - Constants.cruiseMissileTexture.getRegionHeight()*0.05f/2),
+                    new Vector2(position.x + image.getRegionWidth()*scale/2f - Constants.cruiseMissileTexture.getRegionWidth()*0.05f/2f,
+                            position.y + image.getRegionHeight()*scale/2f - Constants.cruiseMissileTexture.getRegionHeight()*0.05f/2f),
                     rotation, Constants.MISSILE_SPEED, Constants.cruiseMissileTexture ,
                     Projectile.Type.ENEMY_CRUISE_MISSILE,  CruiseMissile.MainTarget.PLAYER_IS_TARGET);
             Constants.fireMissileEffect.play();
@@ -141,11 +140,10 @@ public class AAGun extends Entity {
             firedCount++;
             Statistics.numberOfTimesAAGunFired++;
             Projectile p= new Projectile(id + "_Bullet" + firedCount, 0.25f, true,
-                    new Vector2(position.x + image.getRegionWidth()*scale/2 - Constants.enemyBulletTextureRegion.getRegionWidth()*0.25f/2 ,
-                            position.y + image.getRegionHeight()*scale/2 - Constants.enemyBulletTextureRegion.getRegionHeight()*0.25f/2),
+                    new Vector2(position.x + image.getRegionWidth()*scale/2f - Constants.enemyBulletTextureRegion.getRegionWidth()*0.25f/2f,
+                            position.y + image.getRegionHeight()*scale/2f - Constants.enemyBulletTextureRegion.getRegionHeight()*0.25f/2f),
                     rotation, Constants.BULLET_SPEED, Constants.enemyBulletTextureRegion, Projectile.Type.AA_GUN_BULLET);
             Constants.AAGunFireSound.play();
-
             Constants.projectileList.add(p);
             isReadyToFire = false;
         }

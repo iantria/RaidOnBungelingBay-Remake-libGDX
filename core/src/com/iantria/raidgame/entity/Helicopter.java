@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
-import com.iantria.raidgame.screen.IntroScreen;
+import com.iantria.raidgame.screen.OutcomeScreen;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Statistics;
 
@@ -74,6 +74,8 @@ public class Helicopter extends Entity {
         this.mode = FlyingMode.LANDED;
         this.speed = Constants.CARRIER_SPEED;
         this.bladeRotation = 0f;
+        lastFireCannon = System.currentTimeMillis();
+        lastFireBomb = System.currentTimeMillis();
     }
 
     public void reset() {
@@ -86,12 +88,13 @@ public class Helicopter extends Entity {
         this.bladeRotation = 0f;
         Constants.chopperSound.stop();
         bladesSpinUpDownTime = 0;
-
+        lastFireCannon = System.currentTimeMillis();
+        lastFireBomb = System.currentTimeMillis();
     }
 
     public void update(float delta) {
 
-        checkHealthAndFuel(delta);
+
 
         if (wasHit || mode == FlyingMode.CRASHED ) explosionTimer += delta;
 
@@ -206,12 +209,7 @@ public class Helicopter extends Entity {
             }
             if (bombCount > 0) {
                 lastFireBomb = System.currentTimeMillis();
-                if (!Constants.singleBombDrop.isPlaying()) {
-                    Constants.singleBombDrop.play();
-                } else {
-                    Constants.singleBombDrop.stop();
-                    Constants.singleBombDrop.play();
-                }
+                Constants.singleBombDrop.play();
                 bombCount--;
                 if (bombCount == 0)
                     Constants.combatTextList.add(new ScrollingCombatText("OutOfBombs", 1f, new Vector2(Constants.helicopter.position), ("OUT OF BOMBS"), Color.YELLOW, Constants.scrollingCombatFont, true));
@@ -230,7 +228,7 @@ public class Helicopter extends Entity {
             }
             if (cannonCount > 0 ) {
                 lastFireCannon = System.currentTimeMillis();
-                Constants.m61Sound.play();;
+                Constants.m61Sound.play(0.25f);;
                 cannonCount--;
                 Statistics.numberOfCannonRoundsFired++;
                 Projectile cannon = new Projectile("playerCannon", 0.2f, true,
@@ -374,41 +372,6 @@ public class Helicopter extends Entity {
     }
 
 
-    public void checkHealthAndFuel(float delta) {
-        if (Constants.helicopter.fuelCount < 1 || Constants.helicopter.health < 1) {
-            if (!Constants.outOfFuelCrashSound.isPlaying() && !(mode == FlyingMode.CRASHED)) {
-                Constants.chopperSound.stop();
-                Constants.outOfFuelCrashSound.play();
-                Constants.projectileImpact.stop();
-                Constants.helicopter.mode = Helicopter.FlyingMode.CRASHED;
-                Constants.helicopter.livesCount--;
-                Statistics.numberOfLivesLost++;
-
-                if (Constants.helicopter.fuelCount < 1) Statistics.numberOfRanOutFuel++;
-                if (Constants.helicopter.livesCount <= 0 && !Constants.drumsSound.isPlaying()) {
-                    Statistics.carrierSurvived = !Constants.carrier.isDestroyed && !Constants.carrier.isSinking;
-                    Constants.combatTextList.add(new ScrollingCombatText("YOULOST", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU HAVE BEEN DEFEATED!"), Color.RED, Constants.scrollingCombatFont, false));
-                    Constants.drumsSound.play();
-                }
-            }
-            Constants.helicopter.generalDelayTime += delta;
-            if (Constants.helicopter.generalDelayTime >= Constants.helicopter.YOU_CRASHED_DELAY_DURATION) {
-                Constants.helicopter.generalDelayTime = 0;
-                if (Constants.helicopter.livesCount <= 0) {
-                    if (!Constants.drumsSound.isPlaying());
-                        Constants.oceanSound.stop();
-                        Constants.chopperSound.stop();
-                        Constants.takeOffSound.stop();
-                        Constants.enemyCruise.stop();
-                        Constants.fireCannonEffect.stop();
-                        Constants.game.setScreen(new IntroScreen(Constants.game, true));
-                } else {
-                    updatePositionsAfterCrash();
-                    mode = FlyingMode.LANDED;
-                }
-            }
-        }
-    }
 
     public void updatePositionsAfterCrash() {
         Vector2 old = new Vector2(Constants.gameMap.position);

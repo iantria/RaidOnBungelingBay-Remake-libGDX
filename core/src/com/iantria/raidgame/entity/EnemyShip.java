@@ -24,6 +24,7 @@ public class EnemyShip extends Entity {
 	private boolean isCannonReadyToFire;
 	private float cannonElapsedTime;
 	public int explosionIndex;
+	public float soundId = -1;
 
 	public EnemyShip(String id, float scale, boolean isMovingObj, Vector2 position, float rotation, TextureRegion image) {
 		super(id, scale, isMovingObj, position, rotation, image);
@@ -33,9 +34,9 @@ public class EnemyShip extends Entity {
 
 
 	public void init() {
-		this.explosion1 = new Animation<TextureRegion>(Constants.explosionAnimations[0].getFrameDuration(),Constants.explosionAnimations[0].getKeyFrames());
-		this.explosion2 = new Animation<TextureRegion>(Constants.explosionAnimations[3].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
-		this.explosion3 = new Animation<TextureRegion>(Constants.explosionAnimations[6].getFrameDuration(),Constants.explosionAnimations[6].getKeyFrames());
+		this.explosion1 = new Animation<TextureRegion>(Constants.explosionAnimations[1].getFrameDuration(),Constants.explosionAnimations[1].getKeyFrames());
+//		this.explosion2 = new Animation<TextureRegion>(Constants.explosionAnimations[4].getFrameDuration(),Constants.explosionAnimations[4].getKeyFrames());
+//		this.explosion3 = new Animation<TextureRegion>(Constants.explosionAnimations[7].getFrameDuration(),Constants.explosionAnimations[7].getKeyFrames());
 		this.health = 1;
 		this.isDestroyed = false;
 		this.isSinking = false;
@@ -48,6 +49,7 @@ public class EnemyShip extends Entity {
 		explosionIndex = 4;
     	refireInterval = Constants.ENEMY_CRUISE_MISSILE_FIRING_INTERVAL;
     	updateVectorsForMovingObjects();
+    	soundId = -1;
 	}
 
 	public void reset() {
@@ -60,6 +62,7 @@ public class EnemyShip extends Entity {
 		this.position.x = Constants.gameMap.position.x + getStartingPosition().x - Constants.WINDOW_WIDTH/2 + 200;
 		this.position.y = Constants.gameMap.position.y + getStartingPosition().y;
 		updateVectorsForMovingObjects();
+		soundId = -1;
 	}
 
 
@@ -265,12 +268,12 @@ public class EnemyShip extends Entity {
 	
     private void fireCruiseMissile(Projectile.MainTarget target) {
     	if (target == CruiseMissile.MainTarget.CARRIER_IS_TARGET){
-    		if (!Constants.carrierAlarm.isPlaying()) Constants.carrierAlarm.play();
+			soundId = Constants.carrierAlarm.play();
     	}
 		Statistics.numberOfTimesCruiseMissileFired++;
 		CruiseMissile projectile = new CruiseMissile(id + "_CruiseMissile" + firedCount, 0.05f, true,
-				new Vector2(position.x + image.getRegionWidth()*scale/2 - Constants.cruiseMissileTexture.getRegionWidth()*0.05f/2,
-						position.y + image.getRegionHeight()*scale/2 - Constants.cruiseMissileTexture.getRegionHeight()*0.05f/2),
+				new Vector2(position.x + image.getRegionWidth()*scale/2f - Constants.cruiseMissileTexture.getRegionWidth()*0.05f/2f,
+						position.y + image.getRegionHeight()*scale/2f - Constants.cruiseMissileTexture.getRegionHeight()*0.05f/2f),
 				rotation, Constants.MISSILE_SPEED, Constants.cruiseMissileTexture ,
 				Projectile.Type.ENEMY_CRUISE_MISSILE,  target);
 		Constants.fireMissileEffect.play();
@@ -281,8 +284,8 @@ public class EnemyShip extends Entity {
     
     private void fireCannon() {
 		Projectile p= new Projectile(id + "_Bullet" + firedCount, 0.25f, true,
-				new Vector2(position.x + image.getRegionWidth()*scale/2 - Constants.enemyBulletTextureRegion.getRegionWidth()*0.25f/2 ,
-						position.y + image.getRegionHeight()*scale/2 - Constants.enemyBulletTextureRegion.getRegionHeight()*0.25f/2),
+				new Vector2(position.x + image.getRegionWidth()*scale/2f - Constants.enemyBulletTextureRegion.getRegionWidth()*0.25f/2f ,
+						position.y + image.getRegionHeight()*scale/2f - Constants.enemyBulletTextureRegion.getRegionHeight()*0.25f/2f),
 				rotation, Constants.BULLET_SPEED, Constants.enemyBulletTextureRegion, Projectile.Type.AA_GUN_BULLET);
 		Constants.AAGunFireSound.play();
 		Constants.projectileList.add(p);

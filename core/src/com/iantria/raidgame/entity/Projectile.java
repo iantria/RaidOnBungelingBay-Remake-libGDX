@@ -38,6 +38,7 @@ public class Projectile extends Entity {
          setVector3(new Vector2(position));
          setVector4(new Vector2(position));
          updateVectorsForMovingObjects();
+         soundID = -1;
      }
 
     public void update(float delta) {
@@ -68,9 +69,9 @@ public class Projectile extends Entity {
     }
 
     public void draw(Batch batch) {
-
          if (bombHitNothing && type == Type.MY_BOMB) {
-             if (!Constants.cruiseOutOfFuel.isPlaying()) Constants.cruiseOutOfFuel.play();
+             if (soundID == -1)
+                soundID = Constants.cruiseOutOfFuel.play();
              batch.draw(bombHitNothingAnimation.getKeyFrame(elapsedTime),
                      position.x + image.getRegionWidth() / 2 * scale - bombHitNothingAnimation.getKeyFrame(elapsedTime).getRegionWidth() / 2,
                      position.y + image.getRegionHeight() / 2 * scale - bombHitNothingAnimation.getKeyFrame(elapsedTime).getRegionHeight() / 2);
@@ -151,6 +152,7 @@ public class Projectile extends Entity {
                 Constants.helicopter.setWasHit(true);
                 Constants.projectileImpact.play();
                 Constants.removeProjectileList.add(this);
+                wasHit = true; // added Jan 19
                 Statistics.amountOfDamageTaken += Constants.ENEMY_CRUISE_MISSILE_DAMAGE;
                 Constants.helicopter.health -= Constants.ENEMY_CRUISE_MISSILE_DAMAGE;
                 Constants.combatTextList.add(new ScrollingCombatText("CruiseMissile" + Constants.helicopter.health, 1f, new Vector2(Constants.helicopter.position), ("-" + Constants.ENEMY_CRUISE_MISSILE_DAMAGE + " Health"), Color.RED, Constants.scrollingCombatFont, true));
@@ -161,7 +163,8 @@ public class Projectile extends Entity {
                 Constants.carrier.setWasHit(true);
                 Constants.projectileImpact.play();
                 Constants.removeProjectileList.add(this);
-                Statistics.amountOfCarrierDamageTaken+= Constants.ENEMY_CRUISE_MISSILE_DAMAGE;
+                wasHit = true;  // added Jan 19
+                Statistics.amountOfCarrierDamageTaken += Constants.ENEMY_CRUISE_MISSILE_DAMAGE;
                 Constants.carrier.health -= Constants.ENEMY_CRUISE_MISSILE_DAMAGE;
                 Constants.combatTextList.add(new ScrollingCombatText("shipCruiseMissile" + Constants.carrier.health, 1f, new Vector2(Constants.helicopter.position), ("-" + Constants.ENEMY_CRUISE_MISSILE_DAMAGE + " Carrier Health"), Color.YELLOW, Constants.scrollingCombatFont, true));
                 Statistics.numberOfTimesHitByCruiseMissile++;
@@ -210,15 +213,16 @@ public class Projectile extends Entity {
 
             // You can shoot down cruise missiles
             for (Projectile f : Constants.projectileList){
-                if (f.isDestroyed()) continue;
+                if (f.isDestroyed() || f.wasHit) continue;
                 if (type == Type.MY_BOMB) continue;
                 if (f.type == Type.ENEMY_CRUISE_MISSILE && f.intersects(this)){
                     updateEntityForHit(f);
                     if (f.getHealth() < 1) {
                         f.setWasHit(true);
-                        Constants.cruiseOutOfFuel.play();
+                        if (f.soundID == -1)
+                            f.soundID = Constants.cruiseOutOfFuel.play();
                         Statistics.numberOfCruiseMissilesDestroyed++;
-                        Statistics.score += + Constants.SCORE_CRUISE_MISSILE;
+                        Statistics.score += Constants.SCORE_CRUISE_MISSILE;
                         Constants.combatTextList.add(new ScrollingCombatText("CruiseScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_CRUISE_MISSILE + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
                     }
                     Constants.removeProjectileList.add(this);

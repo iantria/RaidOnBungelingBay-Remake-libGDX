@@ -39,8 +39,6 @@ import java.util.ListIterator;
 
 public class GameScreen implements Screen {
 
-    private RaidGame game;
-
     //screen
     private Camera camera;
     private Viewport viewport;
@@ -67,8 +65,7 @@ public class GameScreen implements Screen {
     public float delayTime;
     public int mapIndex = 1;
 
-    public GameScreen(RaidGame game) {
-//        this.game = game;
+    public GameScreen() {
 
         // Camera and Viewport
         camera = new OrthographicCamera(Constants.MAP_WIDTH,  Constants.MAP_HEIGHT);
@@ -145,7 +142,6 @@ public class GameScreen implements Screen {
 
         //Mobile Buttons
         doMobileButtons();
-
     }
 
     @Override
@@ -155,8 +151,9 @@ public class GameScreen implements Screen {
 
         if (!paused) {
             // Update All
-            detectInput(deltaTime);
+            checkHealthAndFuel(deltaTime);
             checkGameLogic(deltaTime);
+            detectInput(deltaTime);
             Constants.helicopter.update(deltaTime);
             Constants.gameMap.setSpeed(Constants.helicopter.speed);
             if (!(Constants.helicopter.mode == Helicopter.FlyingMode.FLYING))
@@ -178,6 +175,8 @@ public class GameScreen implements Screen {
             for (AAGun a : Constants.aaGuns) {
                 a.update(deltaTime);
             }
+            Constants.projectileList.removeAll(Constants.removeProjectileList);
+            Constants.removeProjectileList.clear();
             projectiles = Constants.projectileList.listIterator();
             while (projectiles.hasNext()) {
                 Projectile p = projectiles.next();
@@ -214,6 +213,8 @@ public class GameScreen implements Screen {
             a.draw(batch);
         }
 
+        Constants.helicopter.draw(batch);
+
         for (EnemyFighter a: Constants.enemyFighters){
             a.draw(batch);
         }
@@ -226,8 +227,6 @@ public class GameScreen implements Screen {
             p.draw(batch);
         }
 
-        Constants.helicopter.draw(batch);
-
         for(ScrollingCombatText scr: Constants.combatTextList){
             scr.render(batch);
         }
@@ -235,7 +234,6 @@ public class GameScreen implements Screen {
 
         batch.end();
         // **** End of draw *****
-
 
         if (Gdx.app.getType().equals(Application.ApplicationType.Android) || Gdx.app.getType().equals(Application.ApplicationType.iOS)) {
             drawAllMobileButtons();
@@ -260,7 +258,10 @@ public class GameScreen implements Screen {
             Constants.takeOffSound.stop();
             Constants.enemyCruise.stop();
             Constants.fireCannonEffect.stop();
-            Constants.game.setScreen(new IntroScreen(Constants.game, true));
+            exitButton.removeListener(exitButton.getListeners().first());
+            mapButton.removeListener(mapButton.getListeners().first());
+            //pauseButton.removeListener(pauseButton.getListeners().first());
+            Constants.game.setScreen(new IntroScreen(true));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.P)){
             paused = true;
             try {
@@ -383,10 +384,53 @@ public class GameScreen implements Screen {
                 Constants.takeOffSound.stop();
                 Constants.enemyCruise.stop();
                 Constants.fireCannonEffect.stop();
-                Constants.game.setScreen(new IntroScreen(Constants.game, true));
+                exitButton.removeListener(exitButton.getListeners().first());
+                mapButton.removeListener(mapButton.getListeners().first());
+                //pauseButton.removeListener(pauseButton.getListeners().first());
+                Constants.game.setScreen(new OutcomeScreen());
             }
         }
     }
+
+    public void checkHealthAndFuel(float delta) {
+        if (Constants.helicopter.fuelCount < 1 || Constants.helicopter.health < 1) {
+            if (!(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED)) {
+                Constants.chopperSound.stop();
+                Constants.outOfFuelCrashSound.play();
+                Constants.projectileImpact.stop();
+                Constants.helicopter.mode = Helicopter.FlyingMode.CRASHED;
+                Constants.helicopter.livesCount--;
+                Statistics.numberOfLivesLost++;
+
+                if (Constants.helicopter.fuelCount < 1) Statistics.numberOfRanOutFuel++;
+                if (Constants.helicopter.livesCount <= 0 && !Constants.drumsSound.isPlaying()) {
+                    Statistics.carrierSurvived = !Constants.carrier.isDestroyed && !Constants.carrier.isSinking;
+                    Constants.combatTextList.add(new ScrollingCombatText("YOULOST", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU HAVE BEEN DEFEATED!"), Color.RED, Constants.scrollingCombatFont, false));
+                    Constants.drumsSound.play();
+                }
+            }
+            Constants.helicopter.generalDelayTime += delta;
+            if (Constants.helicopter.generalDelayTime >= Constants.helicopter.YOU_CRASHED_DELAY_DURATION) {
+                Constants.helicopter.generalDelayTime = 0;
+                if (Constants.helicopter.livesCount <= 0) {
+                    if (!Constants.drumsSound.isPlaying());
+                    Constants.oceanSound.stop();
+                    Constants.chopperSound.stop();
+                    Constants.takeOffSound.stop();
+                    Constants.enemyCruise.stop();
+                    Constants.fireCannonEffect.stop();
+                    exitButton.removeListener(exitButton.getListeners().first());
+                    mapButton.removeListener(mapButton.getListeners().first());
+                    //pauseButton.removeListener(pauseButton.getListeners().first());
+                    Constants.game.setScreen(new OutcomeScreen());
+                } else {
+                    Constants.helicopter.updatePositionsAfterCrash();
+                    Constants.helicopter.mode = Helicopter.FlyingMode.LANDED;
+                }
+            }
+        }
+    }
+
 
     private void doMobileButtons() {
         // Mobile Stuff
@@ -489,7 +533,10 @@ public class GameScreen implements Screen {
                 Constants.takeOffSound.stop();
                 Constants.enemyCruise.stop();
                 Constants.fireCannonEffect.stop();
-                Constants.game.setScreen(new IntroScreen(Constants.game, true));
+                exitButton.removeListener(exitButton.getListeners().first());
+                mapButton.removeListener(mapButton.getListeners().first());
+                //pauseButton.removeListener(pauseButton.getListeners().first());
+                Constants.game.setScreen(new IntroScreen(true));
                 return super.touchDown(event, x, y, pointer, button);
             }
             @Override

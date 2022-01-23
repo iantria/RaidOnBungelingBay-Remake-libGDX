@@ -1,6 +1,8 @@
 package com.iantria.raidgame.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -55,7 +57,7 @@ public class Entity  {
     public float direction;
     public float range;
     Entity primaryTarget;
-
+    public long soundID = -1;
 
     public Entity(String id, float scale, boolean isMovingObj, Vector2 position, float rotation, TextureRegion image) {
         this.id = id;
@@ -73,7 +75,7 @@ public class Entity  {
         this.boundingBox = new Rectangle(position.x, position.y, image.getRegionWidth()*scale, image.getRegionHeight()*scale);
         this.wasHitByCannonAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[3].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
         this.wasHitByBombAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[1].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
-
+        this.soundID = -1;
     }
 
     public boolean intersects(Entity e) {
@@ -210,9 +212,15 @@ public class Entity  {
         e.boundingBox = new Rectangle(e.vector4.x, e.vector4.y, e.image.getRegionWidth()*e.scale, e.image.getRegionHeight()*e.scale);
         return e.boundingBox.overlaps(boundingBox);
 
-//
-//        return ((e.position.x - e.image.getRegionWidth()*e.scale/2f <= Constants.WINDOW_WIDTH && e.position.x - e.image.getRegionWidth()*e.scale/2f >= 0) &&
-//                (e.position.y + e.image.getRegionHeight()*e.scale/2f <= Constants.WINDOW_HEIGHT && e.position.y + e.image.getRegionHeight()*e.scale/2f >= 0));
+    }
+
+
+    public float getImageCenterX(){
+        return image.getRegionWidth()*scale/2f;
+    }
+
+    public float getImageCenterY(){
+        return image.getRegionHeight()*scale/2f;
     }
 
     public float getRange() {

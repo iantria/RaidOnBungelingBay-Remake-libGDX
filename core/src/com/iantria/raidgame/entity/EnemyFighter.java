@@ -49,7 +49,7 @@ public class EnemyFighter extends Entity {
         updateVectorsForMovingObjects();
         setStartingPosition(new Vector2(position));
         explosionTimer = 0;
-
+        soundID = -1;
 
     }
 
@@ -69,6 +69,7 @@ public class EnemyFighter extends Entity {
         position.y = Constants.gameMap.position.y + getStartingPosition().y;
         updateVectorsForMovingObjects();
         explosionTimer = 0;
+        soundID = -1;
     }
 
 
@@ -79,11 +80,19 @@ public class EnemyFighter extends Entity {
 
         updateVectorsForMovingObjects();
 
-        if (wasHit || isDestroyed) explosionTimer += delta;
+        if (wasHit || isDestroyed) {
+            explosionTimer += delta;
+
+        }
 
         if (isDestroyed) {
             speed = 0.0f;
             respawnElapsedTime += delta;
+            if (soundID != -1) {
+                Constants.enemyCruise.setLooping(soundID, false);
+                Constants.enemyCruise.stop(soundID);
+                soundID = -1;
+            }
             if (respawnElapsedTime > Constants.ENEMY_FIGHTER_RESPAWN_TIMER){
                 reset();
             }
@@ -98,19 +107,23 @@ public class EnemyFighter extends Entity {
                     refireElapsedTime = 0;
                 }
 
-                 if ((position.x <= Constants.WINDOW_WIDTH && position.x >= 0) &&
+                if ((position.x <= Constants.WINDOW_WIDTH && position.x >= 0) &&
                         (position.y <= Constants.WINDOW_HEIGHT && position.y >= 0)) {
-                        if (!Constants.enemyCruise.isPlaying()) {
-                            Constants.enemyCruise.play();
-                        }
+                     if (soundID == -1) {
+                         soundID = Constants.enemyCruise.play(0.5f);
+                         Constants.enemyCruise.setLooping(soundID, true);
+                     }
 
-//                    //Fire if you have a good angle, and ready to fire
+                    //Fire if you have a good angle, and ready to fire
                     if ((diff > -2.5 && diff < 2.5) && isReadyToFire &&
                             (refireElapsedTime > Constants.ENEMY_FIGHTER_FIRING_INTERVAL) ) {
-                        if (Constants.helicopter.mode != Helicopter.FlyingMode.CRASHED) fireGun();
+                        if (Constants.helicopter.mode != Helicopter.FlyingMode.CRASHED)
+                            fireGun();
                     }
                 } else {
-                    //main.enemyCruise.stop();
+                    Constants.enemyCruise.setLooping(soundID, false);
+                    Constants.enemyCruise.stop(soundID);
+                    soundID = -1;
                 }
 
                 if (isReadyToFire) {  // turn towards heli
@@ -122,9 +135,9 @@ public class EnemyFighter extends Entity {
                         //System.out.println("Detected looping...");
                     }
 
-                    if (diff < -2.5) {
+                    if (diff < -5) {
                         rotation = rotation + 180f * delta;
-                    } else if (diff > 2.5) {
+                    } else if (diff > 5) {
                         rotation = rotation - 180f * delta;
                     }
                 } // else cruise

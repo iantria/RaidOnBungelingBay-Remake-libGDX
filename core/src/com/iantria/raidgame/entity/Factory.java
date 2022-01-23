@@ -1,5 +1,6 @@
 package com.iantria.raidgame.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -34,7 +35,7 @@ public class Factory extends Entity {
         setVector4(new Vector2(position));
         this.explodeAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[7].getFrameDuration(),Constants.explosionAnimations[7].getKeyFrames());
         this.wasHitByBombAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[2].getFrameDuration(),Constants.explosionAnimations[2].getKeyFrames());
-        this.wasHitByCannonAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[3].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
+        //this.wasHitByCannonAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[3].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
         health = Constants.ENEMY_FACTORY_HEALTH;
         isDestroyed = false;
         explosionIndex = 4;
@@ -72,11 +73,14 @@ public class Factory extends Entity {
         if (!isDestroyed && (vector1.x <= Constants.WINDOW_WIDTH && vector1.x >= 0) &&
                 (vector1.y <= Constants.WINDOW_HEIGHT && vector1.y >= 0)) {
             //main.smokeStack.update(delta);
-            //if (wasHitByMissile) main.missleImpact.update(delta);
+            //if (wasHitByBomb) Constants.bombEffect.start();
         }
 
         if (isDestroyed) destroyedExplosionElapsedTime += delta;
-        if (wasHitByBomb) bombExplosionElapsedTime += delta;
+        if (wasHitByBomb) {
+            bombExplosionElapsedTime += delta;
+        }
+
     }
 
 
@@ -115,7 +119,6 @@ public class Factory extends Entity {
             batch.draw(image, getVector4().x, getVector4().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 
             if (wasHitByBomb){
-//                renderMissleImpact();
                 if (!wasHitByBombAnimation.isAnimationFinished(bombExplosionElapsedTime)){
                     batch.draw(wasHitByBombAnimation.getKeyFrame(bombExplosionElapsedTime),
                             vector1.x + image.getRegionWidth()/2*scale  - wasHitByBombAnimation.getKeyFrame(bombExplosionElapsedTime).getRegionWidth()/2,
@@ -156,8 +159,6 @@ public class Factory extends Entity {
                     vector4.y - 6, (float)health / Constants.ENEMY_FACTORY_HEALTH * image.getRegionWidth()*scale, 3, Color.GREEN);
             healthRenderer.rectangle(vector4.x -1,
                     vector4.y - 7, image.getRegionWidth()*scale + 2, 5, Color.WHITE);
-
-
 
 //            if (wasHitByCannon){
 ////                if (getWasHitByCannonAnimation().getFrame() < 15){

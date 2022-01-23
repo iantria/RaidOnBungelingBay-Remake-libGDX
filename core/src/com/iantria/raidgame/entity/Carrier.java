@@ -2,6 +2,7 @@ package com.iantria.raidgame.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -20,6 +21,7 @@ public class Carrier extends Entity {
     public float explosionElapsedTime;
     public float healthElapsedTime;
     public int explosionIndex;
+    public boolean isUnderAttack;
 
     public Carrier(String id, float scale, boolean isMovingObj, Vector2 position, float rotation, TextureRegion image) {
         super(id, scale, isMovingObj, position, rotation, image);
@@ -34,9 +36,9 @@ public class Carrier extends Entity {
         this.type = EntityType.CARRIER;
         this.rotation = rotation;
 
-        this.explosion1 = new Animation<TextureRegion>(Constants.explosionAnimations[0].getFrameDuration(),Constants.explosionAnimations[0].getKeyFrames());
-        this.explosion2 = new Animation<TextureRegion>(Constants.explosionAnimations[3].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
-        this.explosion3 = new Animation<TextureRegion>(Constants.explosionAnimations[6].getFrameDuration(),Constants.explosionAnimations[6].getKeyFrames());
+        this.explosion1 = new Animation<TextureRegion>(Constants.explosionAnimations[1].getFrameDuration(),Constants.explosionAnimations[1].getKeyFrames());
+        this.explosion2 = new Animation<TextureRegion>(Constants.explosionAnimations[4].getFrameDuration(),Constants.explosionAnimations[4].getKeyFrames());
+        //this.explosion3 = new Animation<TextureRegion>(Constants.explosionAnimations[7].getFrameDuration(),Constants.explosionAnimations[7].getKeyFrames());
         this.wasHitByMissileAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[1].getFrameDuration(),Constants.explosionAnimations[1].getKeyFrames());
 
         setVector1(new Vector2(position));
@@ -46,11 +48,14 @@ public class Carrier extends Entity {
         updateVectorsForMovingObjects();
         explosionIndex = 4;
         random = Constants.random.nextInt(24) - 12;
+        isUnderAttack = false;
+        soundID = -1;
     }
 
     public void update(float delta) {
 
-        if (health < 1 && !isSinking) isSinking = true;
+        if (health < 1 && !isSinking)
+            isSinking = true;
         if (isDestroyed && Constants.helicopter.livesCount > 1) {
             Statistics.numberOfLivesLost= Statistics.numberOfLivesLost + (Constants.helicopter.livesCount - 1) ;
             Constants.helicopter.livesCount = 1;
@@ -97,7 +102,25 @@ public class Carrier extends Entity {
             if (health > Constants.MAX_HIT_POINTS_CARRIER) health = Constants.MAX_HIT_POINTS_CARRIER;
         }
 
-        //this.boundingBox = new Rectangle(position.x +5 , position.y -10, image.getRegionWidth()/6f - 10, image.getRegionHeight()/6f - 20);
+
+        // Check if being bombed by bombers and play sound, scrolling text
+        isUnderAttack = false;
+        elapsedTime += delta;
+        for (EnemyBomber a: Constants.enemyBombers){
+            if (!a.isDestroyed && a.isAttacking && !a.isLanded && !isDestroyed && a.intersects(this)){
+                isUnderAttack = true;
+            }
+        }
+        if (soundID == -1 && isUnderAttack) {
+            elapsedTime = 0;
+            soundID = Constants.carrierAlarm.play(0.5f);
+            Constants.combatTextList.add(new ScrollingCombatText("BombersAttacking_" + Constants.carrier.health, 1f, new Vector2(Constants.helicopter.position), ("CARRIER UNDER ATTACK!"), Color.YELLOW, Constants.scrollingCombatFont, true));
+        } else {
+            if (elapsedTime > 2.5f) {
+                soundID = -1;
+                elapsedTime = 0;
+            }
+        }
     }
 
 

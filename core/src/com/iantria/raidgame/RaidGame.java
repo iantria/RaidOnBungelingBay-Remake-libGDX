@@ -10,7 +10,7 @@ public class RaidGame extends Game {
 	@Override
 	public void create() {
 		Constants.game = this;
-		setScreen(new LoadingScreen(this));
+		setScreen(new LoadingScreen());
 	}
 
 	@Override

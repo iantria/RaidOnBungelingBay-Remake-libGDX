@@ -28,18 +28,16 @@ public class Statistics {
 	public static boolean enemyShipWasCompleted;
 	public static int score;
 
-	// New
 	public static int amountOfDamageTaken;
 	public static int amountOfDamageDealt;
 	public static int amountOfCarrierDamageTaken;
-	public static long gameTime;
+	public static float gameTime;
 	public static int amountOfFuelUsed;
 	public static int numberOfTimesAAGunFired;
 	public static int numberOfTimesFighterFired;
 	public static int numberOfTimesCruiseMissileFired;		
 	
 	public static void resetScores() {
-		
 		numberOfTimesHitByAAGun = 0;
 		numberOfTimesHitByFighter = 0;
 		numberOfRanOutFuel = 0;
@@ -70,8 +68,7 @@ public class Statistics {
 		youWon = false;
 		enemyShipWasCompleted = false;
 		score = 0;
-		
-		//New
+
 		amountOfDamageTaken = 0;
 		amountOfDamageDealt = 0;
 		amountOfCarrierDamageTaken = 0;

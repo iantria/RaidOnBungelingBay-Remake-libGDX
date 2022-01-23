@@ -36,6 +36,7 @@ public class CruiseMissile extends Projectile {
     	health = Constants.ENEMY_CRUISE_MISSILE_HEALTH;
 		this.elapsedTime = 0;
 		updateVectorsForMovingObjects();
+		soundID = -1;
 	}
 
 
@@ -82,7 +83,6 @@ public class CruiseMissile extends Projectile {
 		direction =  getRotation() - 180;
 
     	checkCollisions(delta);
-
 	}
 
 	@Override
@@ -92,11 +92,9 @@ public class CruiseMissile extends Projectile {
 			batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 			batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 			batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-
-			//System.out.println(vector1 + "   speed:" + speed   + "   pos:"+position);
-
         } else {
-			if (!Constants.cruiseOutOfFuel.isPlaying()) Constants.cruiseOutOfFuel.play();
+        	if (soundID == -1)
+				soundID = Constants.cruiseOutOfFuel.play();
 			batch.draw(ranOutOfFuel.getKeyFrame(elapsedTime),
 					position.x + image.getRegionWidth() / 2 * scale - ranOutOfFuel.getKeyFrame(elapsedTime).getRegionWidth() / 2,
 					position.y + image.getRegionHeight() / 2 * scale - ranOutOfFuel.getKeyFrame(elapsedTime).getRegionHeight() / 2);

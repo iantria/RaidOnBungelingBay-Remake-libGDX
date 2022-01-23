@@ -5,11 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -20,29 +22,23 @@ import com.iantria.raidgame.entity.LoadingBar;
 import com.iantria.raidgame.RaidGame;
 import com.iantria.raidgame.util.Constants;
 
-/**
- * @author Mats Svensson
- */
 public class LoadingScreen implements Screen {
 
     private Stage stage;
-
     private Image logo;
     private Image loadingFrame;
     private Image loadingBarHidden;
     private Image screenBg;
     private Image loadingBg;
+    private Actor loadingBar;
 
     private float startX, endX;
     private float percent;
-
     public AssetManager assetManager = new AssetManager();
-    private Actor loadingBar;
-    private RaidGame game;
     private TextureAtlas textureAtlas;
 
-    public LoadingScreen(RaidGame game) {
-        this.game = game;
+    public LoadingScreen() {
+
     }
 
     @Override
@@ -91,26 +87,28 @@ public class LoadingScreen implements Screen {
         assetManager.load("graphics/ddgIcon.gif", Texture.class);
 
         //Sounds
-        assetManager.load("sounds/jetcrashfuel.ogg", Music.class);
-        assetManager.load("sounds/landhit.ogg", Music.class);
-        assetManager.load("sounds/AAGun.ogg", Music.class);
-        assetManager.load("sounds/explosion_medium.ogg", Music.class);
-        assetManager.load("sounds/explosion_big.ogg", Music.class);
-        assetManager.load("sounds/projectileImpact.ogg", Music.class);
-        assetManager.load("sounds/FighterGun.ogg", Music.class);
-        assetManager.load("sounds/enemyCruise.ogg", Music.class);
-        assetManager.load("sounds/cruiseOutFuel.ogg", Music.class);
+        assetManager.load("sounds/jetcrashfuel.ogg", Sound.class);
+        assetManager.load("sounds/landhit.ogg", Sound.class);
+        assetManager.load("sounds/AAGun.ogg", Sound.class);
+        assetManager.load("sounds/explosion_medium.ogg", Sound.class);
+        assetManager.load("sounds/explosion_big.ogg", Sound.class);
+        assetManager.load("sounds/projectileImpact.ogg", Sound.class);
+        assetManager.load("sounds/FighterGun.ogg", Sound.class);
+        assetManager.load("sounds/enemyCruise.ogg", Sound.class);
+        assetManager.load("sounds/cruiseOutFuel.ogg", Sound.class);
+        assetManager.load("sounds/carrierAlarm.ogg", Sound.class);
+        assetManager.load("sounds/B2Bombing.ogg", Sound.class);
+        assetManager.load("sounds/machinegun1.ogg", Sound.class);
+        assetManager.load("sounds/bombdrop2.mp3", Sound.class);
+        assetManager.load("sounds/MissleLaunch.ogg", Sound.class);
+        assetManager.load("sounds/m61.ogg", Sound.class);
+
+        //Large Sounds (>100KB)
         assetManager.load("sounds/youwin.ogg", Music.class);
-        assetManager.load("sounds/carrierAlarm.ogg", Music.class);
-        assetManager.load("sounds/B2Bombing.ogg", Music.class);
-        assetManager.load("sounds/machinegun1.ogg", Music.class);
-        assetManager.load("sounds/bombdrop2.mp3", Music.class);
-        assetManager.load("sounds/MissleLaunch.ogg", Music.class);
         assetManager.load("sounds/Drums2.ogg", Music.class);
         assetManager.load("sounds/helicopter_take_off.mp3", Music.class);
         assetManager.load("sounds/helicopter_cruise.mp3", Music.class);
         assetManager.load("sounds/powerdown_engine.mp3", Music.class);
-        assetManager.load("sounds/m61.ogg", Music.class);
         assetManager.load("sounds/ocean.ogg", Music.class);
 
         // Fonts
@@ -149,7 +147,6 @@ public class LoadingScreen implements Screen {
         loadingBg.setY(loadingBarHidden.getY() + 3);
     }
 
-
     private void loadExplosionAnimations() {
         Texture x = assetManager.get("graphics/explosions.png", Texture.class);
         Constants.explosionAnimations = new Animation[8];
@@ -168,12 +165,10 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
@@ -219,29 +214,35 @@ public class LoadingScreen implements Screen {
             Constants.exitButton = new TextureRegion(textureAtlas.findRegion("exit_button"));
             Constants.pauseButton = new TextureRegion(textureAtlas.findRegion("pause_button"));
             Constants.mapButton = new TextureRegion(textureAtlas.findRegion("map_button"));
+            Constants.newspaperLost = new TextureRegion(textureAtlas.findRegion("lost_newspaper"));
+            Constants.newspaperCarrier = new TextureRegion(textureAtlas.findRegion("victory_carrier_lost"));
+            Constants.newspaperMarginal = new TextureRegion(textureAtlas.findRegion("victory_not_perfect"));
+            Constants.newspaperPerfect = new TextureRegion(textureAtlas.findRegion("victory_perfect"));
 
             //Sounds
-            Constants.outOfFuelCrashSound = assetManager.get("sounds/jetcrashfuel.ogg", Music.class);
-            Constants.bulletHitLand = assetManager.get("sounds/landhit.ogg", Music.class);
-            Constants.AAGunFireSound = assetManager.get("sounds/AAGun.ogg", Music.class);
-            Constants.mediumExplosion = assetManager.get("sounds/explosion_medium.ogg", Music.class);
-            Constants.bigExplosion = assetManager.get("sounds/explosion_big.ogg", Music.class);
-            Constants.projectileImpact = assetManager.get("sounds/projectileImpact.ogg", Music.class);
-            Constants.fighterFire = assetManager.get("sounds/FighterGun.ogg", Music.class);
-            Constants.enemyCruise = assetManager.get("sounds/enemyCruise.ogg", Music.class);
-            Constants.cruiseOutOfFuel = assetManager.get("sounds/cruiseOutFuel.ogg", Music.class);
+            Constants.outOfFuelCrashSound = assetManager.get("sounds/jetcrashfuel.ogg", Sound.class);
+            Constants.bulletHitLand = assetManager.get("sounds/landhit.ogg", Sound.class);
+            Constants.AAGunFireSound = assetManager.get("sounds/AAGun.ogg", Sound.class);
+            Constants.mediumExplosion = assetManager.get("sounds/explosion_medium.ogg", Sound.class);
+            Constants.bigExplosion = assetManager.get("sounds/explosion_big.ogg", Sound.class);
+            Constants.projectileImpact = assetManager.get("sounds/projectileImpact.ogg", Sound.class);
+            Constants.fighterFire = assetManager.get("sounds/FighterGun.ogg", Sound.class);
+            Constants.enemyCruise = assetManager.get("sounds/enemyCruise.ogg", Sound.class);
+            Constants.cruiseOutOfFuel = assetManager.get("sounds/cruiseOutFuel.ogg", Sound.class);
+            Constants.carrierAlarm = assetManager.get("sounds/carrierAlarm.ogg", Sound.class);
+            Constants.bombsDroppingSound = assetManager.get("sounds/B2Bombing.ogg", Sound.class);
+            Constants.fireCannonEffect = assetManager.get("sounds/machinegun1.ogg", Sound.class);
+            Constants.singleBombDrop = assetManager.get("sounds/bombdrop2.mp3", Sound.class);
+            Constants.fireMissileEffect = assetManager.get("sounds/MissleLaunch.ogg", Sound.class);
+            Constants.m61Sound = assetManager.get("sounds/m61.ogg", Sound.class);
+
+            // Long sounds (>100kB)
             Constants.youWin = assetManager.get("sounds/youwin.ogg", Music.class);
-            Constants.carrierAlarm = assetManager.get("sounds/carrierAlarm.ogg", Music.class);
-            Constants.bombsDroppingSound = assetManager.get("sounds/B2Bombing.ogg", Music.class);
-            Constants.fireCannonEffect = assetManager.get("sounds/machinegun1.ogg", Music.class);
-            Constants.singleBombDrop = assetManager.get("sounds/bombdrop2.mp3", Music.class);
-            Constants.fireMissileEffect = assetManager.get("sounds/MissleLaunch.ogg", Music.class);
+            Constants.oceanSound = assetManager.get("sounds/ocean.ogg", Music.class);
             Constants.drumsSound = assetManager.get("sounds/Drums2.ogg", Music.class);
             Constants.takeOffSound = assetManager.get("sounds/helicopter_take_off.mp3", Music.class);
             Constants.chopperSound = assetManager.get("sounds/helicopter_cruise.mp3", Music.class);
             Constants.stopEngine = assetManager.get("sounds/powerdown_engine.mp3", Music.class);
-            Constants.m61Sound = assetManager.get("sounds/m61.ogg", Music.class);
-            Constants.oceanSound = assetManager.get("sounds/ocean.ogg", Music.class);
 
             // Fonts
             Constants.scrollingCombatFont = assetManager.get("graphics/font1.fnt", BitmapFont.class);
@@ -254,14 +255,13 @@ public class LoadingScreen implements Screen {
                 if (Gdx.input.isTouched()) {
                     // So that audio can work
                     dispose();
-                    game.setScreen(new IntroScreen(game, false));
+                    Constants.game.setScreen(new IntroScreen(false));
                 }
             } else {
                 dispose();
-                game.setScreen(new IntroScreen(game, false)); //true = faster
+                //game.setScreen(new OutcomeScreen());
+                Constants.game.setScreen(new IntroScreen(true)); //true = faster
             }
-
-
         }
 
         // Interpolate the percentage to make it more smooth
@@ -277,8 +277,6 @@ public class LoadingScreen implements Screen {
         stage.act();
         stage.draw();
     }
-
-
 
     @Override
     public void hide() {
