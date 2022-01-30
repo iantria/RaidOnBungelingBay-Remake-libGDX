@@ -1,11 +1,22 @@
 package com.iantria.raidgame.entity;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.iantria.raidgame.util.Constants;
 
 public class GameMap extends Entity {
+
+    private ShaderProgram shader;
+    private Texture shaderTexture;
+    private float shaderTime = 0f;
 
     public GameMap(String id, float scale, boolean isMovingObj, Vector2 position, float rotation, TextureRegion image) {
         super(id, scale, isMovingObj, position, rotation, image);
@@ -21,8 +32,6 @@ public class GameMap extends Entity {
 
         updateMapSegments();
     }
-
-
 
 
     public void updateMapSegments() {
@@ -61,10 +70,41 @@ public class GameMap extends Entity {
 
     }
 
-
     public void draw(SpriteBatch batch){
-//        System.out.println("Vec1:" + vector1.x + " " + vector1.y + "   Vec2:" + vector2.x + " " + vector2.y + "   Vec3:" + vector3.x + " " + vector3.y   + "   Vec4:" + vector4.x + " " + vector4.y  );
-//        System.out.println(position.x + " " + position.y);
+
+        if (shader == null ){
+
+            Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth()/40, Gdx.graphics.getHeight()/40, Pixmap.Format.RGBA8888 );
+            shaderTexture = new Texture(pixmap);
+            pixmap.dispose();
+            shader = new ShaderProgram(batch.getShader().getVertexShaderSource(), Gdx.files.internal("shaders/ocean_water.frag").readString());
+            ShaderProgram.pedantic = false;
+            if (!shader.isCompiled()){
+                System.out.println("Error compiling shader: " + shader.getLog());
+            }
+            //System.out.println("tex:" + shaderTexture.getWidth());
+        }
+
+        if (Constants.mapID == 1 || Constants.mapID == 2) {
+            batch.draw(Constants.oceanTextureRegion, vector1.x, vector1.y, 3200, 2000);
+            batch.draw(Constants.oceanTextureRegion, vector2.x, vector2.y, 3200, 2000);
+            batch.draw(Constants.oceanTextureRegion, vector3.x, vector3.y, 3200, 2000);
+            batch.draw(Constants.oceanTextureRegion, vector4.x, vector4.y, 3200, 2000);
+
+            if (Constants.mapID == 1 ) {
+                shaderTime += Gdx.graphics.getDeltaTime();
+                batch.setShader(shader);
+                shader.bind();
+                shader.setUniformf("u_time", shaderTime);
+
+                batch.draw(shaderTexture, vector1.x, vector1.y, 3200, 2000);
+                batch.draw(shaderTexture, vector2.x, vector2.y, 3200, 2000);
+                batch.draw(shaderTexture, vector3.x, vector3.y, 3200, 2000);
+                batch.draw(shaderTexture, vector4.x, vector4.y, 3200, 2000);
+
+                batch.setShader(null);
+            }
+        }
 
         batch.draw(image, vector1.x, vector1.y, 3200, 2000);
         batch.draw(image, vector2.x, vector2.y, 3200, 2000);
@@ -90,7 +130,7 @@ public class GameMap extends Entity {
 
         updateMapSegments();
 
-        //System.out.println("Map direction:" + getDirection() + "   SIN:" + java.lang.Math.sin(java.lang.Math.toRadians(direction)) + "    COS:" + java.lang.Math.cos(java.lang.Math.toRadians(direction)));
+//        System.out.println("Map direction:" + getDirection() + "   X:" + hip *java.lang.Math.sin(java.lang.Math.toRadians(direction)) + "    Y:" + hip *java.lang.Math.cos(java.lang.Math.toRadians(direction)));
 
     }
 

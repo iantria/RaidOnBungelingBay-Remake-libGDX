@@ -1,9 +1,9 @@
 package com.iantria.raidgame.util;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import java.util.LinkedList;
@@ -96,13 +96,12 @@ public class Constants {
     public static final int SCORE_ENEMY_SHIP_NOT_COMPLETED = 2500;
     public static final int SCORE_PER_PLANE_REMAINING = 500;
 
+    // Enemy starting Co-ordinates
     public static final float[] FACTORY_X = {3440/2, 2992/2, 5844/2, 2469, 1776/2, 1952/2};
     public static final float[] FACTORY_Y = {2000 - 2284/2, 2000 -1164/2, 2000 - 780/2, 2000 - 1710, 2000 -3292/2, 2000 -1516/2};
-
     public static final float[] AA_GUN_X = {2676, 2441, 429, 904, 1706, 1787, 1322, 2675, 2618, 2976, 1802, 1582, 964, 917};
     public static final float[] AA_GUN_Y = {2000 - 1464,  2000 - 1704, 2000 - 1664, 2000 - 1699,  2000 - 1357, 2000 - 1096, 2000 - 1047,
                                             2000 - 258,  2000 - 561, 2000 - 366, 2000 - 465, 2000 - 572, 2000 - 974, 2000 - 768};
-
     public static final float[] BOMBER_X = {1135 ,1180};
     public static final float[] BOMBER_Y = {2000 - 487, 2000 - 487};
     public static final float[] FIGHTER_X = {2640 ,2690};
@@ -111,7 +110,7 @@ public class Constants {
     public static final float[] SECRET_BASE_XY = {2210, 1064};
 
     // TextureRegions
-    public static TextureRegion mapTextureRegion, retroMapTextureRegion, retroGreenMapTextureRegion,
+    public static TextureRegion mapTextureRegion, oceanTextureRegion, retroMapTextureRegion, retroGreenMapTextureRegion,
             carrierTextureRegion, helicopterTextureRegion,
             rotatingBladesTextureRegion, playerBulletTextureRegion, enemyFighterTextureRegion,
             fighterBulletsTextureRegion,enemyBomberTextureRegion, factoryTextureRegion, aaGunTextureRegion,
@@ -136,7 +135,7 @@ public class Constants {
 
     // Entities
     public static Factory[] factories = new Factory[6];
-    public static AAGun[] aaGuns = new AAGun[14]; //14
+    public static AAGun[] aaGuns = new AAGun[14];
     public static EnemyFighter[] enemyFighters = new EnemyFighter[2];
     public static EnemyBomber[] enemyBombers = new EnemyBomber[2];
     public static Random random = new Random();
@@ -144,12 +143,18 @@ public class Constants {
     public static Carrier carrier;
     public static EnemyShip enemyShip;
     public static GameMap gameMap;
-    public static boolean isReadyToFireCruiseMissile;
-    public static float cruiseMissileDelayTimer;
     public static LinkedList<Projectile> projectileList;
     public static LinkedList<Projectile> removeProjectileList;
     public static LinkedList<ScrollingCombatText> combatTextList = new LinkedList<ScrollingCombatText>();
     public static LinkedList<ScrollingCombatText> removeCombatTextList = new LinkedList<ScrollingCombatText>();
+
+    // Timers and Ids
+    public static int mapID;
+    public static Application.ApplicationType currentAppType;
+    public static boolean isReadyToFireCruiseMissile;
+    public static float cruiseMissileDelayTimer;
+
+    // Fonts
     public static BitmapFont scrollingCombatFont;
     public static BitmapFont HUDFont;
     public static BitmapFont HUDLargeFont;

@@ -180,7 +180,8 @@ public class LoadingScreen implements Screen {
             //Textures
             textureAtlas = assetManager.get("graphics/images.atlas", TextureAtlas.class);
             Constants.enemyShipIcon = new TextureRegion(assetManager.get("graphics/ddgIcon.gif", Texture.class));
-            Constants.mapTextureRegion = new TextureRegion(textureAtlas.findRegion("modernmap"));
+            Constants.mapTextureRegion = new TextureRegion(textureAtlas.findRegion("modernmap_trans"));
+            Constants.oceanTextureRegion = new TextureRegion(textureAtlas.findRegion("modernmap_ocean"));
             Constants.retroMapTextureRegion = new TextureRegion(textureAtlas.findRegion("retro_map"));
             Constants.retroGreenMapTextureRegion = new TextureRegion(textureAtlas.findRegion("retro_map_green"));
             Constants.carrierTextureRegion = new TextureRegion(textureAtlas.findRegion("Carrier"));

@@ -77,7 +77,7 @@ public class AAGun extends Entity {
                         (getVector3().y <= Constants.WINDOW_HEIGHT && getVector3().y >= 0) ||
                 (getVector4().x <= Constants.WINDOW_WIDTH && getVector4().x >= 0) &&
                         (getVector4().y <= Constants.WINDOW_HEIGHT && getVector4().y >= 0)) {
-            rotation =((float)Constants.getSignedDegreesToHelicopter(new Vector2(position.x + image.getRegionWidth()*scale/2, position.y + image.getRegionHeight()*scale/2)));
+            rotation =((float)Constants.getSignedDegreesToHelicopter(new Vector2(position.x + image.getRegionWidth()*scale/2f, position.y + image.getRegionHeight()*scale/2f)));
 
             direction =  getRotation() - 180;
             // Refire

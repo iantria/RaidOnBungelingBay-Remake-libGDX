@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -17,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.iantria.raidgame.RaidGame;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.entity.ScrollingCombatText;
 import com.iantria.raidgame.util.TouchDirectionPieMenu;
@@ -57,13 +57,13 @@ public class GameScreen implements Screen {
 
     //graphics
     private SpriteBatch batch;
-    private  ListIterator<Projectile> projectiles;
+    private ListIterator<Projectile> projectiles;
 
     // Timers
     public float winDelayTime = 0;
     public float WIN_DELAY_DURATION = 10;
     public float delayTime;
-    public int mapIndex = 1;
+
 
     public GameScreen() {
 
@@ -76,6 +76,7 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
 
         //Map
+        Constants.mapID = 1;
         Constants.gameMap = new GameMap("Game Map", 1f, true, new Vector2(Constants.WINDOW_WIDTH/2 - 200,0), 0f, Constants.mapTextureRegion);
 
         //Helicopter
@@ -146,6 +147,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float deltaTime) {
+
+        Gdx.gl.glClearColor(0.53f, 0.81f, 0.92f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         delayTime += deltaTime;
 
@@ -244,10 +248,16 @@ public class GameScreen implements Screen {
 
         // Map Change
         if(Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
+            Constants.mapID = 1;
             Constants.gameMap.setImage(Constants.mapTextureRegion);
         } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+            Constants.mapID = 2;
+            //Constants.gameMap.setImage(Constants.retroMapTextureRegion); // same map
+        } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+            Constants.mapID = 3;
             Constants.gameMap.setImage(Constants.retroMapTextureRegion);
-        } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
+        } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_4)){
+            Constants.mapID = 4;
             Constants.gameMap.setImage(Constants.retroGreenMapTextureRegion);
         }
 
@@ -344,7 +354,7 @@ public class GameScreen implements Screen {
     }
 
     private void updateSounds() {
-        if (Constants.helicopter.mode == Helicopter.FlyingMode.LANDED || Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED) {
+        if (Constants.helicopter.mode == Helicopter.FlyingMode.LANDED) {
             if (!Constants.oceanSound.isPlaying()){
                 Constants.oceanSound.setLooping(true);
                 Constants.oceanSound.setVolume(0.3f);
@@ -496,15 +506,18 @@ public class GameScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 mapButton.setColor(1,1,1,0.33f);
-                if (mapIndex == 3){
+                if (Constants.mapID == 4){
                     Constants.gameMap.setImage(Constants.mapTextureRegion);
-                    mapIndex = 1;
-                } else if (mapIndex == 1){
+                    Constants.mapID = 1;
+                } else if (Constants.mapID == 1){
+                    //Constants.gameMap.setImage(Constants.retroMapTextureRegion); /// same map
+                    Constants.mapID = 2;
+                } else if (Constants.mapID == 2){
                     Constants.gameMap.setImage(Constants.retroMapTextureRegion);
-                    mapIndex = 2;
+                    Constants.mapID = 3;
                 } else {
                     Constants.gameMap.setImage(Constants.retroGreenMapTextureRegion);
-                    mapIndex = 3;
+                    Constants.mapID = 4;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
@@ -564,6 +577,7 @@ public class GameScreen implements Screen {
         exitButtonStage.act();
         exitButtonStage.draw();
     }
+
 
     @Override
     public void resize(int width, int height) {

@@ -13,10 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.NumberUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Statistics;
+
+
+
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class OutcomeScreen implements Screen {
@@ -39,6 +43,7 @@ public class OutcomeScreen implements Screen {
     @Override
     public void show() {
         Constants.oceanSound.setLooping(false);
+        Constants.oceanSound.setVolume(0f);
         Constants.oceanSound.stop();
         Constants.chopperSound.stop();
 
@@ -151,8 +156,9 @@ public class OutcomeScreen implements Screen {
             f = ((float)Statistics.numberOfBombsLanded/(float)Statistics.numberOfBombsDropped)*100f;
         else
             f = 0;
+
         topTable.add(new Label("Bomb Accuracy:", labelSmallStyle));
-        topTable.add(new Label(String.format("%.2f", f)  + "%", labelSmallStyle));
+        topTable.add(new Label((float) ((int) (f*100f)/100f) + "%", labelSmallStyle));
 
         topTable.row();
         topTable.add(new Label("Bombers Destroyed:", labelSmallStyle));
@@ -171,8 +177,9 @@ public class OutcomeScreen implements Screen {
         topTable.add(new Label("" + Statistics.numberOfTimesFighterFired, labelSmallStyle));
         if (Statistics.numberOfCannonRoundsFired != 0) f = ((float)Statistics.numberOfCannonRoundsLanded/(float)Statistics.numberOfCannonRoundsFired)*100;
         else f = 0;
+
         topTable.add(new Label("My Cannon Accuracy:", labelSmallStyle));
-        topTable.add(new Label(String.format("%.2f", f)  + "%", labelSmallStyle));
+        topTable.add(new Label((float) ((int) (f*100f)/100f) + "%", labelSmallStyle));
 
         topTable.row();
         topTable.add(new Label("Fighters Hit You:", labelSmallStyle));
@@ -203,14 +210,14 @@ public class OutcomeScreen implements Screen {
         topTable.add(new Label("" + Statistics.numberOfTimesCruiseMissileFired, labelSmallStyle));
         topTable.add(new Label("Damage Out/In Ratio:", labelSmallStyle));
         f =  (float)Statistics.amountOfDamageDealt / (float)(Statistics.amountOfDamageTaken + Statistics.amountOfCarrierDamageTaken + 1);
-        topTable.add(new Label(String.format("%.2f", f) , labelSmallStyle));
+        topTable.add(new Label((float) ((int) (f*100f)/100f) + "" , labelSmallStyle));
 
         topTable.row();
         topTable.add(new Label("Cruise Missile Hit You:", labelSmallStyle));
         topTable.add(new Label("" + Statistics.numberOfTimesHitByCruiseMissile, labelSmallStyle));
         f = (float)Statistics.amountOfDamageDealt / (float)(Statistics.gameTime + 1f);
         topTable.add(new Label("Damage/Second:", labelSmallStyle));
-        topTable.add(new Label(String.format("%.2f", f), labelSmallStyle));
+        topTable.add(new Label((float) ((int) (f*100f)/100f) + "", labelSmallStyle));
 
         topTable.row();
         topTable.add(new Label("Cruise Missiles Destroyed:", labelSmallStyle));

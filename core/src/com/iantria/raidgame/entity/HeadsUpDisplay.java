@@ -1,5 +1,6 @@
 package com.iantria.raidgame.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -138,6 +139,10 @@ public class HeadsUpDisplay {
 //                Constants.enemyShipIcon.getU2() * (float) Constants.enemyShip.health / (float) Constants.ENEMY_SHIP_HEALTH,
 //                Constants.enemyShipIcon.getV());
         batch.setColor(Color.WHITE);
+
+        // FPS
+        setTextAndLayout("FPS:" + Gdx.graphics.getFramesPerSecond(), Constants.HUDFont, 0.10f);
+        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH/2f - layout.width/2, Constants.WINDOW_HEIGHT - layout.height -1);
 
         //Score
         setTextAndLayout("Score:", Constants.HUDFont, 0.10f);
