@@ -83,7 +83,7 @@ public class Constants {
     public static final float MAX_HELICOPTER_SPEED = MAP_HEIGHT/10f;
     public static final float MIN_HELICOPTER_SPEED = -MAP_HEIGHT/28f;
     public static final float ENEMY_FIGHTER_SPEED = MAP_HEIGHT/9f;
-    public static final float ENEMY_BOMBER_SPEED = MAP_HEIGHT/10f;
+    public static final float ENEMY_BOMBER_SPEED = MAP_HEIGHT/12f;
 
     //Score
     public static final int SCORE_ENEMY_SHIP = 1000;
@@ -110,7 +110,7 @@ public class Constants {
     public static final float[] SECRET_BASE_XY = {2210, 1064};
 
     // TextureRegions
-    public static TextureRegion mapTextureRegion, oceanTextureRegion, retroMapTextureRegion, retroGreenMapTextureRegion,
+    public static TextureRegion mapTextureRegion, retroMapTextureRegion, retroGreenMapTextureRegion,
             carrierTextureRegion, helicopterTextureRegion,
             rotatingBladesTextureRegion, playerBulletTextureRegion, enemyFighterTextureRegion,
             fighterBulletsTextureRegion,enemyBomberTextureRegion, factoryTextureRegion, aaGunTextureRegion,
@@ -122,7 +122,8 @@ public class Constants {
             newspaperLost, newspaperPerfect, newspaperCarrier, newspaperMarginal;
 
     //Music
-    public static Music youWin, drumsSound, takeOffSound, chopperSound,stopEngine, oceanSound;
+    public static Music youWinSound, drumsSound, drumsOutcomeSound, takeOffSound, chopperSound, stopEngineSound,
+            oceanSound, fireworksSound;
 
     //Sounds
     public static Sound outOfFuelCrashSound, bulletHitLand, AAGunFireSound, mediumExplosion,
@@ -150,7 +151,6 @@ public class Constants {
 
     // Timers and Ids
     public static int mapID;
-    public static Application.ApplicationType currentAppType;
     public static boolean isReadyToFireCruiseMissile;
     public static float cruiseMissileDelayTimer;
 
@@ -169,13 +169,13 @@ public class Constants {
 
     public static float getSignedDegreesToHelicopter(Vector2 screenPoint) {
         float dy = screenPoint.y - (helicopter.position.y + helicopter.image.getRegionHeight()/2*helicopter.scale);
-        float dx = (helicopter.getPosition().x + helicopter.image.getRegionWidth()/2*helicopter.scale) - screenPoint.x;
+        float dx = (helicopter.position.x + helicopter.image.getRegionWidth()/2*helicopter.scale) - screenPoint.x;
         return (float) Math.toDegrees(Math.atan2(dx, dy));
     }
 
     public static float getSignedDegreesToCarrier(Vector2 screenPoint) {
-        double dy = screenPoint.y - (carrier.getPosition().y + carrier.image.getRegionHeight()/2*carrier.scale); //todo
-        double dx = carrier.getPosition().x + carrier.image.getRegionWidth()/2*carrier.scale - screenPoint.x;
+        double dy = screenPoint.y - (carrier.position.y + carrier.image.getRegionHeight()/2*carrier.scale); //todo
+        double dx = carrier.position.x + carrier.image.getRegionWidth()/2*carrier.scale - screenPoint.x;
         return (float) Math.toDegrees(Math.atan2(dx, dy));
     }
 
@@ -198,5 +198,32 @@ public class Constants {
         while (difference > 180)
             difference -= 360;
         return difference;
+    }
+
+    public static void stopAllSounds() {
+        youWinSound.stop();
+        drumsSound.stop();
+        drumsOutcomeSound.stop();
+        takeOffSound.stop();
+        chopperSound.stop();
+        stopEngineSound.stop();
+        oceanSound.stop();
+        fireworksSound.stop();
+
+        outOfFuelCrashSound.stop();
+        bulletHitLand.stop();
+        AAGunFireSound.stop();
+        mediumExplosion.stop();
+        bigExplosion.stop();
+        carrierAlarm.stop();
+        projectileImpact.stop();
+        fighterFire.stop();
+        enemyCruise.stop();
+        bombsDroppingSound.stop();
+        cruiseOutOfFuel.stop();
+        fireCannonEffect.stop();
+        singleBombDrop.stop();
+        fireMissileEffect.stop();
+        m61Sound.stop();
     }
 }

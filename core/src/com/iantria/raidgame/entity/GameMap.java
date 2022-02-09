@@ -1,22 +1,11 @@
 package com.iantria.raidgame.entity;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.iantria.raidgame.util.Constants;
 
 public class GameMap extends Entity {
-
-    private ShaderProgram shader;
-    private Texture shaderTexture;
-    private float shaderTime = 0f;
 
     public GameMap(String id, float scale, boolean isMovingObj, Vector2 position, float rotation, TextureRegion image) {
         super(id, scale, isMovingObj, position, rotation, image);
@@ -25,38 +14,82 @@ public class GameMap extends Entity {
         this.direction = 0f;
         this.rotation = rotation;
 
-        setVector1(position);
-        setVector2(new Vector2(position.x, position.y - 2000));
-        setVector3(new Vector2(position.x - 3200, position.y - 2000));
-        setVector4(new Vector2(position.x - 3200, position.y));
-
+        vector1 = position;
+        vector2 = new Vector2(position.x, position.y - 2000);
+        vector3 = new Vector2(position.x - 3200, position.y - 2000);
+        vector4 = new Vector2(position.x - 3200, position.y);
         updateMapSegments();
     }
 
-
     public void updateMapSegments() {
-        if (position.x > Constants.WINDOW_WIDTH/2f) position.x = -(Constants.MAP_WIDTH - Constants.WINDOW_WIDTH/2f) + (position.x-Constants.WINDOW_WIDTH/2f) ; // 400 3200 400
+
+        if (position.x > Constants.WINDOW_WIDTH/2f) position.x = -(Constants.MAP_WIDTH - Constants.WINDOW_WIDTH/2f) + (position.x-Constants.WINDOW_WIDTH/2f) ;
         if (position.x < -Constants.MAP_WIDTH) position.x = Constants.MAP_WIDTH + position.x ;
 
         if (position.y > Constants.WINDOW_HEIGHT/2f) position.y = -(Constants.MAP_HEIGHT - Constants.WINDOW_HEIGHT/2f) + (position.y - Constants.WINDOW_HEIGHT/2f);
         if (position.y < -Constants.MAP_HEIGHT) position.y = Constants.MAP_HEIGHT + position.y;
 
-        if (position.x < (Constants.WINDOW_WIDTH) && position.x > 0) {
+        // Left Right Map temp1 and temp2
+        if (position.x <= (Constants.MAP_WIDTH/2f) && position.x >= 0) { // if mapx is between 0..map_width/2
+            //System.out.println("Move 2nd map left side");
             temp2_x = -(Constants.MAP_WIDTH - position.x);
-        } else if (position.x < -(Constants.MAP_WIDTH - Constants.WINDOW_WIDTH) && position.x > -Constants.MAP_WIDTH){
+        } else if (position.x < -(Constants.MAP_WIDTH/2f) && position.x > -Constants.MAP_WIDTH){  // if mapx is between -map_width/2..-map_width
+            //System.out.println("Move 2nd map right side - 2nd if");
             temp2_x = Constants.MAP_WIDTH + position.x;
+        } else if (position.x > (Constants.MAP_WIDTH/2f) && position.x < Constants.MAP_WIDTH){ // if mapx is between map_width/2..map_width
+            //System.out.println("Move 2nd map right side - 3rd if");
+            temp2_x = Constants.MAP_WIDTH + position.x;
+        } else if (position.x < 0 && position.x > -Constants.MAP_WIDTH/2){ // if mapx is between 0..-map_width/2
+            //System.out.println("Move 2nd map left side - 4th if");
+            temp2_x =  -(Constants.MAP_WIDTH - position.x);;
         } else {
-            temp2_x = Constants.MAP_WIDTH + position.x;
+            //System.out.println("2nd map dont know");
+            temp2_x = -Constants.MAP_WIDTH + position.x;
         }
         temp2_y = position.y;
 
-        if (position.y < (Constants.WINDOW_HEIGHT) && position.y > 0) {
+        //Original
+        //        if (position.x > Constants.WINDOW_WIDTH/2f) position.x = -(Constants.MAP_WIDTH - Constants.WINDOW_WIDTH/2f) + (position.x-Constants.WINDOW_WIDTH/2f) ;
+//        if (position.x < -Constants.MAP_WIDTH) position.x = Constants.MAP_WIDTH + position.x ;
+//
+//        if (position.y > Constants.WINDOW_HEIGHT/2f) position.y = -(Constants.MAP_HEIGHT - Constants.WINDOW_HEIGHT/2f) + (position.y - Constants.WINDOW_HEIGHT/2f);
+//        if (position.y < -Constants.MAP_HEIGHT) position.y = Constants.MAP_HEIGHT + position.y;
+//
+//        if (position.x < (Constants.WINDOW_WIDTH) && position.x > 0) {
+//            temp2_x = -(Constants.MAP_WIDTH - position.x);
+//        } else if (position.x < -(Constants.MAP_WIDTH - Constants.WINDOW_WIDTH) && position.x > -Constants.MAP_WIDTH){
+//            temp2_x = Constants.MAP_WIDTH + position.x;
+//        } else {
+//            temp2_x = Constants.MAP_WIDTH + position.x;
+//        }
+//        temp2_y = position.y;
+
+        //System.out.println("posy:" +position.y);
+        if (position.y < (Constants.MAP_HEIGHT/2f) && position.y >= 0) { // if mapy between 0..map_height/2
             temp3_y = -(Constants.MAP_HEIGHT - position.y);
-        } else if (position.y < -(Constants.MAP_HEIGHT - Constants.WINDOW_HEIGHT) && position.y > -Constants.MAP_HEIGHT){
+            //System.out.println("1ST if");
+        } else if (position.y > (Constants.MAP_HEIGHT/2f) && position.y < Constants.MAP_HEIGHT) { // if mapy between map_height/2..map_height
             temp3_y = Constants.MAP_HEIGHT + position.y;
+            //System.out.println("2ST if");
+        } else if (position.y < -(Constants.MAP_HEIGHT/2f) && position.y > -Constants.MAP_HEIGHT) { // if mapy between -map_height/2..-map_height
+            temp3_y = Constants.MAP_HEIGHT + position.y;
+            //System.out.println("3ST if");
+        } else if (position.y < 0 && position.y > -Constants.MAP_HEIGHT/2f) { // if mapy between 0..-map_height/2
+            temp3_y = -(Constants.MAP_HEIGHT - position.y);
+            //System.out.println("4ST if");
         } else {
             temp3_y = Constants.MAP_HEIGHT + position.y;
+            //System.out.println("do not know");
         }
+
+//        if (position.y < (Constants.WINDOW_HEIGHT) && position.y > 0) {
+//            temp3_y = -(Constants.MAP_HEIGHT - position.y);
+//        } else if (position.y < -(Constants.MAP_HEIGHT - Constants.WINDOW_HEIGHT) && position.y > -Constants.MAP_HEIGHT){
+//            temp3_y = Constants.MAP_HEIGHT + position.y;
+//        } else {
+//            temp3_y = Constants.MAP_HEIGHT + position.y;
+//        }
+
         temp3_x = position.x;
 
         vector1.x = position.x;
@@ -67,50 +100,13 @@ public class GameMap extends Entity {
         vector3.y = temp3_y;
         vector4.x = temp2_x;
         vector4.y = temp3_y;
-
     }
 
     public void draw(SpriteBatch batch){
-
-        if (shader == null ){
-
-            Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth()/40, Gdx.graphics.getHeight()/40, Pixmap.Format.RGBA8888 );
-            shaderTexture = new Texture(pixmap);
-            pixmap.dispose();
-            shader = new ShaderProgram(batch.getShader().getVertexShaderSource(), Gdx.files.internal("shaders/ocean_water.frag").readString());
-            ShaderProgram.pedantic = false;
-            if (!shader.isCompiled()){
-                System.out.println("Error compiling shader: " + shader.getLog());
-            }
-            //System.out.println("tex:" + shaderTexture.getWidth());
-        }
-
-        if (Constants.mapID == 1 || Constants.mapID == 2) {
-            batch.draw(Constants.oceanTextureRegion, vector1.x, vector1.y, 3200, 2000);
-            batch.draw(Constants.oceanTextureRegion, vector2.x, vector2.y, 3200, 2000);
-            batch.draw(Constants.oceanTextureRegion, vector3.x, vector3.y, 3200, 2000);
-            batch.draw(Constants.oceanTextureRegion, vector4.x, vector4.y, 3200, 2000);
-
-            if (Constants.mapID == 1 ) {
-                shaderTime += Gdx.graphics.getDeltaTime();
-                batch.setShader(shader);
-                shader.bind();
-                shader.setUniformf("u_time", shaderTime);
-
-                batch.draw(shaderTexture, vector1.x, vector1.y, 3200, 2000);
-                batch.draw(shaderTexture, vector2.x, vector2.y, 3200, 2000);
-                batch.draw(shaderTexture, vector3.x, vector3.y, 3200, 2000);
-                batch.draw(shaderTexture, vector4.x, vector4.y, 3200, 2000);
-
-                batch.setShader(null);
-            }
-        }
-
         batch.draw(image, vector1.x, vector1.y, 3200, 2000);
         batch.draw(image, vector2.x, vector2.y, 3200, 2000);
         batch.draw(image, vector3.x, vector3.y, 3200, 2000);
         batch.draw(image, vector4.x, vector4.y, 3200, 2000);
-
     }
 
     public void update(float delta, float helicopterDirection) {
@@ -129,10 +125,5 @@ public class GameMap extends Entity {
         Constants.map_dy -= position.y;
 
         updateMapSegments();
-
-//        System.out.println("Map direction:" + getDirection() + "   X:" + hip *java.lang.Math.sin(java.lang.Math.toRadians(direction)) + "    Y:" + hip *java.lang.Math.cos(java.lang.Math.toRadians(direction)));
-
     }
-
-
 }

@@ -1,11 +1,18 @@
 package com.iantria.raidgame.screen;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -14,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.iantria.raidgame.util.Constants;
@@ -38,14 +46,19 @@ public class OutcomeScreen implements Screen {
     private enum Outcome{
         PERFECT, WIN_CARRIER_LOST, YOU_LOSE, MARGINAL
     }
-
+    private ShaderProgram shader;
+    private Texture shaderTexture;
+    private SpriteBatch batch;
+    private FrameBuffer fbo;
+    private int fboScale;
+    private GlyphLayout layout;
+    private float shaderTime;
+    private float aspectRatio;
 
     @Override
     public void show() {
-        Constants.oceanSound.setLooping(false);
-        Constants.oceanSound.setVolume(0f);
-        Constants.oceanSound.stop();
-        Constants.chopperSound.stop();
+        Constants.stopAllSounds();
+        Constants.drumsOutcomeSound.play();
 
         if (Statistics.numberOfLivesLost == Constants.NUMBER_OF_LIVES){
             // You lose
@@ -53,12 +66,12 @@ public class OutcomeScreen implements Screen {
             outcome = Outcome.YOU_LOSE;
             outcomeTitle = "YOU HAVE BEEN DEFEATED!";
         } else if (!Statistics.carrierSurvived) {
-            //Win but carrier lost
+            // Win but carrier lost
             newsPaperImage = new Image(Constants.newspaperCarrier);
             outcome = Outcome.WIN_CARRIER_LOST;
             outcomeTitle = "YOU WON, CARRIER LOST!";
         } else if (Statistics.numberOfLivesLost == 0){
-            //Perfection
+            // Perfection
             newsPaperImage = new Image(Constants.newspaperPerfect);
             outcome = Outcome.PERFECT;
             outcomeTitle = "PERFECTION!";
@@ -69,10 +82,16 @@ public class OutcomeScreen implements Screen {
             outcomeTitle = "MARGINAL VICTORY";
         }
 
+        if (outcome != Outcome.YOU_LOSE){
+            Constants.fireworksSound.setLooping(true);
+            Constants.fireworksSound.setVolume(0.5f);
+            Constants.fireworksSound.play();
+        }
+
         //Viewport
-        float aspectRatio = (float) Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+        aspectRatio = (float) Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
         Constants.WINDOW_HEIGHT = (int) ((int) Constants.WINDOW_WIDTH/aspectRatio);
-        viewport = new StretchViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+        viewport = new FitViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         viewport.apply();
 
         //Newspaper
@@ -101,7 +120,7 @@ public class OutcomeScreen implements Screen {
         BitmapFont myFont2 = new BitmapFont(Constants.HUDFont.getData().fontFile);
         labelSmallStyle.font = myFont2;
         labelSmallStyle.font.setUseIntegerPositions(false);
-        labelSmallStyle.font.getData().setScale(0.15f);
+        labelSmallStyle.font.getData().setScale(0.125f);
         labelSmallStyle.fontColor = Color.WHITE;
 
         Label titleLabel = new Label(outcomeTitle, labelLargeStyle);
@@ -248,8 +267,10 @@ public class OutcomeScreen implements Screen {
         exitButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Constants.game.setScreen(new IntroScreen(true));
+                Constants.fireworksSound.stop();
+                Constants.fireworksSound.setLooping(false);
                 exitButton.removeListener(exitButton.getListeners().first());
+                Constants.game.setScreen(new IntroScreen(true));
                 return super.touchDown(event, x, y, pointer, button);
             }
             @Override
@@ -261,12 +282,61 @@ public class OutcomeScreen implements Screen {
         exitButton.setTouchable(Touchable.enabled);
         exitButtonStage.addActor(exitButton);
         Gdx.input.setInputProcessor(exitButtonStage);
+
+        // FBO, and Shader
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS){
+            fboScale = 8;
+        } else if (Gdx.app.getType() == Application.ApplicationType.Applet || Gdx.app.getType() == Application.ApplicationType.WebGL){
+            fboScale = 6 ;
+        } else {
+            fboScale = 4 ;
+        }
+
+        shaderTime = 0;
+        batch = new SpriteBatch();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        fbo = new FrameBuffer(Pixmap.Format.RGB888, Gdx.graphics.getWidth() / fboScale, Gdx.graphics.getHeight() / fboScale, false);
+        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() / fboScale, Gdx.graphics.getHeight() / fboScale, Pixmap.Format.RGBA8888);
+        shaderTexture = new Texture(pixmap);
+        pixmap.dispose();
+        ShaderProgram.pedantic = false;
+        shader = new ShaderProgram(batch.getShader().getVertexShaderSource(), Gdx.files.internal("shaders/fireworks.frag").readString());
+
+        if (!shader.isCompiled()) {
+            System.out.println("Error compiling shader: " + shader.getLog());
+        }
+        Constants.HUDFont.getData().setScale(0.15f);
+        Constants.HUDFont.setUseIntegerPositions(false);
+        layout = new GlyphLayout(Constants.HUDFont, "FPS: 120");
+        //System.out.println("tex:" + shaderTexture.getWidth() + "x" + shaderTexture.getHeight() + "       screen:" + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + "    aspRatio:" + aspectRatio);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.53f, 0.81f, 0.92f, 1);
+        Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (!(outcome == Outcome.YOU_LOSE)) {
+            viewport.apply();
+            batch.setProjectionMatrix(viewport.getCamera().combined);
+            fbo.begin();
+            shaderTime += Gdx.graphics.getDeltaTime();
+            batch.setShader(shader);
+            shader.bind();
+            shader.setUniformf("u_time", shaderTime);
+            shader.setUniformf("u_aspect_ratio", aspectRatio);
+            batch.begin();
+            batch.draw(shaderTexture,0,0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+            batch.end();
+            fbo.end();
+            batch.setShader(null);
+            batch.begin();
+            batch.draw(fbo.getColorBufferTexture(),0,0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+            Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
+                    Constants.WINDOW_WIDTH - exitButton.getWidth()*exitButton.getScaleX() - layout.width - 2,
+                    Constants.WINDOW_HEIGHT - layout.height);
+            batch.end();
+        }
 
         newspaperStage.act();
         newspaperStage.draw();
@@ -274,11 +344,12 @@ public class OutcomeScreen implements Screen {
         topTableStage.act();
         topTableStage.draw();
 
-        exitButtonStage.getViewport().apply();
         exitButtonStage.act();
         exitButtonStage.draw();
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            Constants.fireworksSound.stop();
+            Constants.fireworksSound.setLooping(false);
             exitButton.removeListener(exitButton.getListeners().first());
             Constants.game.setScreen(new IntroScreen(true));
         }
@@ -289,6 +360,7 @@ public class OutcomeScreen implements Screen {
         exitButtonStage.getViewport().update(width, height, true);
         topTableStage.getViewport().update(width, height, true);
         newspaperStage.getViewport().update(width, height, true);
+        viewport.apply();
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.iantria.raidgame.util.Statistics;
 
 public class EnemyFighter extends Entity {
 
-
     public boolean isLanded = true;
     public TextureRegion projectileImage;
 
@@ -30,14 +29,12 @@ public class EnemyFighter extends Entity {
         init();
     }
 
-
     public void init() {
         this.planeExploded = new Animation<TextureRegion>(Constants.explosionAnimations[5].getFrameDuration(),Constants.explosionAnimations[5].getKeyFrames());
-        //setType(EnemyPlane.ENEMY_FIGHTER);
-        setVector1(new Vector2(position));
-        setVector2(new Vector2(position));
-        setVector3(new Vector2(position));
-        setVector4(new Vector2(position));
+        vector1 = new Vector2(position);
+        vector2 = new Vector2(position);
+        vector3 = new Vector2(position);
+        vector4 = new Vector2(position);
         relativePositionToMap = new Vector2(position);
         speed = 0;
         random = Constants.random.nextFloat()*30;
@@ -47,7 +44,7 @@ public class EnemyFighter extends Entity {
         isDestroyed = false;
         isLanded = true;
         updateVectorsForMovingObjects();
-        setStartingPosition(new Vector2(position));
+        startingPosition = new Vector2(position);
         explosionTimer = 0;
         soundID = -1;
 
@@ -58,15 +55,15 @@ public class EnemyFighter extends Entity {
         isLanded = true;
         wasHit = false;
         isDestroyed = false;
-        setRespawnElapsedTime(0);
-        setElapsedTime(0);
+        respawnElapsedTime = 0;
+        elapsedTime = 0;
         //getPlaneExploded().restart();
-        setHealth(Constants.ENEMY_FIGHTER_HEALTH);
-        setSpeed(0);
+        health = Constants.ENEMY_FIGHTER_HEALTH;
+        speed = 0;
         rotation = 270f;
         direction = 90f;
-        position.x = Constants.gameMap.position.x + getStartingPosition().x - Constants.WINDOW_WIDTH/2 + 200;
-        position.y = Constants.gameMap.position.y + getStartingPosition().y;
+        position.x = Constants.gameMap.position.x + startingPosition.x - Constants.WINDOW_WIDTH/2 + 200;
+        position.y = Constants.gameMap.position.y + startingPosition.y;
         updateVectorsForMovingObjects();
         explosionTimer = 0;
         soundID = -1;
@@ -102,7 +99,7 @@ public class EnemyFighter extends Entity {
                 diff = Constants.calculateDifferenceBetweenAngles(angleToTarget, rotation);
                 refireElapsedTime += delta;
 
-                if (!isDestroyed() && !isReadyToFire() && (refireElapsedTime > Constants.ENEMY_FIGHTER_FIRING_INTERVAL)) {
+                if (!isDestroyed && !isReadyToFire && (refireElapsedTime > Constants.ENEMY_FIGHTER_FIRING_INTERVAL)) {
                     isReadyToFire = true;
                     refireElapsedTime = 0;
                 }
@@ -161,7 +158,7 @@ public class EnemyFighter extends Entity {
         if (rotation >= 360) rotation = rotation - 360;
         if (rotation <= 0) rotation = rotation + 360;
 
-        direction =  getRotation() - 180;
+        direction = rotation - 180;
 
 
     }
@@ -176,19 +173,19 @@ public class EnemyFighter extends Entity {
 
 
 
-            batch.draw(image, getVector1().x, getVector1().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector2().x, getVector2().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector3().x, getVector3().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector4().x, getVector4().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector1.x, vector1.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 
             if (wasHit){
 //                if (getPlaneWasHitAnimation().getFrame() < 15) {
-//                    getPlaneWasHitAnimation().draw(getVector1().x+5, getVector1().y-13);
-//                    getPlaneWasHitAnimation().draw(getVector2().x+5, getVector2().y-3);
-//                    getPlaneWasHitAnimation().draw(getVector3().x+5, getVector3().y-3);
-//                    getPlaneWasHitAnimation().draw(getVector4().x+5, getVector4().y-3);
+//                    getPlaneWasHitAnimation().draw(vector1.x+5, vector1.y-13);
+//                    getPlaneWasHitAnimation().draw(vector2.x+5, vector2.y-3);
+//                    getPlaneWasHitAnimation().draw(vector3.x+5, vector3.y-3);
+//                    getPlaneWasHitAnimation().draw(vector4.x+5, vector4.y-3);
                 } else {
-                    setWasHit(false);
+                    wasHit = false;
 //                    getPlaneWasHitAnimation().restart();
                 }
             }
@@ -205,8 +202,8 @@ public class EnemyFighter extends Entity {
                         position.y + +image.getRegionHeight()*scale/2 - projectileImage.getRegionHeight()*0.2f/2), rotation , Constants.BULLET_SPEED, projectileImage,
                 Projectile.Type.ENEMY_FIGHTER_BULLET);
         projectile.speed = Constants.BULLET_SPEED;
-        projectile.setRotation(getRotation());
-        projectile.setDirection(getDirection()+180);// todo
+        projectile.rotation = rotation;
+        projectile.direction = direction + 180;// todo
         Constants.projectileList.add(projectile);
         Constants.fireCannonEffect.play();
     }

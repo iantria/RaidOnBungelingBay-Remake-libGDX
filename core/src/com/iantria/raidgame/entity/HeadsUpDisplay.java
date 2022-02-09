@@ -159,8 +159,8 @@ public class HeadsUpDisplay {
                     Constants.carrierDirectionArrow.getRegionWidth()/12/2,Constants.carrierDirectionArrow.getRegionHeight()/12/2,
                     Constants.carrierDirectionArrow.getRegionWidth()/12,Constants.carrierDirectionArrow.getRegionHeight()/12,
                     1f, 1f,
-                    (float) Constants.getSignedDegreesToCarrier(new Vector2(Constants.helicopter.getPosition().x + Constants.helicopter.image.getRegionWidth()/2*Constants.helicopter.scale,
-                            Constants.helicopter.getPosition().y + Constants.helicopter.image.getRegionHeight()/2*Constants.helicopter.scale ))-180);
+                    (float) Constants.getSignedDegreesToCarrier(new Vector2(Constants.helicopter.position.x + Constants.helicopter.image.getRegionWidth()/2*Constants.helicopter.scale,
+                            Constants.helicopter.position.y + Constants.helicopter.image.getRegionHeight()/2*Constants.helicopter.scale ))-180);
 
             if (Constants.carrier.health < 0) Constants.carrier.health = 0;
             setTextAndLayout("Carrier", Constants.HUDFont, 0.10f);

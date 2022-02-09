@@ -1,11 +1,8 @@
 package com.iantria.raidgame.entity;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
-
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Statistics;
@@ -22,8 +19,8 @@ public class EnemyBomber extends Entity {
     public EnemyBomber(String id, float scale, boolean isMovingObj, Vector2 position, float rotation, TextureRegion image) {
         super(id, scale, isMovingObj, position, rotation, image);
 
-        setStartingPosition(new Vector2(position));
-        setRelativePositionToMap(new Vector2(position));
+        startingPosition = new Vector2(position);
+        relativePositionToMap = new Vector2(position);
         this.rotation = rotation;
         this.direction = 90f;
         init();
@@ -36,10 +33,10 @@ public class EnemyBomber extends Entity {
         this.bombsDroppingOnCarrier = new Animation<TextureRegion>(Constants.explosionAnimations[1].getFrameDuration(),Constants.explosionAnimations[1].getKeyFrames());
         explosionTimer = 0;
         bombingExplosionTimer = 0;
-        setVector1(new Vector2(position));
-        setVector2(new Vector2(position));
-        setVector3(new Vector2(position));
-        setVector4(new Vector2(position));
+        vector1 = new Vector2(position);
+        vector2 = new Vector2(position);
+        vector3 = new Vector2(position);
+        vector4 = new Vector2(position);
         speed = 0;
         random = Constants.random.nextFloat()*30;
         type = EntityType.ENEMY_BOMBER;
@@ -58,15 +55,15 @@ public class EnemyBomber extends Entity {
         explosionTimer = 0;
         isDestroyed = false;
         isAttacking = false;
-        setRespawnElapsedTime(0);
-        setElapsedTime(0);
+        respawnElapsedTime = 0;
+        elapsedTime = 0;
         //getPlaneExploded().restart();
         health = Constants.ENEMY_BOMBER_HEALTH;
-        setSpeed(0);
+        speed = 0;
         rotation = 270f;
         this.direction = 90f;
-        position.x = Constants.gameMap.position.x + getStartingPosition().x - Constants.WINDOW_WIDTH/2 + 200;
-        position.y = Constants.gameMap.position.y + getStartingPosition().y;
+        position.x = Constants.gameMap.position.x + startingPosition.x - Constants.WINDOW_WIDTH/2 + 200;
+        position.y = Constants.gameMap.position.y + startingPosition.y;
         updateVectorsForMovingObjects();
         soundID = -1;
     }
@@ -81,11 +78,11 @@ public class EnemyBomber extends Entity {
         if (wasHit || isDestroyed) explosionTimer += delta;
         updateVectorsForMovingObjects();
 
-        if (intersects(Constants.carrier) && !isDestroyed() && !isLanded && !Constants.carrier.isDestroyed) {
+        if (intersects(Constants.carrier) && !isDestroyed && !isLanded && !Constants.carrier.isDestroyed) {
             if (bombingExplosionTimer == 0) {
                 Constants.bombsDroppingSound.play(0.5f);
             }
-            setAttacking(true);
+            isAttacking = true;
         } else {
 
         }
@@ -115,10 +112,10 @@ public class EnemyBomber extends Entity {
                 if (speed > Constants.ENEMY_BOMBER_SPEED) speed = Constants.ENEMY_BOMBER_SPEED;
             }
         } else {
-            setElapsedTime(getElapsedTime() + delta);
-            if (Constants.getRemainingFactories() < 5 && getElapsedTime() > 5){
+            elapsedTime +=  delta;
+            if (Constants.getRemainingFactories() < 5 && elapsedTime > 5){
                 isLanded =  false;
-                setElapsedTime(0);
+                elapsedTime = 0;
             }
         }
 
@@ -130,7 +127,7 @@ public class EnemyBomber extends Entity {
         if (rotation >= 360) rotation = rotation - 360;
         if (rotation <= 0) rotation = rotation + 360;
 
-        direction =  getRotation() - 180;
+        direction =  rotation - 180;
 
         //image.rotate(getRotation() - image.getRotation());
     }
@@ -138,7 +135,7 @@ public class EnemyBomber extends Entity {
 
     public void draw(Batch batch) {
 
-        if (isDestroyed()) {
+        if (isDestroyed) {
             batch.draw(planeExploded.getKeyFrame(explosionTimer),
                     position.x + image.getRegionWidth()/2*scale  - planeExploded.getKeyFrame(explosionTimer).getRegionWidth()/2,
                     position.y + image.getRegionHeight()/2*scale - planeExploded.getKeyFrame(explosionTimer).getRegionHeight()/2);
@@ -158,25 +155,25 @@ public class EnemyBomber extends Entity {
                 }
             }
 
-            batch.draw(image, getVector1().x, getVector1().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector2().x, getVector2().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector3().x, getVector3().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector4().x, getVector4().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector1.x, vector1.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 
 
             if (wasHit) {
 //                if (getPlaneWasHitAnimation().getFrame() < 15) {
-//                    getPlaneWasHitAnimation().draw(getVector1().x + 33,
-//                            getVector1().y + 5);
-//                    getPlaneWasHitAnimation().draw(getVector2().x + 33,
-//                            getVector2().y + 5);
-//                    getPlaneWasHitAnimation().draw(getVector3().x + 33,
-//                            getVector3().y + 5);
-//                    getPlaneWasHitAnimation().draw(getVector4().x + 33,
-//                            getVector4().y + 5);
+//                    getPlaneWasHitAnimation().draw(vector1.x + 33,
+//                            vector1.y + 5);
+//                    getPlaneWasHitAnimation().draw(vector2.x + 33,
+//                            vector2.y + 5);
+//                    getPlaneWasHitAnimation().draw(vector3.x + 33,
+//                            vector3.y + 5);
+//                    getPlaneWasHitAnimation().draw(vector4.x + 33,
+//                            vector4.y + 5);
 
                 } else {
-                    setWasHit(false);
+                    wasHit = false;
 //                    getPlaneWasHitAnimation().restart();
                 }
             }

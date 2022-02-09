@@ -4,10 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -17,26 +14,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.iantria.raidgame.RaidGame;
 import com.iantria.raidgame.util.AnimatedImage;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Statistics;
-
-import java.awt.peer.CanvasPeer;
-
-import space.earlygrey.shapedrawer.ShapeDrawer;
-
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class IntroScreen implements Screen {
@@ -81,27 +69,33 @@ public class IntroScreen implements Screen {
     private FrameBuffer fbo;
     private int fboScale;
     private GlyphLayout layout;
+    private  InputMultiplexer inputMultiplexer;
 
     public IntroScreen( boolean isQuick) {
+        //Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        Gdx.input.setCursorCatched(false);
         x = 0;
         if (isQuick) introStep = 4;
         else introStep = 4;
 
         if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS){
-            fboScale = 3;
+            fboScale = 4;
+        } else if (Gdx.app.getType() == Application.ApplicationType.Applet || Gdx.app.getType() == Application.ApplicationType.WebGL){
+            fboScale = 2 ;
         } else {
-            fboScale = 1 ;
+            fboScale = 2 ;
         }
      }
 
     @Override
     public void show() {
+        Constants.stopAllSounds();
         soundID = -1;
         Statistics.resetScores();
-        aspectRatio = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-        Constants.WINDOW_HEIGHT = (int) ((int) Constants.WINDOW_WIDTH/aspectRatio);
-        viewport = new StretchViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-        viewport.apply();
+        float aspectRatio = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+        Constants.WINDOW_HEIGHT = (int) (Constants.WINDOW_WIDTH/aspectRatio);
+          viewport = new FitViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+          viewport.apply();
 
         front = new Image(Constants.introScreenFrontApache);
         frontBlade = new Image(Constants.introScreenFrontBlade);
@@ -126,8 +120,7 @@ public class IntroScreen implements Screen {
                 moveTo(Constants.WINDOW_WIDTH/2f - frontBlade.getWidth()/2f*0.25f, Constants.WINDOW_HEIGHT/2f - front.getHeight()*0.25f/2f, 6f),
                 delay(2.5f)));
         stage3.addActor(group3);
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-
+        inputMultiplexer = new InputMultiplexer();
 
         // Play Button
         playButton = new Image(Constants.playButton);
@@ -146,20 +139,15 @@ public class IntroScreen implements Screen {
                 Constants.game.setScreen(new GameScreen());
                 return true;
             }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-            }
         });
-
 
         playButtonStage = new Stage(viewport);
         playButtonStage.addAction(sequence(fadeOut(0f),
                 moveTo(Constants.WINDOW_WIDTH - playButton.getWidth() * playButton.getScaleX() - 10, Constants.WINDOW_HEIGHT / 2 - 20),
                 delay(5f), fadeIn(1.5f)));
 
-        playButton.setTouchable(Touchable.enabled);
         playButtonStage.addActor(playButton);
+        playButton.setTouchable(Touchable.enabled);
         inputMultiplexer.addProcessor(playButtonStage);
 
         // Demo Button
@@ -179,9 +167,6 @@ public class IntroScreen implements Screen {
                 Constants.game.setScreen(new GameScreen());
                 return true;
             }
-            @Override
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-            }
         });
 
         demoButtonStage = new Stage(viewport);
@@ -190,7 +175,6 @@ public class IntroScreen implements Screen {
         demoButtonStage.addActor(demoButton);
         demoButton.setTouchable(Touchable.enabled);
         inputMultiplexer.addProcessor(demoButtonStage);
-        Gdx.input.setInputProcessor(inputMultiplexer);
 
         s = new Sprite(Constants.introScreenSideApache);
         s.flip(true,false);
@@ -218,10 +202,11 @@ public class IntroScreen implements Screen {
                 moveTo(-Constants.WINDOW_WIDTH/2f,Constants.WINDOW_HEIGHT*0.65f,16f)));
         stage.addActor(group);
         z=0;
+
+        // FBO, and Shader
         shaderTime = 0;
         batch = new SpriteBatch();
-        //shaderTexture = new Texture(Gdx.files.internal("shaders/img.png"));
-
+        batch.setProjectionMatrix(viewport.getCamera().combined);
         fbo = new FrameBuffer(Pixmap.Format.RGB888, Gdx.graphics.getWidth()/fboScale, Gdx.graphics.getHeight()/fboScale, false);
         Pixmap pixmap = new Pixmap( Gdx.graphics.getWidth()/fboScale, Gdx.graphics.getHeight()/fboScale, Pixmap.Format.RGBA8888 );
         shaderTexture = new Texture(pixmap);
@@ -231,8 +216,11 @@ public class IntroScreen implements Screen {
         if (!shader.isCompiled()){
             System.out.println("Error compiling shader: " + shader.getLog());
         }
+        Constants.HUDFont.getData().setScale(0.15f);
+        Constants.HUDFont.setUseIntegerPositions(false);
+        layout = new GlyphLayout(Constants.HUDFont, "FPS: 120");
 
-        //System.out.println("FBO: "+ fbo.getWidth() + " " + shaderTexture.getWidth());
+        //System.out.println("tex:" + shaderTexture.getWidth() + "x" + shaderTexture.getHeight() + "       screen:" +Gdx.graphics.getWidth() +"x"+Gdx.graphics.getHeight());
     }
 
     @Override
@@ -240,42 +228,37 @@ public class IntroScreen implements Screen {
         Gdx.gl.glClearColor(0.53f, 0.81f, 0.92f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // fboViewport.apply();
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
         fbo.begin();
         shaderTime += Gdx.graphics.getDeltaTime();
         batch.setShader(shader);
         shader.bind();
         shader.setUniformf("u_time", shaderTime);
         batch.begin();
-        batch.draw(shaderTexture,0,0);
+        batch.draw(shaderTexture,0,0,Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         batch.end();
-        batch.setShader(null);
         fbo.end();
-
-        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.setShader(null);
 
         batch.begin();
-        //batch.draw(fbo.getColorBufferTexture(),0,-fbo.getColorBufferTexture().getHeight(),Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(fbo.getColorBufferTexture(),0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        Constants.HUDFont.getData().setScale(0.1f, 0.1f);
-        Constants.HUDFont.setUseIntegerPositions(false);
-        layout = new GlyphLayout(Constants.HUDFont, "FPS: " + Gdx.graphics.getFramesPerSecond());
-        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), Constants.WINDOW_WIDTH/2f - layout.width/2f, Constants.WINDOW_HEIGHT - 1);
-
+        batch.draw(fbo.getColorBufferTexture(),0,0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), Constants.WINDOW_WIDTH - layout.width - 2, Constants.WINDOW_HEIGHT - layout.height);
         batch.end();
 
-        scale += delta * y * 5f;
+        this.scale += delta * y * 5f;
         scale2 += delta * x * 15f;
         rot += delta * 725f;
         blade3.setRotation(rot);
 
-        if (scale <= 0f ) {
+        if (this.scale <= 0f ) {
             y = 1;
-            scale = 0f;
+            this.scale = 0f;
         }
-        if (scale >= 0.5f) {
+        if (this.scale >= 0.5f) {
             y = -1;
-            scale = 0.5f;
+            this.scale = 0.5f;
         }
         if (scale2 <= 0.5f ) {
             x = 1;
@@ -285,9 +268,9 @@ public class IntroScreen implements Screen {
             x = -1;
             scale2 = 1.1f;
         }
-        blade.setScale(scale, 1f);
+        blade.setScale(this.scale, 1f);
         blade2.setScale(scale2, 1f);
-        frontBlade.setScale(scale, 1f);
+        frontBlade.setScale(this.scale, 1f);
         frontBlade2.setScale(scale2, 1f);
 
          // 1st Pass
@@ -339,6 +322,7 @@ public class IntroScreen implements Screen {
 
         // 2nd Pass
         if (introStep == 3) {
+            stage2.getViewport().apply();
             stage2.act();
             stage2.draw();
 
@@ -362,6 +346,8 @@ public class IntroScreen implements Screen {
             pan = 0;
         }
         if (introStep == 4 && group3.getActions().size != 0){
+            Constants.oceanSound.stop();
+            stage3.getViewport().apply();
             stage3.act();
             stage3.draw();
 
@@ -377,6 +363,7 @@ public class IntroScreen implements Screen {
         if (group3.getActions().size == 0 && introStep == 4){
             fireAnim.setPosition(548, 0);
             group3.addActor(fireAnim);
+            stage3.getViewport().apply();
             stage3.act();
             stage3.draw();
             z += delta;
@@ -404,6 +391,7 @@ public class IntroScreen implements Screen {
             }
         }
          if (introStep == 5) {
+            stage3.getViewport().apply();
             stage3.draw();
             stage.getViewport().apply();
             stage.act();
@@ -417,27 +405,26 @@ public class IntroScreen implements Screen {
             demoButtonStage.getViewport().apply();
             demoButtonStage.act();
             demoButtonStage.draw();
+
+            if (group3.getActions().size == 0){
+                Gdx.input.setInputProcessor(inputMultiplexer);
+            }
         }
-
-
     }
-
 
     @Override
     public void resize(int width, int height) {
         Constants.isPlayer = false;
-        aspectRatio = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-        Constants.WINDOW_HEIGHT = (int) (Constants.WINDOW_WIDTH/aspectRatio);
+//        aspectRatio = (float)width/height;
+//        Constants.WINDOW_HEIGHT = (int) (Constants.WINDOW_WIDTH/aspectRatio);
         viewport.setWorldSize(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+        viewport.update(width,height);
         viewport.apply();
         stage.getViewport().update(width, height);
-        //stage2.getViewport().update(width, height, true);
-        stage3.getViewport().update(width, height, true);
-        shader.setUniformf("u_resolution", new Vector3((float) width/fboScale, (float)height/fboScale,0f));
-//        new FrameBuffer(Pixmap.Format.RGB888, width/4, height/4, false);
-//        Pixmap pixmap = new Pixmap( width/4, height/4, Pixmap.Format.RGBA8888 );
-//        shaderTexture = new Texture(pixmap);
-//        pixmap.dispose();
+        //stage2.getViewport().update(width, height);
+        stage3.getViewport().update(width, height);
+        demoButtonStage.getViewport().update(width, height);
+        playButtonStage.getViewport().update(width, height);
     }
 
     @Override

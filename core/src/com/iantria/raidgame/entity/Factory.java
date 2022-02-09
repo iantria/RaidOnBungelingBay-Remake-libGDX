@@ -25,14 +25,11 @@ public class Factory extends Entity {
         init();
     }
 
-
-
-
     public void init() {
-        setVector1(new Vector2(position));
-        setVector2(new Vector2(position));
-        setVector3(new Vector2(position));
-        setVector4(new Vector2(position));
+        vector1 = new Vector2(position);
+        vector2 = new Vector2(position);
+        vector3 = new Vector2(position);
+        vector4 = new Vector2(position);
         this.explodeAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[7].getFrameDuration(),Constants.explosionAnimations[7].getKeyFrames());
         this.wasHitByBombAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[2].getFrameDuration(),Constants.explosionAnimations[2].getKeyFrames());
         //this.wasHitByCannonAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[3].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
@@ -42,7 +39,7 @@ public class Factory extends Entity {
         updateVectorsForStationaryObjects();
     }
 
-
+    // Fatcories do nor respawn - can remove
     public void reset() {
         health = Constants.ENEMY_FACTORY_HEALTH;
         isDestroyed = false;
@@ -62,11 +59,11 @@ public class Factory extends Entity {
 
         if (factoryHealthElapsedTime >= 3) {
             factoryHealthElapsedTime = 0;
-            if (!isDestroyed() && health < Constants.ENEMY_FACTORY_HEALTH) {
-                int x = getHealth();
+            if (!isDestroyed && health < Constants.ENEMY_FACTORY_HEALTH) {
+                int x = health;
                 x = x + 1 + (6 - Constants.getRemainingFactories()); // increase health if less factories remain
                 if (x > Constants.ENEMY_FACTORY_HEALTH) x = Constants.ENEMY_FACTORY_HEALTH;
-                setHealth(x);
+                health = x;
             }
         }
 
@@ -80,9 +77,7 @@ public class Factory extends Entity {
         if (wasHitByBomb) {
             bombExplosionElapsedTime += delta;
         }
-
     }
-
 
     public void draw(Batch batch) {
 
@@ -113,10 +108,10 @@ public class Factory extends Entity {
 //                main.smokeStack.setPosition(vector1.x+30, vector1.y+15);
 //                main.smokeStack.render();
 //            }
-            batch.draw(image, getVector1().x, getVector1().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector2().x, getVector2().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector3().x, getVector3().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector4().x, getVector4().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector1.x, vector1.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 
             if (wasHitByBomb){
                 if (!wasHitByBombAnimation.isAnimationFinished(bombExplosionElapsedTime)){
@@ -160,21 +155,7 @@ public class Factory extends Entity {
             healthRenderer.rectangle(vector4.x -1,
                     vector4.y - 7, image.getRegionWidth()*scale + 2, 5, Color.WHITE);
 
-//            if (wasHitByCannon){
-////                if (getWasHitByCannonAnimation().getFrame() < 15){
-////                    getWasHitByCannonAnimation().draw(getVector1().getX()+15, getVector1().getY()+15);
-////                    getWasHitByCannonAnimation().draw(getVector2().getX()+15, getVector2().getY()+15);
-////                    getWasHitByCannonAnimation().draw(getVector3().getX()+15, getVector3().getY()+15);
-////                    getWasHitByCannonAnimation().draw(getVector4().getX()+15, getVector4().getY()+15);
-//                } else {
-//                    setWasHit(false);
-//                    setWasHitByCannon(false);
-////                    getWasHitByCannonAnimation().restart();
-//                }
-//            }
-
         }
     }
-
 }
 

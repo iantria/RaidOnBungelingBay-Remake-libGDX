@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -19,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.iantria.raidgame.entity.LoadingBar;
-import com.iantria.raidgame.RaidGame;
 import com.iantria.raidgame.util.Constants;
 
 public class LoadingScreen implements Screen {
@@ -86,6 +84,10 @@ public class LoadingScreen implements Screen {
         assetManager.load("graphics/images.atlas", TextureAtlas.class);
         assetManager.load("graphics/ddgIcon.gif", Texture.class);
 
+        assetManager.load("graphics/modernmap.png", Texture.class);
+        assetManager.load("graphics/retro_map.png", Texture.class);
+        assetManager.load("graphics/retro_map_green.png", Texture.class);
+
         //Sounds
         assetManager.load("sounds/jetcrashfuel.ogg", Sound.class);
         assetManager.load("sounds/landhit.ogg", Sound.class);
@@ -106,10 +108,12 @@ public class LoadingScreen implements Screen {
         //Large Sounds (>100KB)
         assetManager.load("sounds/youwin.ogg", Music.class);
         assetManager.load("sounds/Drums2.ogg", Music.class);
+        assetManager.load("sounds/Drums.ogg", Music.class);
         assetManager.load("sounds/helicopter_take_off.mp3", Music.class);
         assetManager.load("sounds/helicopter_cruise.mp3", Music.class);
         assetManager.load("sounds/powerdown_engine.mp3", Music.class);
         assetManager.load("sounds/ocean.ogg", Music.class);
+        assetManager.load("sounds/fireworks.mp3", Music.class);
 
         // Fonts
         assetManager.load("graphics/font1.fnt", BitmapFont.class);
@@ -180,10 +184,11 @@ public class LoadingScreen implements Screen {
             //Textures
             textureAtlas = assetManager.get("graphics/images.atlas", TextureAtlas.class);
             Constants.enemyShipIcon = new TextureRegion(assetManager.get("graphics/ddgIcon.gif", Texture.class));
-            Constants.mapTextureRegion = new TextureRegion(textureAtlas.findRegion("modernmap_trans"));
-            Constants.oceanTextureRegion = new TextureRegion(textureAtlas.findRegion("modernmap_ocean"));
-            Constants.retroMapTextureRegion = new TextureRegion(textureAtlas.findRegion("retro_map"));
-            Constants.retroGreenMapTextureRegion = new TextureRegion(textureAtlas.findRegion("retro_map_green"));
+
+            Constants.mapTextureRegion = new TextureRegion(assetManager.get("graphics/modernmap.png", Texture.class));
+            Constants.retroMapTextureRegion = new TextureRegion(assetManager.get("graphics/retro_map.png", Texture.class));
+            Constants.retroGreenMapTextureRegion = new TextureRegion(assetManager.get("graphics/retro_map_green.png", Texture.class));
+
             Constants.carrierTextureRegion = new TextureRegion(textureAtlas.findRegion("Carrier"));
             Constants.helicopterTextureRegion = new TextureRegion(textureAtlas.findRegion("Helicopter"));
             Constants.rotatingBladesTextureRegion = new TextureRegion(textureAtlas.findRegion("Heli_Blade"));
@@ -238,12 +243,14 @@ public class LoadingScreen implements Screen {
             Constants.m61Sound = assetManager.get("sounds/m61.ogg", Sound.class);
 
             // Long sounds (>100kB)
-            Constants.youWin = assetManager.get("sounds/youwin.ogg", Music.class);
+            Constants.youWinSound = assetManager.get("sounds/youwin.ogg", Music.class);
             Constants.oceanSound = assetManager.get("sounds/ocean.ogg", Music.class);
             Constants.drumsSound = assetManager.get("sounds/Drums2.ogg", Music.class);
+            Constants.drumsOutcomeSound = assetManager.get("sounds/Drums.ogg", Music.class);
             Constants.takeOffSound = assetManager.get("sounds/helicopter_take_off.mp3", Music.class);
             Constants.chopperSound = assetManager.get("sounds/helicopter_cruise.mp3", Music.class);
-            Constants.stopEngine = assetManager.get("sounds/powerdown_engine.mp3", Music.class);
+            Constants.stopEngineSound = assetManager.get("sounds/powerdown_engine.mp3", Music.class);
+            Constants.fireworksSound = assetManager.get("sounds/fireworks.mp3", Music.class);
 
             // Fonts
             Constants.scrollingCombatFont = assetManager.get("graphics/font1.fnt", BitmapFont.class);
@@ -252,16 +259,17 @@ public class LoadingScreen implements Screen {
 
             loadExplosionAnimations();
 
-            if (Gdx.app.getType().equals(Application.ApplicationType.WebGL)) {
+            if (Gdx.app.getType().equals(Application.ApplicationType.WebGL) ||
+                    Gdx.app.getType().equals(Application.ApplicationType.Applet)) {
                 if (Gdx.input.isTouched()) {
                     // So that audio can work
-                    dispose();
-                    Constants.game.setScreen(new IntroScreen(false));
+                    //Constants.game.setScreen(new OutcomeScreen());
+                    Constants.game.setScreen(new IntroScreen(true));
                 }
             } else {
-                dispose();
-                //game.setScreen(new OutcomeScreen());
+                //Constants.game.setScreen(new OutcomeScreen());
                 Constants.game.setScreen(new IntroScreen(true)); //true = faster
+                //Constants.game.setScreen(new GameScreen()); //true = faster
             }
         }
 

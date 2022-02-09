@@ -28,10 +28,10 @@ public class CruiseMissile extends Projectile {
 	public void init() {
 		remainingFuel = Constants.ENEMY_CRUISE_MISSILE_FUEL;
 		ranOutOfFuel = new Animation<TextureRegion>(Constants.explosionAnimations[3].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
-		setVector1(new Vector2(position));
-		setVector2(new Vector2(position));
-		setVector3(new Vector2(position));
-		setVector4(new Vector2(position));
+		vector1 = new Vector2(position);
+		vector2 = new Vector2(position);
+		vector3 = new Vector2(position);
+		vector4 = new Vector2(position);
     	speed = Constants.MISSILE_SPEED;
     	health = Constants.ENEMY_CRUISE_MISSILE_HEALTH;
 		this.elapsedTime = 0;
@@ -80,7 +80,7 @@ public class CruiseMissile extends Projectile {
 	    if (rotation >= 360) rotation = rotation - 360;
 	    if (rotation <= 0) rotation = rotation + 360;
 
-		direction =  getRotation() - 180;
+		direction = rotation - 180;
 
     	checkCollisions(delta);
 	}

@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Statistics;
-
 import space.earlygrey.shapedrawer.ShapeDrawer;
-
 
 public class EnemyShip extends Entity {
 
@@ -42,10 +40,10 @@ public class EnemyShip extends Entity {
 		this.isSinking = false;
 		this.isAttacking = false;
 		this.speed = 0;
-		setVector1(new Vector2(position));
-		setVector2(new Vector2(position));
-		setVector3(new Vector2(position));
-		setVector4(new Vector2(position));
+		vector1 = new Vector2(position);
+		vector2 = new Vector2(position);
+		vector3 = new Vector2(position);
+		vector4 = new Vector2(position);
 		explosionIndex = 4;
     	refireInterval = Constants.ENEMY_CRUISE_MISSILE_FIRING_INTERVAL;
     	updateVectorsForMovingObjects();
@@ -59,8 +57,8 @@ public class EnemyShip extends Entity {
 		this.wasHit = false;
 		this.health = 1;
 		this.speed = 0;
-		this.position.x = Constants.gameMap.position.x + getStartingPosition().x - Constants.WINDOW_WIDTH/2 + 200;
-		this.position.y = Constants.gameMap.position.y + getStartingPosition().y;
+		this.position.x = Constants.gameMap.position.x + startingPosition.x - Constants.WINDOW_WIDTH/2 + 200;
+		this.position.y = Constants.gameMap.position.y + startingPosition.y;
 		updateVectorsForMovingObjects();
 		soundId = -1;
 	}
@@ -102,7 +100,7 @@ public class EnemyShip extends Entity {
 		}
 
     	elapsedTime += delta;
-        if (isAttacking && !isSinking && !isDestroyed() && !isReadyToFire
+        if (isAttacking && !isSinking && !isDestroyed && !isReadyToFire
         		&& !(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED) && (elapsedTime >= refireInterval)) {
         	elapsedTime = 0;
         	isReadyToFire = true;  // Cruise Missile
@@ -122,21 +120,21 @@ public class EnemyShip extends Entity {
         	isCannonReadyToFire = true;
         }
 
-		if ((getVector1().x <= Constants.WINDOW_WIDTH && getVector1().x >= 0) &&
-				(getVector1().y <= Constants.WINDOW_HEIGHT && getVector1().y >= 0) ||
-				(getVector2().x <= Constants.WINDOW_WIDTH && getVector2().x >= 0) &&
-						(getVector2().y <= Constants.WINDOW_HEIGHT && getVector2().y >= 0) ||
-				(getVector3().x <= Constants.WINDOW_WIDTH && getVector3().x >= 0) &&
-						(getVector3().y <= Constants.WINDOW_HEIGHT && getVector3().y >= 0) ||
-				(getVector4().x <= Constants.WINDOW_WIDTH && getVector4().x >= 0) &&
-						(getVector4().y <= Constants.WINDOW_HEIGHT && getVector4().y >= 0) && isAttacking) {
+		if ((vector1.x <= Constants.WINDOW_WIDTH && vector1.x >= 0) &&
+				(vector1.y <= Constants.WINDOW_HEIGHT && vector1.y >= 0) ||
+				(vector2.x <= Constants.WINDOW_WIDTH && vector2.x >= 0) &&
+						(vector2.y <= Constants.WINDOW_HEIGHT && vector2.y >= 0) ||
+				(vector3.x <= Constants.WINDOW_WIDTH && vector3.x >= 0) &&
+						(vector3.y <= Constants.WINDOW_HEIGHT && vector3.y >= 0) ||
+				(vector4.x <= Constants.WINDOW_WIDTH && vector4.x >= 0) &&
+						(vector4.y <= Constants.WINDOW_HEIGHT && vector4.y >= 0) && isAttacking) {
 			rotation =((float)Constants.getSignedDegreesToHelicopter(new Vector2(position.x + image.getRegionWidth()*scale/2, position.y + image.getRegionHeight()*scale/2)));
 
 			// Refire
 			if (isReadyToFire) fireCruiseMissile(CruiseMissile.MainTarget.PLAYER_IS_TARGET);
 	        if (isCannonReadyToFire) fireCannon();
 	    } else if (isAttacking && speed == 0 && !Constants.carrier.isSinking && !Constants.carrier.isDestroyed) {
-	    	if (isReadyToFire()) {
+	    	if (isReadyToFire) {
 				rotation =((float)Constants.getSignedDegreesToCarrier(new Vector2(position.x + image.getRegionWidth()*scale/2, position.y + image.getRegionHeight()*scale/2)));
 	    		fireCruiseMissile(CruiseMissile.MainTarget.CARRIER_IS_TARGET);
 	    		Constants.combatTextList.add(new ScrollingCombatText("DestroyerAttacking", 1f, new Vector2( Constants.helicopter.position), ("SHIP ATTACKING CARRIER!"), Color.YELLOW, Constants.scrollingCombatFont, true));
@@ -172,10 +170,10 @@ public class EnemyShip extends Entity {
 				//System.out.println("Alpha: " + (batch.getColor().a - explosionElapsedTime )  + "     time:" + explosionElapsedTime);
 				batch.setColor(1, 1, 1, (batch.getColor().a - explosionElapsedTime ));
 			}
-			batch.draw(image, getVector1().x, getVector1().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-			batch.draw(image, getVector2().x, getVector2().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-			batch.draw(image, getVector3().x, getVector3().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-			batch.draw(image, getVector4().x, getVector4().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+			batch.draw(image, vector1.x, vector1.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+			batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+			batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+			batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 			batch.setColor(1,1,1,1);
 
 
@@ -216,10 +214,10 @@ public class EnemyShip extends Entity {
 				explosionElapsedTime = 0;
 			}
        } else {
-			batch.draw(image, getVector1().x, getVector1().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-			batch.draw(image, getVector2().x, getVector2().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-			batch.draw(image, getVector3().x, getVector3().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-			batch.draw(image, getVector4().x, getVector4().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+			batch.draw(image, vector1.x, vector1.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+			batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+			batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+			batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 
 			healthRenderer = new ShapeDrawer(batch, Constants.singlePixelTextureRegion);
 			healthRenderer.filledRectangle(vector1.x + image.getRegionWidth()*scale/2-25,

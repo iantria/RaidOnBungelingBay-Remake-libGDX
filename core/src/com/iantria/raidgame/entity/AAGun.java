@@ -15,7 +15,7 @@ public class AAGun extends Entity {
 
     public AAGun(String id, float scale, boolean isMovingObj, Vector2 position, float rotation, TextureRegion image) {
         super(id, scale, isMovingObj, position, rotation, image);
-        setStartingPosition(new Vector2(position));
+        startingPosition = new Vector2(position);
         this.scale = scale;
         init();
     }
@@ -25,15 +25,16 @@ public class AAGun extends Entity {
         health = Constants.ENEMY_AA_GUN_HEALTH;
         isDestroyed = false;
         refireInterval = Constants.ENEMY_AA_GUN_FIRING_INTERVAL + Constants.random.nextFloat()*2;
-        setVector1(new Vector2(position));
-        setVector2(new Vector2(position));
-        setVector3(new Vector2(position));
-        setVector4(new Vector2(position));
+        vector1 = new Vector2(position);
+        vector2 = new Vector2(position);
+        vector3 = new Vector2(position);
+        vector4 = new Vector2(position);
         updateVectorsForStationaryObjects();
         explosionTimer = 0;
         elapsedTime = 0;
         respawnTime = 0;
         isReadyToFire = false;
+        type = EntityType.AA_GUN;
         this.explodeAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[7].getFrameDuration(),Constants.explosionAnimations[7].getKeyFrames());
 
     }
@@ -48,8 +49,8 @@ public class AAGun extends Entity {
         this.elapsedTime = 0;
         this.respawnTime = 0;
         this.isReadyToFire = false;
-        this.position.x = Constants.gameMap.position.x + getStartingPosition().x;
-        this.position.y = Constants.gameMap.position.y + getStartingPosition().y;
+        this.position.x = Constants.gameMap.position.x + startingPosition.x;
+        this.position.y = Constants.gameMap.position.y + startingPosition.y;
         updateVectorsForStationaryObjects();
 
     }
@@ -69,23 +70,23 @@ public class AAGun extends Entity {
         }
 
         // Rotation
-        if ((getVector1().x <= Constants.WINDOW_WIDTH && getVector1().x >= 0) &&
-                (getVector1().y <= Constants.WINDOW_HEIGHT && getVector1().y >= 0) ||
-                (getVector2().x <= Constants.WINDOW_WIDTH && getVector2().x >= 0) &&
-                        (getVector2().y <= Constants.WINDOW_HEIGHT && getVector2().y >= 0) ||
-                (getVector3().x <= Constants.WINDOW_WIDTH && getVector3().x >= 0) &&
-                        (getVector3().y <= Constants.WINDOW_HEIGHT && getVector3().y >= 0) ||
-                (getVector4().x <= Constants.WINDOW_WIDTH && getVector4().x >= 0) &&
-                        (getVector4().y <= Constants.WINDOW_HEIGHT && getVector4().y >= 0)) {
+        if ((vector1.x <= Constants.WINDOW_WIDTH && vector1.x >= 0) &&
+                (vector1.y <= Constants.WINDOW_HEIGHT && vector1.y >= 0) ||
+                (vector2.x <= Constants.WINDOW_WIDTH && vector2.x >= 0) &&
+                        (vector2.y <= Constants.WINDOW_HEIGHT && vector2.y >= 0) ||
+                (vector3.x <= Constants.WINDOW_WIDTH && vector3.x >= 0) &&
+                        (vector3.y <= Constants.WINDOW_HEIGHT && vector3.y >= 0) ||
+                (vector4.x <= Constants.WINDOW_WIDTH && vector4.x >= 0) &&
+                        (vector4.y <= Constants.WINDOW_HEIGHT && vector4.y >= 0)) {
             rotation =((float)Constants.getSignedDegreesToHelicopter(new Vector2(position.x + image.getRegionWidth()*scale/2f, position.y + image.getRegionHeight()*scale/2f)));
 
-            direction =  getRotation() - 180;
+            direction =  rotation - 180;
             // Refire
-            if (isReadyToFire()) {
+            if (isReadyToFire) {
                 fireAAGun();
             }
         } else {
-            setReadyToFire(false);
+            isReadyToFire = false;
         }
 
         //Respawn AA
@@ -104,14 +105,14 @@ public class AAGun extends Entity {
                     position.x + image.getRegionWidth()/2*scale  - explodeAnimation.getKeyFrame(explosionTimer).getRegionWidth()/2,
                     position.y + image.getRegionHeight()/2*scale - explodeAnimation.getKeyFrame(explosionTimer).getRegionHeight()/2);
         } else {
-            batch.draw(image, getVector1().x, getVector1().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector2().x, getVector2().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector3().x, getVector3().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
-            batch.draw(image, getVector4().x, getVector4().y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector1.x, vector1.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+            batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 
             if (wasHit){
 //                if (getWasHitByCannonAnimation().getFrame() < 15){
-//                    getWasHitByCannonAnimation().draw(getVector1().getX()-5, getVector1().getY()-5);
+//                    getWasHitByCannonAnimation().draw(vector1.getX()-5, vector1.getY()-5);
 //                } else {
 //                    setWasHit(false);
 //                    getWasHitByCannonAnimation().restart();

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
-import com.iantria.raidgame.screen.OutcomeScreen;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Statistics;
 
@@ -27,6 +26,7 @@ public class Helicopter extends Entity {
     public float bladesSpinUpDownTime;
     public float FUEL_DURATION = Constants.FUEL_DURATION;
     public float YOU_CRASHED_DELAY_DURATION = 2.5f;
+    public float YOU_LOST_DELAY_DURATION = 5.5f;
     public float dmg;
     public float percent;
     public Vector2 temp;
@@ -44,7 +44,7 @@ public class Helicopter extends Entity {
         this.bladesSpinUpDownTime = 0f;
         this.isPlayer = Constants.isPlayer;
         this.rotation = rotation;
-        this.setDirection(rotation);
+        this.direction = rotation;
         this.image = image;
         this.blades = blades;
         this.bullets = bullets;
@@ -62,7 +62,6 @@ public class Helicopter extends Entity {
         init();
     }
 
-
     public void init() {
         this.planeExploded = new Animation<TextureRegion>(Constants.explosionAnimations[6].getFrameDuration(),Constants.explosionAnimations[6].getKeyFrames());
         this.planeWasHitAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[2].getFrameDuration(),Constants.explosionAnimations[2].getKeyFrames());
@@ -74,8 +73,10 @@ public class Helicopter extends Entity {
         this.mode = FlyingMode.LANDED;
         this.speed = Constants.CARRIER_SPEED;
         this.bladeRotation = 0f;
+        this.generalDelayTime = 0;
         lastFireCannon = System.currentTimeMillis();
         lastFireBomb = System.currentTimeMillis();
+        type = EntityType.HELICOPTER;
     }
 
     public void reset() {
@@ -87,15 +88,14 @@ public class Helicopter extends Entity {
         this.speed = Constants.CARRIER_SPEED;
         this.bladeRotation = 0f;
         Constants.chopperSound.stop();
+        this.generalDelayTime = 0;
         bladesSpinUpDownTime = 0;
         lastFireCannon = System.currentTimeMillis();
         lastFireBomb = System.currentTimeMillis();
+
     }
 
     public void update(float delta) {
-
-
-
         if (wasHit || mode == FlyingMode.CRASHED ) explosionTimer += delta;
 
         if (!isPlayer) doAIFlying(delta);
@@ -186,7 +186,7 @@ public class Helicopter extends Entity {
             }
 
 //            if (health <= 70) {
-//                main.playerDamage.setPosition(position.x+ getImageCenterX(), position.y+getImageCenterY());
+//                main.playerDamage.position(position.x+ getImageCenterX(), position.y+getImageCenterY());
 //                ((ConfigurableEmitter)main.playerDamage.getEmitter(0)).angularOffset.setValue(getRotation()-180);
 //                ((ConfigurableEmitter)main.playerDamage.getEmitter(0)).speed.setMax(120f*(main.gameMap.speed)/Constants.MIN_PLANE_SPEED);
 //                ((ConfigurableEmitter)main.playerDamage.getEmitter(0)).speed.setMin(120f*(main.gameMap.speed)/Constants.MIN_PLANE_SPEED);
@@ -251,7 +251,7 @@ public class Helicopter extends Entity {
             if (generalDelayTime >= 1.0) {
                 generalDelayTime = 0;
                 mode = FlyingMode.TAKING_OFF;
-                Constants. takeOffSound.play();
+                Constants.takeOffSound.play();
             }
             return;
         }
@@ -259,17 +259,17 @@ public class Helicopter extends Entity {
         if (mode == FlyingMode.TAKING_OFF || mode == FlyingMode.LANDING) return;
 
         // Priority = Bombers, low health/bombs/fuel, factories
-        if (Constants.enemyBombers[0].isAttacking() && !Constants.carrier.isDestroyed){
-            setPrimaryTarget(Constants.enemyBombers[0]);
-        } else if (Constants.enemyBombers[1].isAttacking() && !Constants.carrier.isDestroyed) {
-            setPrimaryTarget(Constants.enemyBombers[1]);
+        if (Constants.enemyBombers[0].isAttacking && !Constants.carrier.isDestroyed){
+            primaryTarget = Constants.enemyBombers[0];
+        } else if (Constants.enemyBombers[1].isAttacking && !Constants.carrier.isDestroyed) {
+            primaryTarget = Constants.enemyBombers[1];
         } else if ((fuelCount < 30 || bombCount == 0 || cannonCount == 0 || health < 40) && !Constants.carrier.isDestroyed) {
-            setPrimaryTarget(Constants.carrier);
+            primaryTarget = Constants.carrier;
         } else if (Constants.getRemainingFactories() > 0 ){
              //Attack factory
             for (Factory f: Constants.factories){
                 if (!f.isDestroyed) {
-                    setPrimaryTarget(f);
+                    primaryTarget = f;
                     break;
                 }
             }
@@ -277,17 +277,17 @@ public class Helicopter extends Entity {
 
         }
 
-        temp = new Vector2(getPrimaryTarget().position.x + getPrimaryTarget().image.getRegionWidth()/2*getPrimaryTarget().scale,
-                getPrimaryTarget().position.y + getPrimaryTarget().image.getRegionHeight()/2*getPrimaryTarget().scale);
+        temp = new Vector2(primaryTarget.position.x + primaryTarget.image.getRegionWidth()/2*primaryTarget.scale,
+                primaryTarget.position.y + primaryTarget.image.getRegionHeight()/2*primaryTarget.scale);
         float angleToTarget = (float) Constants.getSignedDegrees(new Vector2(position.x + image.getRegionWidth()/2*scale, position.y + image.getRegionHeight()/2*scale), temp);
         float diff = Constants.calculateDifferenceBetweenAngles(angleToTarget, rotation-180);
 
         if (diff < -2.5)  rotation += +180f * delta;
         else if (diff > 2.5) rotation += -180f * delta;
 
-        if (getPrimaryTarget().type == EntityType.CARRIER) {
-            if (isTargetVisibleOnScreen(getPrimaryTarget()))
-                if (this.intersects(getPrimaryTarget())){
+        if (primaryTarget.type == EntityType.CARRIER) {
+            if (isTargetVisibleOnScreen(primaryTarget))
+                if (this.intersects(primaryTarget)){
                     slowSpeedDown(delta, Constants.MAX_HELICOPTER_SPEED/16);
                     if (this.carrierLandingIntersect()) slowSpeedDown(delta, 0);
                     checkIfYouCanLand();
@@ -297,16 +297,16 @@ public class Helicopter extends Entity {
             else
                 speedUp(delta, Constants.MAX_HELICOPTER_SPEED);
 
-        } else if (getPrimaryTarget().type == EntityType.ENEMY_BOMBER){
-                if (isTargetVisibleOnScreen(getPrimaryTarget())) {
+        } else if (primaryTarget.type == EntityType.ENEMY_BOMBER){
+                if (isTargetVisibleOnScreen(primaryTarget)) {
                     slowSpeedDown(delta, Constants.MAX_HELICOPTER_SPEED / 4);
                     tryToFire("fireCannon");
                 } else {
                     speedUp(delta, Constants.MAX_HELICOPTER_SPEED);
                 }
-        } else if (getPrimaryTarget().type == EntityType.FACTORY) {
-            if (isTargetVisibleOnScreen(getPrimaryTarget()))
-                if (this.intersects(getPrimaryTarget())){
+        } else if (primaryTarget.type == EntityType.FACTORY) {
+            if (isTargetVisibleOnScreen(primaryTarget))
+                if (this.intersects(primaryTarget)){
                     slowSpeedDown(delta, Constants.MAX_HELICOPTER_SPEED / 18);
                     //slowSpeedDown(delta, 0);
                     tryToFire("fireBomb");
@@ -317,7 +317,7 @@ public class Helicopter extends Entity {
                 speedUp(delta, Constants.MAX_HELICOPTER_SPEED);
         } else {
             System.out.println("Do I ever get here?");
-            if (isTargetVisibleOnScreen(getPrimaryTarget())) tryToFire("fireCannon");
+            if (isTargetVisibleOnScreen(primaryTarget)) tryToFire("fireCannon");
         }
     }
 
@@ -327,6 +327,7 @@ public class Helicopter extends Entity {
             Constants.helicopter.speed =  Constants.helicopter.speed + (75f * delta); // speed up if you are below minSpeed
         if (Constants.helicopter.speed < minSpeed && minSpeed == 0) speed = 0;
     }
+
     public void speedUp(float delta, float maxSpeed){
         Constants.helicopter.speed =  Constants.helicopter.speed + (75f * delta);
         if (Constants.helicopter.speed > maxSpeed) Constants.helicopter.speed = maxSpeed;
@@ -342,14 +343,14 @@ public class Helicopter extends Entity {
                 && Constants.helicopter.carrierLandingIntersect()){
             if ((Constants.helicopter.speed <= 20 && Constants.helicopter.speed >= -20)){
                 Constants.helicopter.mode = Helicopter.FlyingMode.LANDING;
-                Constants.stopEngine.play();
+                Constants.stopEngineSound.play();
                 Statistics.numberOfLandings++;
                 Constants.helicopter.fuelCount = Constants.FUEL_CAPACITY;
                 Constants.helicopter.bombCount = Constants.BOMBS_PER_PLANE;
                 Constants.helicopter.cannonCount = Constants.CANNON_ROUNDS;
                 Constants.helicopter.health = Constants.MAX_HIT_POINTS_HELICOPTER;
-                Constants.helicopter.setSpeed(Constants.CARRIER_SPEED);
-                Constants.gameMap.setDirection(Constants.carrier.direction);
+                Constants.helicopter.speed = Constants.CARRIER_SPEED;
+                Constants.gameMap.direction = Constants.carrier.direction;
                 Constants.combatTextList.add(new ScrollingCombatText("LandedOnCarrier" + Statistics.numberOfLandings, 1f, new Vector2(Constants.helicopter.position), ("Repaired, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
             }
         }
@@ -377,35 +378,31 @@ public class Helicopter extends Entity {
         Vector2 old = new Vector2(Constants.gameMap.position);
 
         float carrierY = Constants.carrier.position.y - Constants.gameMap.position.y;
-        Constants.helicopter.setRotation(0);
-        Constants.helicopter.setPosition(
-                new Vector2(Constants.WINDOW_WIDTH/2f - Constants.helicopterTextureRegion.getRegionWidth()*0.125f/2f,
-                        Constants.WINDOW_HEIGHT/2f - Constants.helicopterTextureRegion.getRegionHeight()*0.125f/2f));
-        Constants.gameMap.setPosition(new Vector2(Constants.WINDOW_WIDTH/2 - 200, -carrierY + 65)); //todo
-        Constants.carrier.setPosition(new Vector2(Constants.WINDOW_WIDTH/2 - Constants.carrierTextureRegion.getRegionWidth()*0.2f/2 ,
-                Constants.WINDOW_HEIGHT/2 - Constants.carrierTextureRegion.getRegionHeight()*0.2f/6));
+        Constants.helicopter.rotation = 0;
+        Constants.helicopter.position = new Vector2(Constants.WINDOW_WIDTH/2f - Constants.helicopterTextureRegion.getRegionWidth()*0.125f/2f,
+                                                    Constants.WINDOW_HEIGHT/2f - Constants.helicopterTextureRegion.getRegionHeight()*0.125f/2f);
+        Constants.gameMap.position = new Vector2(Constants.WINDOW_WIDTH/2 - 200, -carrierY + 65); //todo
+        Constants.carrier.position = new Vector2(Constants.WINDOW_WIDTH/2 - Constants.carrierTextureRegion.getRegionWidth()*0.2f/2 ,
+                                                 Constants.WINDOW_HEIGHT/2 - Constants.carrierTextureRegion.getRegionHeight()*0.2f/6);
         Constants.helicopter.reset();
 
         if (old.x < (-Constants.MAP_WIDTH +  Constants.WINDOW_WIDTH/2)) old.x = old.x + Constants.MAP_WIDTH;
 
-        Constants.enemyShip.setPosition(new Vector2((Constants.gameMap.position.x -old.x) + Constants.enemyShip.getPosition().x,
-                (Constants.gameMap.position.y -old.y)  + Constants.enemyShip.getPosition().y));
+        Constants.enemyShip.position = new Vector2((Constants.gameMap.position.x -old.x) + Constants.enemyShip.position.x,
+                (Constants.gameMap.position.y -old.y)  + Constants.enemyShip.position.y);
         for (EnemyFighter p : Constants.enemyFighters) {
-            p.setPosition(
-                    new Vector2((Constants.gameMap.position.x -old.x) + p.getPosition().x,
-                            (Constants.gameMap.position.y -old.y)  + p.getPosition().y));
+            p.position = new Vector2((Constants.gameMap.position.x -old.x) + p.position.x,
+                            (Constants.gameMap.position.y -old.y)  + p.position.y);
         }
 
         for (EnemyBomber p : Constants.enemyBombers) {
-            p.setPosition(
-                    new Vector2((Constants.gameMap.position.x -old.x) + p.getPosition().x,
-                            (Constants.gameMap.position.y -old.y)  + p.getPosition().y));
+            p.position = new Vector2((Constants.gameMap.position.x -old.x) + p.position.x,
+                            (Constants.gameMap.position.y -old.y)  + p.position.y);
         }
 
         for (Projectile p : Constants.projectileList) {
-            p.setPosition(
-                    new Vector2((Constants.gameMap.position.x -old.x) + p.getPosition().x,
-                            (Constants.gameMap.position.y -old.y)  + p.getPosition().y));
+            p.position =new Vector2((Constants.gameMap.position.x -old.x) + p.position.x,
+                            (Constants.gameMap.position.y -old.y)  + p.position.y);
         }
         Constants.combatTextList.add(new ScrollingCombatText("Ready", 1f, new Vector2(Constants.helicopter.position), "READY FOR TAKEOFF!", Color.GREEN, Constants.scrollingCombatFont, true));
     }

@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.entity.ScrollingCombatText;
@@ -59,6 +59,7 @@ public class GameScreen implements Screen {
     private SpriteBatch batch;
     private ListIterator<Projectile> projectiles;
 
+
     // Timers
     public float winDelayTime = 0;
     public float WIN_DELAY_DURATION = 10;
@@ -66,12 +67,11 @@ public class GameScreen implements Screen {
 
 
     public GameScreen() {
-
         // Camera and Viewport
         camera = new OrthographicCamera(Constants.MAP_WIDTH,  Constants.MAP_HEIGHT);
         float aspectRatio = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-        Constants.WINDOW_HEIGHT = (int) ((int) Constants.WINDOW_WIDTH/aspectRatio);
-        viewport = new StretchViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT, camera);
+        Constants.WINDOW_HEIGHT = (int) (Constants.WINDOW_WIDTH/aspectRatio);
+        viewport = new ExtendViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT, camera);
         viewport.apply();
         batch = new SpriteBatch();
 
@@ -94,14 +94,14 @@ public class GameScreen implements Screen {
                         Constants.WINDOW_HEIGHT/2 - Constants.carrierTextureRegion.getRegionHeight()*0.2f/6),  // move heli to bottom of carrier deck
                 0f,
                 Constants.carrierTextureRegion);
-        Constants.helicopter.setSpeed(Constants.carrier.speed);
+        Constants.helicopter.speed = Constants.carrier.speed;
 
         //EnemyShip
         Constants.enemyShip = new EnemyShip("EnemyShip", 0.2f, true,
                 new Vector2(Constants.ENEMY_SHIP_XY[0] + Constants.WINDOW_WIDTH/2 - 200 - Constants.enemyShipTextureRegion.getRegionWidth()*0.2f/2,
                         Constants.ENEMY_SHIP_XY[1]),
                     0f, Constants.enemyShipTextureRegion);
-        Constants.enemyShip.setSpeed(0);
+        Constants.enemyShip.speed = 0;
 
         // Factories
         for (int i =0 ; i < Constants.factories.length; i++){
@@ -147,10 +147,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float deltaTime) {
-
         Gdx.gl.glClearColor(0.53f, 0.81f, 0.92f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         delayTime += deltaTime;
 
         if (!paused) {
@@ -159,7 +157,7 @@ public class GameScreen implements Screen {
             checkGameLogic(deltaTime);
             detectInput(deltaTime);
             Constants.helicopter.update(deltaTime);
-            Constants.gameMap.setSpeed(Constants.helicopter.speed);
+            Constants.gameMap.speed = Constants.helicopter.speed;
             if (!(Constants.helicopter.mode == Helicopter.FlyingMode.FLYING))
                 Constants.gameMap.update(deltaTime, Constants.carrier.rotation);
             else
@@ -245,20 +243,16 @@ public class GameScreen implements Screen {
     }
 
     private void detectInput(float delta) {
-
         // Map Change
         if(Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
             Constants.mapID = 1;
-            Constants.gameMap.setImage(Constants.mapTextureRegion);
+            Constants.gameMap.image = Constants.mapTextureRegion;
         } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
             Constants.mapID = 2;
-            //Constants.gameMap.setImage(Constants.retroMapTextureRegion); // same map
-        } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+            Constants.gameMap.image = Constants.retroMapTextureRegion;
+        } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
             Constants.mapID = 3;
-            Constants.gameMap.setImage(Constants.retroMapTextureRegion);
-        } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_4)){
-            Constants.mapID = 4;
-            Constants.gameMap.setImage(Constants.retroGreenMapTextureRegion);
+            Constants.gameMap.image = Constants.retroGreenMapTextureRegion;
         }
 
         // Pause and Exit
@@ -377,8 +371,8 @@ public class GameScreen implements Screen {
 
         if (Constants.getRemainingFactories() == 0){
             winDelayTime += delta;
-            if (!Constants.youWin.isPlaying()) {
-                Constants.youWin.play();
+            if (!Constants.youWinSound.isPlaying()) {
+                Constants.youWinSound.play();
                 Constants.combatTextList.add(new ScrollingCombatText("BIGWIN", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("YOU HAVE WON!"), Color.GREEN, Constants.scrollingCombatFont, false));
             }
             if (winDelayTime >= WIN_DELAY_DURATION) {
@@ -386,14 +380,10 @@ public class GameScreen implements Screen {
                 Statistics.youWon = true;
                 Statistics.carrierSurvived = !Constants.carrier.isDestroyed && !Constants.carrier.isSinking;;
                 //Constants.drumsSound.play();
-                if (!Constants.carrier.isDestroyed()) Statistics.score = Statistics.score + Constants.SCORE_ENEMY_SHIP_NOT_COMPLETED;
+                if (!Constants.carrier.isDestroyed) Statistics.score = Statistics.score + Constants.SCORE_ENEMY_SHIP_NOT_COMPLETED;
                 if (!Statistics.enemyShipWasCompleted) Statistics.score = Statistics.score + Constants.SCORE_CARRIER_ALIVE;
                 Statistics.score = Statistics.score + (Constants.SCORE_PER_PLANE_REMAINING * Constants.helicopter.livesCount);
-                Constants.oceanSound.stop();
-                Constants.chopperSound.stop();
-                Constants.takeOffSound.stop();
-                Constants.enemyCruise.stop();
-                Constants.fireCannonEffect.stop();
+                Constants.stopAllSounds();
                 exitButton.removeListener(exitButton.getListeners().first());
                 mapButton.removeListener(mapButton.getListeners().first());
                 //pauseButton.removeListener(pauseButton.getListeners().first());
@@ -421,19 +411,16 @@ public class GameScreen implements Screen {
             }
             Constants.helicopter.generalDelayTime += delta;
             if (Constants.helicopter.generalDelayTime >= Constants.helicopter.YOU_CRASHED_DELAY_DURATION) {
-                Constants.helicopter.generalDelayTime = 0;
                 if (Constants.helicopter.livesCount <= 0) {
-                    if (!Constants.drumsSound.isPlaying());
-                    Constants.oceanSound.stop();
-                    Constants.chopperSound.stop();
-                    Constants.takeOffSound.stop();
-                    Constants.enemyCruise.stop();
-                    Constants.fireCannonEffect.stop();
-                    exitButton.removeListener(exitButton.getListeners().first());
-                    mapButton.removeListener(mapButton.getListeners().first());
-                    //pauseButton.removeListener(pauseButton.getListeners().first());
-                    Constants.game.setScreen(new OutcomeScreen());
+                    if (!Constants.drumsSound.isPlaying()) {
+                        Constants.stopAllSounds();
+                        exitButton.removeListener(exitButton.getListeners().first());
+                        mapButton.removeListener(mapButton.getListeners().first());
+                        //pauseButton.removeListener(pauseButton.getListeners().first());
+                        Constants.game.setScreen(new OutcomeScreen());
+                    }
                 } else {
+                    Constants.helicopter.generalDelayTime = 0;
                     Constants.helicopter.updatePositionsAfterCrash();
                     Constants.helicopter.mode = Helicopter.FlyingMode.LANDED;
                 }
@@ -441,19 +428,17 @@ public class GameScreen implements Screen {
         }
     }
 
-
     private void doMobileButtons() {
         // Mobile Stuff
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
         touchDirectionPieMenu = new TouchDirectionPieMenu(viewport);
-        touchDirectionPieMenu.menu.setPosition(Constants.WINDOW_WIDTH - touchDirectionPieMenu.menu.getWidth() - 8, Constants.WINDOW_HEIGHT/2 - touchDirectionPieMenu.menu.getHeight()/2);
-        inputMultiplexer.addProcessor(touchDirectionPieMenu.stage);
+        touchDirectionPieMenu.menu.setPosition(Constants.WINDOW_WIDTH - touchDirectionPieMenu.menu.getWidth() - 8,
+                Constants.WINDOW_HEIGHT/2f - touchDirectionPieMenu.menu.getHeight()/2f);
 
         fireButtonStage = new Stage(viewport);
         fireButton = new Image(Constants.fireButton);
         fireButton.setScale(0.10f);
         fireButton.setColor(1,1,1,0.33f);
-        fireButton.setPosition(8, Constants.WINDOW_HEIGHT*.37f - fireButton.getHeight()/2*fireButton.getScaleY());
+        fireButton.setPosition(8, Constants.WINDOW_HEIGHT*.37f - fireButton.getHeight()/2f*fireButton.getScaleY());
         fireButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -469,8 +454,6 @@ public class GameScreen implements Screen {
             }
         });
         fireButton.setBounds(fireButton.getX(), fireButton.getY(), fireButton.getWidth(), fireButton.getHeight());
-        fireButton.setTouchable(Touchable.enabled);
-        inputMultiplexer.addProcessor(fireButtonStage);
         fireButtonStage.addActor(fireButton);
 
         bombButtonStage = new Stage(viewport);
@@ -492,8 +475,6 @@ public class GameScreen implements Screen {
             }
         });
         bombButton.setBounds(bombButton.getX(), bombButton.getY(), bombButton.getWidth(), bombButton.getHeight());
-        bombButton.setTouchable(Touchable.enabled);
-        inputMultiplexer.addProcessor(bombButtonStage);
         bombButtonStage.addActor(bombButton);
 
         mapButtonStage = new Stage(viewport);
@@ -506,18 +487,15 @@ public class GameScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 mapButton.setColor(1,1,1,0.33f);
-                if (Constants.mapID == 4){
-                    Constants.gameMap.setImage(Constants.mapTextureRegion);
+                if (Constants.mapID == 3){
+                    Constants.gameMap.image = Constants.mapTextureRegion;
                     Constants.mapID = 1;
                 } else if (Constants.mapID == 1){
-                    //Constants.gameMap.setImage(Constants.retroMapTextureRegion); /// same map
+                    Constants.gameMap.image = Constants.retroMapTextureRegion;
                     Constants.mapID = 2;
-                } else if (Constants.mapID == 2){
-                    Constants.gameMap.setImage(Constants.retroMapTextureRegion);
-                    Constants.mapID = 3;
                 } else {
-                    Constants.gameMap.setImage(Constants.retroGreenMapTextureRegion);
-                    Constants.mapID = 4;
+                    Constants.gameMap.image = Constants.retroGreenMapTextureRegion;
+                    Constants.mapID = 3;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
@@ -528,8 +506,6 @@ public class GameScreen implements Screen {
             }
         });
         mapButton.setBounds(mapButton.getX(), mapButton.getY(), mapButton.getWidth(), mapButton.getHeight());
-        mapButton.setTouchable(Touchable.enabled);
-        inputMultiplexer.addProcessor(mapButtonStage);
         mapButtonStage.addActor(mapButton);
 
         exitButtonStage = new Stage(viewport);
@@ -541,13 +517,11 @@ public class GameScreen implements Screen {
         exitButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Constants.oceanSound.stop();
-                Constants.chopperSound.stop();
-                Constants.takeOffSound.stop();
-                Constants.enemyCruise.stop();
-                Constants.fireCannonEffect.stop();
+                Constants.stopAllSounds();
                 exitButton.removeListener(exitButton.getListeners().first());
                 mapButton.removeListener(mapButton.getListeners().first());
+                fireButton.removeListener(fireButton.getListeners().first());
+                bombButton.removeListener(bombButton.getListeners().first());
                 //pauseButton.removeListener(pauseButton.getListeners().first());
                 Constants.game.setScreen(new IntroScreen(true));
                 return super.touchDown(event, x, y, pointer, button);
@@ -558,11 +532,22 @@ public class GameScreen implements Screen {
             }
         });
         exitButton.setBounds(exitButton.getX(), exitButton.getY(), exitButton.getWidth(), exitButton.getHeight());
-        exitButton.setTouchable(Touchable.enabled);
-        inputMultiplexer.addProcessor(exitButtonStage);
         exitButtonStage.addActor(exitButton);
-        
-        Gdx.input.setInputProcessor(inputMultiplexer);
+
+        // Only enable touch events if mobile
+        if (Gdx.app.getType().equals(Application.ApplicationType.Android) || Gdx.app.getType().equals(Application.ApplicationType.iOS)) {
+            InputMultiplexer inputMultiplexer = new InputMultiplexer();
+            bombButton.setTouchable(Touchable.enabled);
+            inputMultiplexer.addProcessor(bombButtonStage);
+            fireButton.setTouchable(Touchable.enabled);
+            inputMultiplexer.addProcessor(fireButtonStage);
+            mapButton.setTouchable(Touchable.enabled);
+            inputMultiplexer.addProcessor(mapButtonStage);
+            exitButton.setTouchable(Touchable.enabled);
+            inputMultiplexer.addProcessor(exitButtonStage);
+            inputMultiplexer.addProcessor(touchDirectionPieMenu.stage);
+            Gdx.input.setInputProcessor(inputMultiplexer);
+        }
     }
 
     private void drawAllMobileButtons() {
@@ -578,11 +563,12 @@ public class GameScreen implements Screen {
         exitButtonStage.draw();
     }
 
-
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
+        viewport.update(width, height);
+        viewport.apply();
         batch.setProjectionMatrix(camera.combined);
+        Constants.gameMap.updateMapSegments();
     }
 
     @Override

@@ -33,10 +33,10 @@ public class Projectile extends Entity {
         this.scale = scale;
         this.elapsedTime = 0;
         this.bombHitNothingAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[3].getFrameDuration(),Constants.explosionAnimations[3].getKeyFrames());
-         setVector1(new Vector2(position));
-         setVector2(new Vector2(position));
-         setVector3(new Vector2(position));
-         setVector4(new Vector2(position));
+         vector1 = new Vector2(position);
+         vector2 = new Vector2(position);
+         vector3 = new Vector2(position);
+         vector4 = new Vector2(position);
          updateVectorsForMovingObjects();
          soundID = -1;
      }
@@ -65,7 +65,7 @@ public class Projectile extends Entity {
         if (rotation >= 360) rotation = rotation - 360;
         if (rotation <= 0) rotation = rotation + 360;
 
-        direction =  getRotation() - 180;
+        direction =  rotation - 180;
     }
 
     public void draw(Batch batch) {
@@ -95,36 +95,31 @@ public class Projectile extends Entity {
 
     // Helper methods
     public void updateEntityForHit(Entity f){
-        int x = f.getHealth();
+        int x = f.health;
         if (type == Type.MY_BOMB) {
-//            main.missleImpact.reset();
-//            main.fireMissleEffect.stop();
             x = x - Constants.BOMB_DAMAGE;
             Statistics.amountOfDamageDealt += Constants.BOMB_DAMAGE;
             Statistics.numberOfBombsLanded++;
             Constants.mediumExplosion.play();
             f.wasHitByBomb = true;
-            f.setWasHit(true);
-            //System.out.println("BOMBED " + f.id   + "  health:" + f.health);
+            f.wasHit = true;
         }
         if (type == Type.MY_BULLET) {
-            //main.m61Sound.stop();
             x = x - Constants.CANNON_DAMAGE;
             Constants.bulletHitLand.play();
             Statistics.amountOfDamageDealt += Constants.CANNON_DAMAGE;
             Statistics.numberOfCannonRoundsLanded++;
-            f.setWasHitByCannon(true);
-            f.setWasHit(true);
-            //System.out.println("Gunned: " + f.id   + "  health:" + f.health);
+            f.wasHitByCannon = true;
+            f.wasHit = true;
         }
-        f.setHealth(x);
+        f.health = x;
     }
 
     public void checkCollisions(float delta) {
         // Enemy Projectiles, do they hit me?
         if (type == Type.AA_GUN_BULLET){
             if(intersects(Constants.helicopter)) {
-                Constants.helicopter.setWasHit(true);
+                Constants.helicopter.wasHit = true;
                 Constants.projectileImpact.play();
                 Statistics.amountOfDamageTaken += Constants.ENEMY_AA_GUN_DAMAGE;
                 Constants.helicopter.health -= Constants.ENEMY_AA_GUN_DAMAGE;
@@ -136,7 +131,7 @@ public class Projectile extends Entity {
             }
         } else if (type == Type.ENEMY_FIGHTER_BULLET){
             if(intersects(Constants.helicopter)) {
-                Constants.helicopter.setWasHit(true);
+                Constants.helicopter.wasHit = true;
                 Constants.projectileImpact.play();
                 Statistics.amountOfDamageTaken += Constants.ENEMY_FIGHTER_GUN_DAMAGE;
                 Constants.helicopter.health -= Constants.ENEMY_FIGHTER_GUN_DAMAGE;
@@ -149,7 +144,7 @@ public class Projectile extends Entity {
         }
         else if (type == Type.ENEMY_CRUISE_MISSILE){
             if(!wasHit && !isDestroyed && intersects(Constants.helicopter) && mainTarget == MainTarget.PLAYER_IS_TARGET) {
-                Constants.helicopter.setWasHit(true);
+                Constants.helicopter.wasHit = true;
                 Constants.projectileImpact.play();
                 Constants.removeProjectileList.add(this);
                 wasHit = true; // added Jan 19
@@ -160,7 +155,7 @@ public class Projectile extends Entity {
                 return;
             }
             if(!wasHit && !isDestroyed && intersects(Constants.carrier) && mainTarget == MainTarget.CARRIER_IS_TARGET) {
-                Constants.carrier.setWasHit(true);
+                Constants.carrier.wasHit = true;
                 Constants.projectileImpact.play();
                 Constants.removeProjectileList.add(this);
                 wasHit = true;  // added Jan 19
@@ -171,7 +166,7 @@ public class Projectile extends Entity {
                 return;
             }
 
-            // My Projectiles - check if I hit stuff
+          // My Projectiles - check if I hit stuff
         } else if (type == Type.MY_BULLET || type == Type.MY_BOMB) {
             if (!Constants.enemyShip.isDestroyed && !Constants.enemyShip.isSinking && Constants.enemyShip.intersects(this)){
                 if (type == Type.MY_BOMB) {
@@ -191,12 +186,12 @@ public class Projectile extends Entity {
             }
 
             for (Factory f : Constants.factories){
-                if (f.isDestroyed()) continue;
+                if (f.isDestroyed) continue;
                 if (type == Type.MY_BULLET) continue;
                 if (f.intersects(this)){
                     updateEntityForHit(f);
-                    if (f.getHealth() < 1) {
-                        f.setDestroyed(true);
+                    if (f.health < 1) {
+                        f.isDestroyed = true;
                         f.wasHitByBomb = true;
                         Constants.bigExplosion.play();
                         Statistics.numberOfFactoriesDestroyed++;
@@ -213,12 +208,12 @@ public class Projectile extends Entity {
 
             // You can shoot down cruise missiles
             for (Projectile f : Constants.projectileList){
-                if (f.isDestroyed() || f.wasHit) continue;
+                if (f.isDestroyed || f.wasHit) continue;
                 if (type == Type.MY_BOMB) continue;
                 if (f.type == Type.ENEMY_CRUISE_MISSILE && f.intersects(this)){
                     updateEntityForHit(f);
-                    if (f.getHealth() < 1) {
-                        f.setWasHit(true);
+                    if (f.health < 1) {
+                        f.wasHit = true;
                         if (f.soundID == -1)
                             f.soundID = Constants.cruiseOutOfFuel.play();
                         Statistics.numberOfCruiseMissilesDestroyed++;
@@ -230,11 +225,11 @@ public class Projectile extends Entity {
                 }
             }
             for (AAGun f : Constants.aaGuns){
-                if (f.isDestroyed()) continue;
+                if (f.isDestroyed) continue;
                 if (f.intersects(this)){
                     updateEntityForHit(f);
-                    if (f.getHealth() < 1) {
-                        f.setDestroyed(true);
+                    if (f.health < 1) {
+                        f.isDestroyed = true;
                         Constants.bigExplosion.play();
                         Statistics.numberOfAAGunsDestroyed++;
                         Statistics.score += Constants.SCORE_AA_GUN;
@@ -245,12 +240,12 @@ public class Projectile extends Entity {
                 }
             }
             for (EnemyFighter f : Constants.enemyFighters) {
-                if (f.isDestroyed()) continue;
+                if (f.isDestroyed) continue;
                 if (!f.isLanded && type == Projectile.Type.MY_BOMB) continue;
                 if (f.intersects(this)) {
                     updateEntityForHit(f);
-                    if (f.getHealth() < 1) {
-                        f.setDestroyed(true);
+                    if (f.health < 1) {
+                        f.isDestroyed = true;
                         Constants.bigExplosion.play();
                         Statistics.numberOfFightersDestroyed++;
                         Statistics.score = Statistics.score + Constants.SCORE_FIGHTER;
@@ -261,12 +256,12 @@ public class Projectile extends Entity {
                 }
             }
             for (EnemyBomber f : Constants.enemyBombers){
-                if (f.isDestroyed()) continue;
+                if (f.isDestroyed) continue;
                 if (!f.isLanded && type == Projectile.Type.MY_BOMB) continue;
                 if (f.intersects(this)){
                     updateEntityForHit(f);
-                    if (f.getHealth() < 1) {
-                        f.setDestroyed(true);
+                    if (f.health < 1) {
+                        f.isDestroyed = true;
                         Constants.bigExplosion.play();
                         Statistics.numberOfBombersDestroyed++;
                         Statistics.score = Statistics.score + Constants.SCORE_BOMBER;
