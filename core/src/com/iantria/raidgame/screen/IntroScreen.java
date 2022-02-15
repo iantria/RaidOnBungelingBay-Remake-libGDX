@@ -69,14 +69,14 @@ public class IntroScreen implements Screen {
     private FrameBuffer fbo;
     private int fboScale;
     private GlyphLayout layout;
-    private  InputMultiplexer inputMultiplexer;
+    private InputMultiplexer inputMultiplexer;
 
     public IntroScreen( boolean isQuick) {
         //Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         Gdx.input.setCursorCatched(false);
         x = 0;
         if (isQuick) introStep = 4;
-        else introStep = 4;
+        else introStep = 1;
 
         if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS){
             fboScale = 4;
@@ -94,8 +94,8 @@ public class IntroScreen implements Screen {
         Statistics.resetScores();
         float aspectRatio = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
         Constants.WINDOW_HEIGHT = (int) (Constants.WINDOW_WIDTH/aspectRatio);
-          viewport = new FitViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-          viewport.apply();
+        viewport = new FitViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+        viewport.apply();
 
         front = new Image(Constants.introScreenFrontApache);
         frontBlade = new Image(Constants.introScreenFrontBlade);
@@ -405,6 +405,7 @@ public class IntroScreen implements Screen {
             demoButtonStage.getViewport().apply();
             demoButtonStage.act();
             demoButtonStage.draw();
+            if (Gdx.graphics.getFramesPerSecond() < Constants.lowestFPS) Constants.lowestFPS = Gdx.graphics.getFramesPerSecond();
 
             if (group3.getActions().size == 0){
                 Gdx.input.setInputProcessor(inputMultiplexer);

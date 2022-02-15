@@ -23,7 +23,11 @@ import com.iantria.raidgame.entity.ScrollingCombatText;
 
 public class Constants {
 
-    public static final String VERSION = "V0.5 RoAB libGDX Alpha";
+    public static final String VERSION = "V0.1";
+    public static final int SEASON = 1;
+    public static int lowestFPS = 1000;
+    public static boolean isNetworkAvailable = false;
+
     public static RaidGame game;
     public static boolean isPlayer;
 
@@ -87,10 +91,10 @@ public class Constants {
 
     //Score
     public static final int SCORE_ENEMY_SHIP = 1000;
-    public static final int SCORE_AA_GUN = 10;
+    public static final int SCORE_AA_GUN = 25;
     public static final int SCORE_FACTORY = 1000;
     public static final int SCORE_BOMBER = 50;
-    public static final int SCORE_CRUISE_MISSILE = 75;
+    public static final int SCORE_CRUISE_MISSILE = 125;
     public static final int SCORE_FIGHTER = 100;
     public static final int SCORE_CARRIER_ALIVE = 1000;
     public static final int SCORE_ENEMY_SHIP_NOT_COMPLETED = 2500;
@@ -118,7 +122,7 @@ public class Constants {
             singlePixelTextureRegion, helicopterIcon, factoryIcon, enemyShipIcon,
             carrierDirectionArrow, introScreenSideApache, introScreenSideApacheBlade, introScreenBackProps,
             introScreenFrontApache, introScreenFrontBlade, introScreenName, introScreenTitle,
-            playButton, demoButton, fireButton, bombButton, exitButton, mapButton, pauseButton,
+            playButton, demoButton, scoresButton, fireButton, bombButton, exitButton, mapButton, pauseButton,
             newspaperLost, newspaperPerfect, newspaperCarrier, newspaperMarginal;
 
     //Music
@@ -148,6 +152,12 @@ public class Constants {
     public static LinkedList<Projectile> removeProjectileList;
     public static LinkedList<ScrollingCombatText> combatTextList = new LinkedList<ScrollingCombatText>();
     public static LinkedList<ScrollingCombatText> removeCombatTextList = new LinkedList<ScrollingCombatText>();
+
+    // Network Services
+    public static String NETWORK_SERVICES_URI = "https://iantria.com/services/";
+    //private static String NETWORK_SERVICES_URI = "http://10.88.111.19/services/"; // test server
+    public static String NETWORK_SERVICES_USAGE_API = NETWORK_SERVICES_URI + "usage.php";  // 1 = start, 2 = end, 3 = reset
+    public static String NETWORK_SERVICES_SCORES_API = NETWORK_SERVICES_URI + "scores.php"; // 1 = save, 2 = get, 3 = truncate
 
     // Timers and Ids
     public static int mapID;

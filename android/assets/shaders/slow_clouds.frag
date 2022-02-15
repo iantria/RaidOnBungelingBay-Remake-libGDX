@@ -9,11 +9,11 @@
 uniform float u_time;
 varying vec2 v_texCoords;
 
-const float cloudscale = 4.5;
-const float speed = 0.025;
+const float cloudscale = 0.2;
+const float speed = 0.02;
 const float clouddark = 0.5;
 const float cloudlight = 0.3;
-const float cloudcover = 0.01;
+const float cloudcover = 0.1;
 const float cloudalpha = 8.0;
 const float skytint = 0.5;
 const vec3 skycolour1 = vec3(0.2, 0.4, 0.6);

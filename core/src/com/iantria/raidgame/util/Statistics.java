@@ -36,7 +36,7 @@ public class Statistics {
 	public static int numberOfTimesAAGunFired;
 	public static int numberOfTimesFighterFired;
 	public static int numberOfTimesCruiseMissileFired;		
-	
+
 	public static void resetScores() {
 		numberOfTimesHitByAAGun = 0;
 		numberOfTimesHitByFighter = 0;

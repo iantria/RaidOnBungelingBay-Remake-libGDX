@@ -63,7 +63,7 @@ public class Helicopter extends Entity {
     }
 
     public void init() {
-        this.planeExploded = new Animation<TextureRegion>(Constants.explosionAnimations[6].getFrameDuration(),Constants.explosionAnimations[6].getKeyFrames());
+        this.planeExploded = new Animation<TextureRegion>(Constants.explosionAnimations[7].getFrameDuration(),Constants.explosionAnimations[7].getKeyFrames());
         this.planeWasHitAnimation = new Animation<TextureRegion>(Constants.explosionAnimations[2].getFrameDuration(),Constants.explosionAnimations[2].getKeyFrames());
         this.livesCount = Constants.NUMBER_OF_LIVES;
         this.health = Constants.MAX_HIT_POINTS_HELICOPTER;
@@ -164,21 +164,21 @@ public class Helicopter extends Entity {
         if (this.mode == FlyingMode.CRASHED){
             if (!planeExploded.isAnimationFinished(explosionTimer)) {
                 batch.draw(planeExploded.getKeyFrame(explosionTimer),
-                        Constants.WINDOW_WIDTH / 2 - planeExploded.getKeyFrame(explosionTimer).getRegionWidth() / 2,
-                        Constants.WINDOW_HEIGHT / 2 - planeExploded.getKeyFrame(explosionTimer).getRegionHeight() / 2);
+                        Constants.WINDOW_WIDTH / 2f - planeExploded.getKeyFrame(explosionTimer).getRegionWidth() / 2f,
+                        Constants.WINDOW_HEIGHT / 2f - planeExploded.getKeyFrame(explosionTimer).getRegionHeight() / 2f);
             }else {
 
             }
         } else {
             // Draw helicopter and blades
-            batch.draw(image, position.x, position.y , image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 + 6, image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, rotation);
-            batch.draw(blades, position.x - 6 , position.y + 12, 210/8/2, 214/8/2, 210/8, 214/8, 1f, 1f, bladeRotation);
+            batch.draw(image, position.x, position.y , image.getRegionWidth()*scale/2f, image.getRegionHeight()*scale/2f + 6, image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, rotation);
+            batch.draw(blades, position.x - 6 , position.y + 12, 210/8/2f, 214/8/2f, 210/8f, 214/8f, 1f, 1f, bladeRotation);
 
             if (wasHit){
                 if (!planeWasHitAnimation.isAnimationFinished(explosionTimer)) {
                     batch.draw(planeWasHitAnimation.getKeyFrame(explosionTimer),
-                            Constants.WINDOW_WIDTH/2  - planeWasHitAnimation.getKeyFrame(explosionTimer).getRegionWidth()/2,
-                            Constants.WINDOW_HEIGHT/2 - planeWasHitAnimation.getKeyFrame(explosionTimer).getRegionHeight()/2);
+                            Constants.WINDOW_WIDTH/2f  - planeWasHitAnimation.getKeyFrame(explosionTimer).getRegionWidth()/2f,
+                            Constants.WINDOW_HEIGHT/2f - planeWasHitAnimation.getKeyFrame(explosionTimer).getRegionHeight()/2f);
                 } else {
                     wasHit = false;
                     explosionTimer = 0;
@@ -216,8 +216,8 @@ public class Helicopter extends Entity {
                 Statistics.numberOfBombsDropped++;
                 Projectile bomb = new Projectile("playerBomb" + bombCount, 0.3f, false,
                         //new Vector2(position.x - 9, position.y + 8), rotation, 0f, bullets, Projectile.Type.MY_BOMB);
-                new Vector2(Constants.WINDOW_WIDTH/2 - bullets.getRegionWidth()*0.3f/2 ,
-                        Constants.WINDOW_HEIGHT/2 - bullets.getRegionHeight()*0.3f/2 ), rotation, 0, Constants.bombTextureRegion, Projectile.Type.MY_BOMB);
+                new Vector2(Constants.WINDOW_WIDTH/2f - bullets.getRegionWidth()*0.3f/2f ,
+                        Constants.WINDOW_HEIGHT/2f - bullets.getRegionHeight()*0.3f/2f ), rotation, 0, Constants.bombTextureRegion, Projectile.Type.MY_BOMB);
                 Constants.projectileList.add(bomb);
             }
         }

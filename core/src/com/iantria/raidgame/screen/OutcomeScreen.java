@@ -3,6 +3,7 @@ package com.iantria.raidgame.screen;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,11 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.NumberUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.iantria.raidgame.util.Constants;
+import com.iantria.raidgame.util.Network;
+import com.iantria.raidgame.util.ScoreManager;
 import com.iantria.raidgame.util.Statistics;
 
 
@@ -33,31 +34,40 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class OutcomeScreen implements Screen {
 
-    private Stage newspaperStage;
-    private Stage topTableStage;
-    private Stage exitButtonStage;
-    private Image exitButton;
-    private Image newsPaperImage;
-    private Viewport viewport;
-    private Table topTable;
-
-    private Outcome outcome;
-    private String outcomeTitle;
     private enum Outcome{
         PERFECT, WIN_CARRIER_LOST, YOU_LOSE, MARGINAL
     }
+    private Outcome outcome;
+
+    private Stage newspaperStage, topTableStage, exitButtonStage, scoresButtonStage;
+    private Image newsPaperImage, exitButton, scoresButton;
+    private Viewport viewport;
+    private Table topTable;
+
+    private String outcomeTitle;
     private ShaderProgram shader;
     private Texture shaderTexture;
     private SpriteBatch batch;
     private FrameBuffer fbo;
+    private GlyphLayout layout, rankLayout;
+    private Network networkSaveUsage;
+    private ScoreManager scoreManager;
+    private InputMultiplexer inputMultiplexer;
+    private float shaderTime, aspectRatio;
     private int fboScale;
-    private GlyphLayout layout;
-    private float shaderTime;
-    private float aspectRatio;
 
     @Override
     public void show() {
         Constants.stopAllSounds();
+
+        // Do network stuff
+        if (Constants.isNetworkAvailable) {
+            networkSaveUsage = new Network(Constants.NETWORK_SERVICES_USAGE_API, "service=2");
+            scoreManager = new ScoreManager();
+            scoreManager.setGameValues();
+            scoreManager.saveScore();
+        }
+
         Constants.drumsOutcomeSound.play();
 
         if (Statistics.numberOfLivesLost == Constants.NUMBER_OF_LIVES){
@@ -90,7 +100,7 @@ public class OutcomeScreen implements Screen {
 
         //Viewport
         aspectRatio = (float) Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-        Constants.WINDOW_HEIGHT = (int) ((int) Constants.WINDOW_WIDTH/aspectRatio);
+        Constants.WINDOW_HEIGHT = (int) (Constants.WINDOW_WIDTH/aspectRatio);
         viewport = new FitViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         viewport.apply();
 
@@ -256,8 +266,9 @@ public class OutcomeScreen implements Screen {
         topTableStage = new Stage(viewport);
         topTableStage.addActor(topTable);
         topTableStage.addAction(sequence(moveTo(5, 0 - Constants.WINDOW_HEIGHT),
-                delay(2f), moveTo(5, Constants.WINDOW_HEIGHT - 5 - topTableStage.getHeight(), 1f)));
+                 moveTo(5, Constants.WINDOW_HEIGHT - 5 - topTableStage.getHeight(), 1f)));
 
+        inputMultiplexer = new InputMultiplexer();
         exitButtonStage = new Stage(viewport);
         exitButton = new Image(Constants.exitButton);
         exitButton.setScale(0.2f);
@@ -269,6 +280,7 @@ public class OutcomeScreen implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Constants.fireworksSound.stop();
                 Constants.fireworksSound.setLooping(false);
+                scoresButton.removeListener(scoresButton.getListeners().first());
                 exitButton.removeListener(exitButton.getListeners().first());
                 Constants.game.setScreen(new IntroScreen(true));
                 return super.touchDown(event, x, y, pointer, button);
@@ -281,7 +293,36 @@ public class OutcomeScreen implements Screen {
         exitButton.setBounds(exitButton.getX(), exitButton.getY(), exitButton.getWidth(), exitButton.getHeight());
         exitButton.setTouchable(Touchable.enabled);
         exitButtonStage.addActor(exitButton);
-        Gdx.input.setInputProcessor(exitButtonStage);
+
+        scoresButtonStage = new Stage(viewport);
+        scoresButton = new Image(Constants.scoresButton);
+        scoresButton.setScale(0.15f);
+        scoresButton.setColor(1,1,1,1);
+        scoresButton.setPosition(Constants.WINDOW_WIDTH - scoresButton.getWidth()*scoresButton.getScaleX() - 5,
+                Constants.WINDOW_HEIGHT*0.65f - scoresButton.getHeight()*scoresButton.getScaleY()/2f);
+        scoresButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Constants.fireworksSound.stop();
+                Constants.fireworksSound.setLooping(false);
+                exitButton.removeListener(exitButton.getListeners().first());
+                scoresButton.removeListener(scoresButton.getListeners().first());
+                Constants.game.setScreen(new HighScoresScreen());
+                return super.touchDown(event, x, y, pointer, button);
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
+        scoresButton.setBounds(scoresButton.getX(), scoresButton.getY(), scoresButton.getWidth(), scoresButton.getHeight());
+        scoresButton.setTouchable(Touchable.enabled);
+        scoresButtonStage.addActor(scoresButton);
+
+        // Set button listeners
+        inputMultiplexer.addProcessor(scoresButtonStage);
+        inputMultiplexer.addProcessor(exitButtonStage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
         // FBO, and Shader
         if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS){
@@ -308,6 +349,11 @@ public class OutcomeScreen implements Screen {
         Constants.HUDFont.getData().setScale(0.15f);
         Constants.HUDFont.setUseIntegerPositions(false);
         layout = new GlyphLayout(Constants.HUDFont, "FPS: 120");
+
+        Constants.HUDLargeFont.getData().setScale(0.15f);
+        Constants.HUDLargeFont.setUseIntegerPositions(false);
+        Constants.HUDLargeFont.setColor(Color.YELLOW);
+        rankLayout = new GlyphLayout(Constants.HUDLargeFont, "RANK: 100");
         //System.out.println("tex:" + shaderTexture.getWidth() + "x" + shaderTexture.getHeight() + "       screen:" + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + "    aspRatio:" + aspectRatio);
     }
 
@@ -335,6 +381,13 @@ public class OutcomeScreen implements Screen {
             Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
                     Constants.WINDOW_WIDTH - exitButton.getWidth()*exitButton.getScaleX() - layout.width - 2,
                     Constants.WINDOW_HEIGHT - layout.height);
+
+            if (Constants.isNetworkAvailable && scoreManager.networkSaveScore != null && scoreManager.networkSaveScore.statusCode == 200) {
+                rankLayout.setText(Constants.HUDLargeFont, "RANK " + scoreManager.networkSaveScore.result);
+                Constants.HUDLargeFont.draw(batch, "RANK " + scoreManager.networkSaveScore.result,
+                        Constants.WINDOW_WIDTH - scoresButton.getWidth()*scoresButton.getScaleX() + (scoresButton.getWidth()*scoresButton.getScaleX() - rankLayout.width)/2f - 5,
+                        Constants.WINDOW_HEIGHT*0.65f + scoresButton.getHeight()*scoresButton.getScaleY() + 4 + rankLayout.height);
+            }
             batch.end();
         }
 
@@ -347,20 +400,28 @@ public class OutcomeScreen implements Screen {
         exitButtonStage.act();
         exitButtonStage.draw();
 
+        if (Constants.isNetworkAvailable && scoreManager.networkSaveScore != null && scoreManager.networkSaveScore.statusCode == 200){
+            scoresButtonStage.act();
+            scoresButtonStage.draw();
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Constants.fireworksSound.stop();
             Constants.fireworksSound.setLooping(false);
             exitButton.removeListener(exitButton.getListeners().first());
+            scoresButton.removeListener(scoresButton.getListeners().first());
             Constants.game.setScreen(new IntroScreen(true));
         }
     }
 
     @Override
     public void resize(int width, int height) {
-        exitButtonStage.getViewport().update(width, height, true);
-        topTableStage.getViewport().update(width, height, true);
-        newspaperStage.getViewport().update(width, height, true);
+        viewport.update(width, height);
         viewport.apply();
+        exitButtonStage.getViewport().update(width, height);
+        topTableStage.getViewport().update(width, height);
+        newspaperStage.getViewport().update(width, height);
+        scoresButtonStage.getViewport().update(width, height);
     }
 
     @Override
@@ -383,5 +444,9 @@ public class OutcomeScreen implements Screen {
         exitButtonStage.dispose();;
         newspaperStage.dispose();
         topTableStage.dispose();
+        scoresButtonStage.dispose();
+        fbo.dispose();
+        shader.dispose();
+        shaderTexture.dispose();
     }
 }

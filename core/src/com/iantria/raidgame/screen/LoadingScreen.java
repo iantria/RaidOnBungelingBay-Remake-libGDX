@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.iantria.raidgame.entity.LoadingBar;
 import com.iantria.raidgame.util.Constants;
+import com.iantria.raidgame.util.Network;
 
 public class LoadingScreen implements Screen {
 
@@ -34,14 +35,17 @@ public class LoadingScreen implements Screen {
     private float percent;
     public AssetManager assetManager = new AssetManager();
     private TextureAtlas textureAtlas;
+    private Network network;
 
     public LoadingScreen() {
-
     }
 
     @Override
     public void show() {
         Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
+
+        network = new Network(Constants.NETWORK_SERVICES_USAGE_API, "service=0");
+
         // Tell the manager to load assets for the loading screen
         assetManager.load("graphics/loading.pack", TextureAtlas.class);
         // Wait until they are finished loading
@@ -180,6 +184,10 @@ public class LoadingScreen implements Screen {
         // Clear the screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if (Constants.isNetworkAvailable == false && network.statusCode == 200) {
+            Constants.isNetworkAvailable = true;
+        }
+
         if (assetManager.update()) { // Load some, will return true if done loading
             //Textures
             textureAtlas = assetManager.get("graphics/images.atlas", TextureAtlas.class);
@@ -215,6 +223,7 @@ public class LoadingScreen implements Screen {
             Constants.introScreenName = new TextureRegion(textureAtlas.findRegion("name"));
             Constants.playButton = new TextureRegion(textureAtlas.findRegion("play_button"));
             Constants.demoButton = new TextureRegion(textureAtlas.findRegion("demo_button"));
+            Constants.scoresButton = new TextureRegion(textureAtlas.findRegion("scores_button"));
             Constants.bombButton = new TextureRegion(textureAtlas.findRegion("bomb_button"));
             Constants.fireButton = new TextureRegion(textureAtlas.findRegion("fire_button"));
             Constants.exitButton = new TextureRegion(textureAtlas.findRegion("exit_button"));
@@ -264,11 +273,12 @@ public class LoadingScreen implements Screen {
                 if (Gdx.input.isTouched()) {
                     // So that audio can work
                     //Constants.game.setScreen(new OutcomeScreen());
-                    Constants.game.setScreen(new IntroScreen(true));
+                    Constants.game.setScreen(new IntroScreen(false));
+                    //Constants.game.setScreen(new GameScreen()); //true = faster
                 }
             } else {
                 //Constants.game.setScreen(new OutcomeScreen());
-                Constants.game.setScreen(new IntroScreen(true)); //true = faster
+                Constants.game.setScreen(new IntroScreen(false)); //true = faster
                 //Constants.game.setScreen(new GameScreen()); //true = faster
             }
         }

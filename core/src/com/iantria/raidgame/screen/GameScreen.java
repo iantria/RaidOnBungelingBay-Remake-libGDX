@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.entity.ScrollingCombatText;
+import com.iantria.raidgame.util.Network;
 import com.iantria.raidgame.util.TouchDirectionPieMenu;
 import com.iantria.raidgame.util.Statistics;
 import com.iantria.raidgame.entity.AAGun;
@@ -59,14 +60,19 @@ public class GameScreen implements Screen {
     private SpriteBatch batch;
     private ListIterator<Projectile> projectiles;
 
-
     // Timers
     public float winDelayTime = 0;
     public float WIN_DELAY_DURATION = 10;
     public float delayTime;
 
+    Network network;
+
 
     public GameScreen() {
+        // Do admin stuff
+        if (Constants.isNetworkAvailable)
+            network = new Network(Constants.NETWORK_SERVICES_USAGE_API, "service=1");
+
         // Camera and Viewport
         camera = new OrthographicCamera(Constants.MAP_WIDTH,  Constants.MAP_HEIGHT);
         float aspectRatio = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
@@ -198,6 +204,7 @@ public class GameScreen implements Screen {
                 }
             }
         }
+        if (Gdx.graphics.getFramesPerSecond() < Constants.lowestFPS) Constants.lowestFPS = Gdx.graphics.getFramesPerSecond();
 
         // ***** Do Draw *****
         camera.update();

@@ -9,7 +9,7 @@
 uniform float u_time;
 varying vec2 v_texCoords;
 
-#define GRID_HEIGHT 400
+#define GRID_HEIGHT 10
 
 const vec3 waterCol=vec3(0.0,0.44,0.8);
 const vec3 highlightCol=vec3(0.5,0.8,1.0);
@@ -48,8 +48,8 @@ void main()
 
     // Gets Offser
     vec2 offset=vec2(0.0);
-    offset.y=-u_time*3.0;
-    offset.x=cos(u_time*0.5)*2.0;
+    offset.y=-u_time*-1.0;
+    offset.x=cos(u_time*0.5)*-0.67;
 
     // Get Height Map
     float h=get_voronoi_noise(uv+offset) + get_voronoi_noise(uv+offset*0.4);
@@ -60,5 +60,5 @@ void main()
     vec3 col=vec3(h)*highlightCol+waterCol;
 
     // Output to screen
-    gl_FragColor = vec4(col,0.65);
+    gl_FragColor = vec4(col,1.0);
 }

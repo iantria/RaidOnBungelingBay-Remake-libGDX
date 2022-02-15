@@ -1,6 +1,7 @@
 package com.iantria.raidgame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.iantria.raidgame.screen.GameScreen;
 import com.iantria.raidgame.screen.LoadingScreen;
 import com.iantria.raidgame.util.Constants;
