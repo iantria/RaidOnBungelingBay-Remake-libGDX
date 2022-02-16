@@ -66,7 +66,7 @@ public class HighScoresScreen implements Screen {
 
         //Viewport
         aspectRatio = (float) Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-        Constants.WINDOW_HEIGHT = (int) ((int) Constants.WINDOW_WIDTH/aspectRatio);
+        Constants.WINDOW_HEIGHT = (int) (Constants.WINDOW_WIDTH/aspectRatio);
         viewport = new FitViewport(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         viewport.apply();
 

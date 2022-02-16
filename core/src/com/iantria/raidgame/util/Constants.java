@@ -123,7 +123,8 @@ public class Constants {
             carrierDirectionArrow, introScreenSideApache, introScreenSideApacheBlade, introScreenBackProps,
             introScreenFrontApache, introScreenFrontBlade, introScreenName, introScreenTitle,
             playButton, demoButton, scoresButton, fireButton, bombButton, exitButton, mapButton, pauseButton,
-            newspaperLost, newspaperPerfect, newspaperCarrier, newspaperMarginal;
+            newspaperLost, newspaperPerfect, newspaperCarrier, newspaperMarginal, helpInfoDesktop,
+            helpInfoMobile;
 
     //Music
     public static Music youWinSound, drumsSound, drumsOutcomeSound, takeOffSound, chopperSound, stopEngineSound,

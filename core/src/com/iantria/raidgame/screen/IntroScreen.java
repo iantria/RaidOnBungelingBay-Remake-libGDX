@@ -228,7 +228,6 @@ public class IntroScreen implements Screen {
         Gdx.gl.glClearColor(0.53f, 0.81f, 0.92f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // fboViewport.apply();
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         fbo.begin();

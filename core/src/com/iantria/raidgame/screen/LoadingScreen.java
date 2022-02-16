@@ -92,6 +92,9 @@ public class LoadingScreen implements Screen {
         assetManager.load("graphics/retro_map.png", Texture.class);
         assetManager.load("graphics/retro_map_green.png", Texture.class);
 
+        assetManager.load("graphics/help_info_v1.png", Texture.class);
+        assetManager.load("graphics/help_info_mobile.png", Texture.class);
+
         //Sounds
         assetManager.load("sounds/jetcrashfuel.ogg", Sound.class);
         assetManager.load("sounds/landhit.ogg", Sound.class);
@@ -192,6 +195,8 @@ public class LoadingScreen implements Screen {
             //Textures
             textureAtlas = assetManager.get("graphics/images.atlas", TextureAtlas.class);
             Constants.enemyShipIcon = new TextureRegion(assetManager.get("graphics/ddgIcon.gif", Texture.class));
+            Constants.helpInfoDesktop = new TextureRegion(assetManager.get("graphics/help_info_v1.png", Texture.class));
+            Constants.helpInfoMobile = new TextureRegion(assetManager.get("graphics/help_info_mobile.png", Texture.class));
 
             Constants.mapTextureRegion = new TextureRegion(assetManager.get("graphics/modernmap.png", Texture.class));
             Constants.retroMapTextureRegion = new TextureRegion(assetManager.get("graphics/retro_map.png", Texture.class));
@@ -268,19 +273,10 @@ public class LoadingScreen implements Screen {
 
             loadExplosionAnimations();
 
-            if (Gdx.app.getType().equals(Application.ApplicationType.WebGL) ||
-                    Gdx.app.getType().equals(Application.ApplicationType.Applet)) {
-                if (Gdx.input.isTouched()) {
-                    // So that audio can work
-                    //Constants.game.setScreen(new OutcomeScreen());
-                    Constants.game.setScreen(new IntroScreen(false));
-                    //Constants.game.setScreen(new GameScreen()); //true = faster
-                }
-            } else {
-                //Constants.game.setScreen(new OutcomeScreen());
-                Constants.game.setScreen(new IntroScreen(false)); //true = faster
-                //Constants.game.setScreen(new GameScreen()); //true = faster
-            }
+            Constants.game.setScreen(new HowToScoresScreen());
+            //Constants.game.setScreen(new OutcomeScreen());
+            //Constants.game.setScreen(new IntroScreen(false));
+            //Constants.game.setScreen(new GameScreen());
         }
 
         // Interpolate the percentage to make it more smooth
