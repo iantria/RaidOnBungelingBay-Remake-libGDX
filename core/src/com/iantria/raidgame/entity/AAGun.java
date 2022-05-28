@@ -24,7 +24,7 @@ public class AAGun extends Entity {
     public void init() {
         health = Constants.ENEMY_AA_GUN_HEALTH;
         isDestroyed = false;
-        refireInterval = Constants.ENEMY_AA_GUN_FIRING_INTERVAL + Constants.random.nextFloat()*2;
+        //refireInterval = Constants.ENEMY_AA_GUN_FIRING_INTERVAL - (RadarSite.numberOfLockedOnRadars*0.25f);
         vector1 = new Vector2(position);
         vector2 = new Vector2(position);
         vector3 = new Vector2(position);
@@ -64,7 +64,7 @@ public class AAGun extends Entity {
 
         if (!isDestroyed && !isReadyToFire &&
                 !(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED) &&
-                (elapsedTime >= refireInterval)) {
+                (elapsedTime >= Constants.ENEMY_AA_GUN_FIRING_INTERVAL - (RadarSite.numberOfLockedOnRadars*0.25f))) {
             elapsedTime = 0;
             isReadyToFire = true;
         }

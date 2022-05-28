@@ -3,6 +3,7 @@
 <module rename-to="html">
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 	<inherits name="space.earlygrey.shapedrawer"/>
+	<inherits name="com.rafaskoberg.gdx.typinglabel.typinglabel" />
 	<inherits name="PieMenu"/>  <!-- add this line -->
 	<inherits name='RaidGame' />
 	<entry-point class='com.iantria.raidgame.client.HtmlLauncher' />

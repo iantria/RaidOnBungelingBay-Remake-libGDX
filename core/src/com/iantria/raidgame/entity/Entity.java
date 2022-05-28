@@ -15,7 +15,7 @@ public class Entity  {
     public String id;
 
     public enum EntityType {
-        FACTORY, AA_GUN, ENEMY_BOMBER, ENEMY_FIGHTER, HELICOPTER, CARRIER, CRUISE_MISSILE, FIGHTER_BULLET, MY_BULLET, MY_BOMB
+        FACTORY, AA_GUN, ENEMY_BOMBER, ENEMY_FIGHTER, HELICOPTER, CARRIER, CRUISE_MISSILE, FIGHTER_BULLET, MY_BULLET, MY_BOMB, RADAR_SITE
     }
     public EntityType type;
 
@@ -31,7 +31,7 @@ public class Entity  {
 
     // Timers
     public float elapsedTime;
-    public float refireInterval;
+    //public float refireInterval;
     public float refireElapsedTime;
     public float respawnElapsedTime;
     public float respawnTime;

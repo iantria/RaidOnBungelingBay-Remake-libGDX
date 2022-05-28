@@ -239,6 +239,27 @@ public class Projectile extends Entity {
                     return;
                 }
             }
+
+
+            for (RadarSite f : Constants.radarSites){
+                if (f.isDestroyed) continue;
+                if (f.intersects(this)){
+                    updateEntityForHit(f);
+                    if (f.health < 1) {
+                        f.isDestroyed = true;
+                        Constants.bigExplosion.play();
+                        Statistics.numberOfRadarsDestroyed++;
+                        Statistics.score += Constants.SCORE_RADAR_SITE;
+                        Constants.combatTextList.add(new ScrollingCombatText("RadarSiteScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_RADAR_SITE + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
+                        RadarSite.numberOfLockedOnRadars--;
+                    }
+                    Constants.removeProjectileList.add(this);
+                    return;
+                }
+            }
+
+
+
             for (EnemyFighter f : Constants.enemyFighters) {
                 if (f.isDestroyed) continue;
                 if (!f.isLanded && type == Projectile.Type.MY_BOMB) continue;

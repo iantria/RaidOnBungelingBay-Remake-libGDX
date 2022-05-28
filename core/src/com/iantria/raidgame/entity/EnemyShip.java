@@ -45,7 +45,7 @@ public class EnemyShip extends Entity {
 		vector3 = new Vector2(position);
 		vector4 = new Vector2(position);
 		explosionIndex = 4;
-    	refireInterval = Constants.ENEMY_CRUISE_MISSILE_FIRING_INTERVAL;
+    	//refireInterval = Constants.ENEMY_CRUISE_MISSILE_FIRING_INTERVAL;
     	updateVectorsForMovingObjects();
     	soundId = -1;
 	}
@@ -65,6 +65,9 @@ public class EnemyShip extends Entity {
 
 
 	public void update(float delta) {
+
+		if (speed != 0) Constants.enemyShipWakeEffect.update(delta);
+
     	position.x = position.x - Constants.map_dx;
     	position.y = position.y - Constants.map_dy;
 		
@@ -83,7 +86,6 @@ public class EnemyShip extends Entity {
         	}
         }
 
-
         if(isSinking){
 			explosionElapsedTime += delta;
 			if(explosionElapsedTime > 6) {
@@ -101,7 +103,7 @@ public class EnemyShip extends Entity {
 
     	elapsedTime += delta;
         if (isAttacking && !isSinking && !isDestroyed && !isReadyToFire
-        		&& !(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED) && (elapsedTime >= refireInterval)) {
+        		&& !(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED) && (elapsedTime >= Constants.ENEMY_SHIP_FIRING_INTERVAL)) {
         	elapsedTime = 0;
         	isReadyToFire = true;  // Cruise Missile
         }
@@ -214,6 +216,12 @@ public class EnemyShip extends Entity {
 				explosionElapsedTime = 0;
 			}
        } else {
+
+        	if (speed != 0 ) {
+				Constants.enemyShipWakeEffect.setPosition(vector1.x + image.getRegionWidth() * scale, vector1.y + image.getRegionHeight() * scale / 2);
+				Constants.enemyShipWakeEffect.draw(batch);
+			}
+
 			batch.draw(image, vector1.x, vector1.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 			batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 			batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);

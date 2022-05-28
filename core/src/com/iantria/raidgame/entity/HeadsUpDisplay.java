@@ -30,7 +30,7 @@ public class HeadsUpDisplay {
 
         // Bombs
         setTextAndLayout("Bombs:", Constants.HUDFont, 0.10f);
-        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 57, Constants.WINDOW_HEIGHT - 4);
+        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 56, Constants.WINDOW_HEIGHT - 4);
         if (Constants.helicopter.bombCount > 6) {
             color = Color.GREEN;
         } else if (Constants.helicopter.bombCount > 4) {
@@ -42,17 +42,17 @@ public class HeadsUpDisplay {
         }
         int spacing = (50 - Constants.BOMBS_PER_PLANE * 2) / Constants.BOMBS_PER_PLANE;
         for (int i = 0; i < Constants.helicopter.bombCount; i++) {
-            shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 54 + ((spacing + 3) * i), Constants.WINDOW_HEIGHT - 8 - 2, spacing, 6, color);
+            shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 53 + ((spacing + 3) * i), Constants.WINDOW_HEIGHT - 8 - 2, spacing, 6, color);
             //shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 115 + ((spacing + 3) * i),3 + 12, spacing, 15, color);
         }
         color = Color.WHITE;
         for (int i = 0; i < Constants.BOMBS_PER_PLANE; i++) {
-            shapeDrawer.rectangle(Constants.WINDOW_WIDTH - 54 + ((spacing + 3) * i), Constants.WINDOW_HEIGHT - 8 - 2, spacing, 6, color);
+            shapeDrawer.rectangle(Constants.WINDOW_WIDTH - 53 + ((spacing + 3) * i), Constants.WINDOW_HEIGHT - 8 - 2, spacing, 6, color);
         }
 
         // Cannon
         setTextAndLayout("Cannon:", Constants.HUDFont, 0.10f);
-        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 57, Constants.WINDOW_HEIGHT - 14);
+        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 56, Constants.WINDOW_HEIGHT - 14);
         float f = ((float) Constants.helicopter.cannonCount / (float) Constants.CANNON_ROUNDS) * 50f;
         if (f > 35) {
             color = Color.GREEN;
@@ -63,13 +63,13 @@ public class HeadsUpDisplay {
         } else {
             color = Color.RED;
         }
-        shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 54, Constants.WINDOW_HEIGHT - 20, f, 6, color);
-        shapeDrawer.rectangle(Constants.WINDOW_WIDTH - 54, Constants.WINDOW_HEIGHT - 20, 50, 6, Color.WHITE);
+        shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 53, Constants.WINDOW_HEIGHT - 20, f, 6, color);
+        shapeDrawer.rectangle(Constants.WINDOW_WIDTH - 53, Constants.WINDOW_HEIGHT - 20, 50, 6, Color.WHITE);
 
         // Fuel
         f = (float) Constants.helicopter.fuelCount * 50f / (float) Constants.FUEL_CAPACITY;
         setTextAndLayout("Fuel:", Constants.HUDFont, 0.10f);
-        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 57, Constants.WINDOW_HEIGHT - 24);
+        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 56, Constants.WINDOW_HEIGHT - 24);
         if (f > 35) {
             color = Color.GREEN;
         } else if (f > 25) {
@@ -79,14 +79,14 @@ public class HeadsUpDisplay {
         } else {
             color = Color.RED;
         }
-        shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 54, Constants.WINDOW_HEIGHT - 30, f, 6, color);
-        shapeDrawer.rectangle(Constants.WINDOW_WIDTH - 54, Constants.WINDOW_HEIGHT - 30, 50, 6, Color.WHITE);
+        shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 53, Constants.WINDOW_HEIGHT - 30, f, 6, color);
+        shapeDrawer.rectangle(Constants.WINDOW_WIDTH - 53, Constants.WINDOW_HEIGHT - 30, 50, 6, Color.WHITE);
 
         // Plane Health
         if (Constants.helicopter.health < 0) Constants.helicopter.health = 0;
         f = (float) Constants.helicopter.health * 50f / (float) Constants.MAX_HIT_POINTS_HELICOPTER;
         setTextAndLayout("Health:", Constants.HUDFont, 0.10f);
-        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 57, Constants.WINDOW_HEIGHT - 34);
+        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 56, Constants.WINDOW_HEIGHT - 34);
         if (f > 35) {
             color = Color.GREEN;
         } else if (f > 25) {
@@ -96,40 +96,45 @@ public class HeadsUpDisplay {
         } else {
             color = Color.RED;
         }
-        shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 54, Constants.WINDOW_HEIGHT - 40, f, 6, color);
-        shapeDrawer.rectangle(Constants.WINDOW_WIDTH - 54, Constants.WINDOW_HEIGHT - 40, 50, 6, Color.WHITE);
+        shapeDrawer.filledRectangle(Constants.WINDOW_WIDTH - 53, Constants.WINDOW_HEIGHT - 40, f, 6, color);
+        shapeDrawer.rectangle(Constants.WINDOW_WIDTH - 53, Constants.WINDOW_HEIGHT - 40, 50, 6, Color.WHITE);
 
         // Lives
         for (int i = 0; i < Constants.helicopter.livesCount - 1; i++) {
-            batch.draw(Constants.helicopterIcon, 3 + i * 20, Constants.WINDOW_HEIGHT - 20, Constants.helicopterIcon.getRegionWidth() / 12, Constants.helicopterIcon.getRegionHeight() / 16);
+            batch.draw(Constants.helicopterIcon, 2 + i * 20, Constants.WINDOW_HEIGHT - 20, Constants.helicopterIcon.getRegionWidth() / 12, Constants.helicopterIcon.getRegionHeight() / 16);
         }
 
         // Factories
         for (int i = 0; i < Constants.getRemainingFactories(); i++) {
-            batch.draw(Constants.factoryIcon, 3 + i * 12, Constants.WINDOW_HEIGHT - 32, Constants.factoryIcon.getRegionWidth() / 3, Constants.factoryIcon.getRegionHeight() / 3);
+            batch.draw(Constants.factoryIcon, 2 + i * 12, Constants.WINDOW_HEIGHT - 32, Constants.factoryIcon.getRegionWidth() / 3, Constants.factoryIcon.getRegionHeight() / 3);
         }
+
+        // Radars locked ON
+        batch.draw(Constants.radarIcon, 2, Constants.WINDOW_HEIGHT - 51, Constants.radarIcon.getRegionWidth() / 20, Constants.radarIcon.getRegionHeight() / 20);
+        setTextAndLayout("" + RadarSite.numberOfLockedOnRadars, Constants.HUDFont, 0.125f);
+        Constants.HUDFont.draw(batch, text, 16, Constants.WINDOW_HEIGHT - 41);
 
         //Enemy Ship
         temp = (float) Constants.enemyShip.health / (float) Constants.ENEMY_SHIP_HEALTH * 100f;
         if (!Constants.enemyShip.isDestroyed && !Constants.enemyShip.isSinking && !Constants.enemyShip.isAttacking) {
-            setTextAndLayout("Enemy Ship is " + temp.intValue() + "% Constructed", Constants.HUDFont, 0.10f);
-            Constants.HUDFont.draw(batch, text, 3, 7);
+            setTextAndLayout("Enemy Ship is " + temp.intValue() + "% Complete", Constants.HUDFont, 0.10f);
+            Constants.HUDFont.draw(batch, text, 2, 7);
         } else if (Constants.enemyShip.isDestroyed) {
             setTextAndLayout("Enemy Ship Destroyed", Constants.HUDFont, 0.10f);
-            Constants.HUDFont.draw(batch, text, 3, 7);
+            Constants.HUDFont.draw(batch, text, 2, 7);
         } else {
             batch.setColor(Color.RED);
             setTextAndLayout("Enemy Ship Completed", Constants.HUDFont, 0.10f);
-            Constants.HUDFont.draw(batch, text, 3, 7);
+            Constants.HUDFont.draw(batch, text, 2, 7);
             batch.setColor(Color.WHITE);
         }
 
         enemyClippedEnemyShip = new TextureRegion(Constants.enemyShipIcon.getTexture(),0,0,
                 (int)(Constants.enemyShipIcon.getTexture().getWidth()*temp/100), // Clip!
                 Constants.enemyShipIcon.getTexture().getHeight());
-        batch.draw(Constants.enemyShipIcon, 4, 10, Constants.enemyShipIcon.getRegionWidth() / 3, Constants.enemyShipIcon.getRegionHeight() / 3);
+        batch.draw(Constants.enemyShipIcon, 3, 10, Constants.enemyShipIcon.getRegionWidth() / 3, Constants.enemyShipIcon.getRegionHeight() / 3);
         batch.setColor(Color.RED);
-        batch.draw(enemyClippedEnemyShip, 4, 10, enemyClippedEnemyShip.getRegionWidth() / 3, enemyClippedEnemyShip.getRegionHeight() / 3);
+        batch.draw(enemyClippedEnemyShip, 3, 10, enemyClippedEnemyShip.getRegionWidth() / 3, enemyClippedEnemyShip.getRegionHeight() / 3);
           // Another way to clip
         //        batch.draw(Constants.enemyShipIcon.getTexture(), 4, 10,
 //                Constants.enemyShipIcon.getRegionWidth() / 3f * (float) Constants.enemyShip.health / (float) Constants.ENEMY_SHIP_HEALTH,
@@ -146,10 +151,10 @@ public class HeadsUpDisplay {
 
         //Score
         setTextAndLayout("Score:", Constants.HUDFont, 0.10f);
-        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 66, 8);
+        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 65, 8);
         String s = "000000".substring(Integer.toString(Statistics.score).length(), 6);
         setTextAndLayout(s + Statistics.score, Constants.HUDLargeFont, 0.25f);
-        Constants.HUDLargeFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 5, 14);
+        Constants.HUDLargeFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 4, 14);
 
         // Carrier Poistion HUD
         if (!Constants.carrier.isDestroyed){

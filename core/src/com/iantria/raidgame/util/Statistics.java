@@ -74,6 +74,7 @@ public class Statistics {
 		amountOfCarrierDamageTaken = 0;
 		amountOfFuelUsed = 0;
 		gameTime = 0;
+
 	}
 	
 }

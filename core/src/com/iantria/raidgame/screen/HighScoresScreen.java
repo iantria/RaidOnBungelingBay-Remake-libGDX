@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -25,7 +24,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Score;
 import com.iantria.raidgame.util.ScoreManager;
-import com.iantria.raidgame.util.Statistics;
+import com.rafaskoberg.gdx.typinglabel.TypingConfig;
+import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 
 import java.util.LinkedList;
@@ -34,8 +34,8 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class HighScoresScreen implements Screen {
 
-    private Stage  topTableStage, exitButtonStage;
-    private Image  exitButton;
+    private Stage topTableStage, exitButtonStage;
+    private Image exitButton;
     private Viewport viewport;
     private Table topTable;
 
@@ -49,7 +49,9 @@ public class HighScoresScreen implements Screen {
     private int fboScale;
     private int updateTable = 0;
     private LinkedList<Score> scores;
-    private Label.LabelStyle labelSmallStyle;
+    private TypingLabel.LabelStyle labelSmallStyle;
+    private static final String GREEN = "{COLOR=GREEN}";
+    private static final String RED = "{COLOR=RED}";
 
     @Override
     public void show() {
@@ -63,6 +65,9 @@ public class HighScoresScreen implements Screen {
         }
 
         Constants.drumsOutcomeSound.play();
+        TypingConfig.DEFAULT_SPEED_PER_CHAR = 0.1f;
+        TypingConfig.DEFAULT_WAIT_VALUE = 1.0f;
+        TypingConfig.CHAR_LIMIT_PER_FRAME = 1;
 
         //Viewport
         aspectRatio = (float) Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
@@ -71,21 +76,21 @@ public class HighScoresScreen implements Screen {
         viewport.apply();
 
         //topTable
-        Label.LabelStyle labelLargeStyle = new Label.LabelStyle();
+        TypingLabel.LabelStyle labelLargeStyle = new TypingLabel.LabelStyle();
         BitmapFont myFont = new BitmapFont(Constants.HUDLargeFont.getData().fontFile);
         labelLargeStyle.font = myFont;
         labelLargeStyle.font.getData().setScale(0.3f);
         labelLargeStyle.font.setUseIntegerPositions(false);
         labelLargeStyle.fontColor = Color.YELLOW;
 
-        labelSmallStyle = new Label.LabelStyle();
+        labelSmallStyle = new TypingLabel.LabelStyle();
         BitmapFont myFont2 = new BitmapFont(Constants.HUDFont.getData().fontFile);
         labelSmallStyle.font = myFont2;
         labelSmallStyle.font.setUseIntegerPositions(false);
-        labelSmallStyle.font.getData().setScale(0.10f);
+        labelSmallStyle.font.getData().setScale(0.125f);
         labelSmallStyle.fontColor = Color.WHITE;
 
-        Label titleLabel = new Label("HIGH SCORES", labelLargeStyle);
+        TypingLabel titleTypingLabel = new TypingLabel("{COLOR=YELLOW}{WAIT}{WAVE}HIGH SCORES", labelLargeStyle);
 
         topTable = new Table();
         topTable.setFillParent(true);
@@ -94,21 +99,20 @@ public class HighScoresScreen implements Screen {
         //defaults
         topTable.top().left().setWidth(Constants.WINDOW_WIDTH - 5);
         topTable.defaults().center().pad(1,5,1,5);
-        topTable.add(titleLabel).colspan(9).left();
-        topTable.row().pad(1,5,6,5);
-        topTable.add(new Label("Name", labelSmallStyle));
-        topTable.add(new Label("Device", labelSmallStyle));
-        topTable.add(new Label("Score", labelSmallStyle));
-        topTable.add(new Label("Won?", labelSmallStyle));
-        topTable.add(new Label("Game Time", labelSmallStyle));
-        topTable.add(new Label("Carrier Lost", labelSmallStyle));
-        topTable.add(new Label("Heli Lost", labelSmallStyle));
-        topTable.add(new Label("Ship Completed", labelSmallStyle));
-        topTable.add(new Label("Date", labelSmallStyle));
+        topTable.add(titleTypingLabel).colspan(9).left();
+        topTable.row().pad(1,5,8,5);
+        topTable.add(new TypingLabel("Name", labelSmallStyle));
+        topTable.add(new TypingLabel("Device", labelSmallStyle));
+        topTable.add(new TypingLabel("Score", labelSmallStyle));
+        topTable.add(new TypingLabel("Won?", labelSmallStyle));
+        topTable.add(new TypingLabel("Game Time", labelSmallStyle));
+        topTable.add(new TypingLabel("Carrier Lost", labelSmallStyle));
+        topTable.add(new TypingLabel("Heli Lost", labelSmallStyle));
+        topTable.add(new TypingLabel("Ship Comp", labelSmallStyle));
+        topTable.add(new TypingLabel("Date", labelSmallStyle));
         topTableStage = new Stage(viewport);
         topTableStage.addActor(topTable);
-        topTableStage.addAction(sequence(moveTo(5, 0 - Constants.WINDOW_HEIGHT),
-                moveTo(5, Constants.WINDOW_HEIGHT - 5 - topTableStage.getHeight(), 1f)));
+        topTableStage.addAction(sequence(fadeOut(0f), moveTo(5, Constants.WINDOW_HEIGHT - 5 - topTableStage.getHeight(), 0f), fadeIn(1.0f)));
 
         exitButtonStage = new Stage(viewport);
         exitButton = new Image(Constants.exitButton);
@@ -157,7 +161,7 @@ public class HighScoresScreen implements Screen {
         if (!shader.isCompiled()) {
             System.out.println("Error compiling shader: " + shader.getLog());
         }
-        Constants.HUDFont.getData().setScale(0.15f);
+        Constants.HUDFont.getData().setScale(0.12f);
         Constants.HUDFont.setUseIntegerPositions(false);
         layout = new GlyphLayout(Constants.HUDFont, "FPS: 120");
         //System.out.println("tex:" + shaderTexture.getWidth() + "x" + shaderTexture.getHeight() + "       screen:" + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + "    aspRatio:" + aspectRatio);
@@ -195,24 +199,23 @@ public class HighScoresScreen implements Screen {
             scores = scoreManager.getHighScoresList();
             for (Score s : scores){
                 topTable.row();
-                //topTable.add(new Label("" + convertToBoolean(s.isPlayer), labelSmallStyle));
-                topTable.add(new Label(s.name, labelSmallStyle));
-                topTable.add(new Label(s.deviceType, labelSmallStyle));
-                topTable.add(new Label("" + s.score, labelSmallStyle));
-                topTable.add(new Label(convertToBoolean(s.isWin), labelSmallStyle));
+                topTable.add(new TypingLabel(s.name, labelSmallStyle));
+                topTable.add(new TypingLabel(s.deviceType, labelSmallStyle));
+                topTable.add(new TypingLabel("{WAIT}{RAINBOW}" + s.score, labelSmallStyle));
+                topTable.add(new TypingLabel(convertToBoolean(s.isWin, false), labelSmallStyle));
 
                 int seconds = (int) (s.timeToWin) % 60;
                 int minutes = (int) (s.timeToWin / (60f) % 60);
                 int hours   = (int) (s.timeToWin / (60f * 60f) % 24);
                 if (hours == 0)
-                    topTable.add(new Label( minutes + " min " + seconds + " sec", labelSmallStyle));
+                    topTable.add(new TypingLabel( minutes + " min " + seconds + " sec", labelSmallStyle));
                 else
-                    topTable.add(new Label(hours + " hr " + minutes + " min " + seconds + " sec", labelSmallStyle));
+                    topTable.add(new TypingLabel(hours + " hr " + minutes + " min " + seconds + " sec", labelSmallStyle));
 
-                topTable.add(new Label(convertToBoolean(s.isCarrierLost), labelSmallStyle));
-                topTable.add(new Label("" + s.helicoptersLost, labelSmallStyle));
-                topTable.add(new Label(convertToBoolean(s.isEnemyShipCompleted), labelSmallStyle));
-                topTable.add(new Label(s.date, labelSmallStyle));
+                topTable.add(new TypingLabel(convertToBoolean(s.isCarrierLost, true), labelSmallStyle));
+                topTable.add(new TypingLabel("" + s.helicoptersLost, labelSmallStyle));
+                topTable.add(new TypingLabel(convertToBoolean(s.isEnemyShipCompleted, true), labelSmallStyle));
+                topTable.add(new TypingLabel(s.date, labelSmallStyle));
             }
             updateTable = 1;
         }
@@ -257,12 +260,23 @@ public class HighScoresScreen implements Screen {
     public void dispose() {
         exitButtonStage.dispose();;
         topTableStage.dispose();
+        batch.dispose();
+        fbo.dispose();
+        shader.dispose();
+        shaderTexture.dispose();
     }
 
-    public String convertToBoolean(int i) {
-        if (i == 1)
-            return "YES";
-        else
-            return "NO";
+    public String convertToBoolean(int i, boolean colorSwitch) {
+        if (i == 1) {
+            if (colorSwitch)
+                return "{COLOR=RED}YES";
+            else
+                return "{COLOR=GREEN}YES";
+        } else {
+            if (colorSwitch)
+                return "{COLOR=GREEN}NO";
+            else
+                return "{COLOR=RED}NO";
+        }
     }
 }

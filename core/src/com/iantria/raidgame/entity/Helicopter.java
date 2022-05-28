@@ -204,7 +204,7 @@ public class Helicopter extends Entity {
     public void tryToFire(String weapon) {
         if (mode == FlyingMode.LANDED || mode == FlyingMode.LANDING || mode == FlyingMode.TAKING_OFF || mode == FlyingMode.CRASHED) return;
         if (weapon.equals("fireBomb")){
-            if (System.currentTimeMillis() - lastFireBomb < Constants.FIRING_INTERVAL_BOMB) {
+            if (System.currentTimeMillis() - lastFireBomb < Constants.MY_BOMB_FIRING_INTERVAL) {
                 return;
             }
             if (bombCount > 0) {
@@ -223,7 +223,7 @@ public class Helicopter extends Entity {
         }
 
         if (weapon.equals("fireCannon")){
-            if (System.currentTimeMillis() - lastFireCannon < Constants.FIRING_INTERVAL_CANNON) {
+            if (System.currentTimeMillis() - lastFireCannon < Constants.MY_CANNON_FIRING_INTERVAL) {
                 return;
             }
             if (cannonCount > 0 ) {

@@ -1,6 +1,5 @@
 package com.iantria.raidgame.screen;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.iantria.raidgame.entity.LoadingBar;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Network;
+import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class LoadingScreen implements Screen {
 
@@ -85,6 +86,7 @@ public class LoadingScreen implements Screen {
 
         //set up the texture atlas for Game
         assetManager.load("graphics/explosions.png", Texture.class);
+        assetManager.load("graphics/radar_anim.png", Texture.class);
         assetManager.load("graphics/images.atlas", TextureAtlas.class);
         assetManager.load("graphics/ddgIcon.gif", Texture.class);
 
@@ -111,6 +113,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("sounds/bombdrop2.mp3", Sound.class);
         assetManager.load("sounds/MissleLaunch.ogg", Sound.class);
         assetManager.load("sounds/m61.ogg", Sound.class);
+        assetManager.load("sounds/radar_beep.mp3", Sound.class);
 
         //Large Sounds (>100KB)
         assetManager.load("sounds/youwin.ogg", Music.class);
@@ -172,6 +175,20 @@ public class LoadingScreen implements Screen {
             }
             Constants.explosionAnimations[i] = new Animation<>(1 / 16f, textureLine);  // todo
         }
+    }
+
+    private void loadRadarAnimation() {
+        Texture x = assetManager.get("graphics/radar_anim.png", Texture.class);
+
+        //split texture
+        TextureRegion[][] textureLines = TextureRegion.split(x, 250, 255);
+
+        TextureRegion[] textureLine = new TextureRegion[4];
+        for (int j = 0; j < 4; j++) {
+            textureLine[j] = textureLines[0][j];
+        }
+        Constants.radarAnimation = new Animation<>(1 / 4f, textureLine);  // todo
+        Constants.radarAnimation.setPlayMode(PlayMode.LOOP_PINGPONG);
     }
 
     @Override
@@ -238,6 +255,7 @@ public class LoadingScreen implements Screen {
             Constants.newspaperCarrier = new TextureRegion(textureAtlas.findRegion("victory_carrier_lost"));
             Constants.newspaperMarginal = new TextureRegion(textureAtlas.findRegion("victory_not_perfect"));
             Constants.newspaperPerfect = new TextureRegion(textureAtlas.findRegion("victory_perfect"));
+            Constants.radarIcon = new TextureRegion(textureAtlas.findRegion("radar_icon"));
 
             //Sounds
             Constants.outOfFuelCrashSound = assetManager.get("sounds/jetcrashfuel.ogg", Sound.class);
@@ -255,6 +273,7 @@ public class LoadingScreen implements Screen {
             Constants.singleBombDrop = assetManager.get("sounds/bombdrop2.mp3", Sound.class);
             Constants.fireMissileEffect = assetManager.get("sounds/MissleLaunch.ogg", Sound.class);
             Constants.m61Sound = assetManager.get("sounds/m61.ogg", Sound.class);
+            Constants.radarBeep = assetManager.get("sounds/radar_beep.mp3", Sound.class);
 
             // Long sounds (>100kB)
             Constants.youWinSound = assetManager.get("sounds/youwin.ogg", Music.class);
@@ -271,10 +290,21 @@ public class LoadingScreen implements Screen {
             Constants.HUDFont = assetManager.get("graphics/font2.fnt", BitmapFont.class);
             Constants.HUDLargeFont = assetManager.get("graphics/font3.fnt", BitmapFont.class);
 
-            loadExplosionAnimations();
+            // Particle Effects
+            Constants.carrierWakeEffect = new ParticleEffect();
+            Constants.carrierWakeEffect.load(Gdx.files.internal("particles/carrier_wake.p"),textureAtlas);
+            Constants.enemyShipWakeEffect = new ParticleEffect();
+            Constants.enemyShipWakeEffect.load(Gdx.files.internal("particles/enemy_ship_wake.p"),textureAtlas);
 
-            Constants.game.setScreen(new HowToScoresScreen());
+            // Animations
+            loadExplosionAnimations();
+            loadRadarAnimation();
+
+            // List of screens for easy testing
+
+            Constants.game.setScreen(new HowToScreen());
             //Constants.game.setScreen(new OutcomeScreen());
+            //Constants.game.setScreen(new HighScoresScreen());
             //Constants.game.setScreen(new IntroScreen(false));
             //Constants.game.setScreen(new GameScreen());
         }
@@ -301,5 +331,6 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
 }

@@ -38,7 +38,7 @@ public class EnemyFighter extends Entity {
         relativePositionToMap = new Vector2(position);
         speed = 0;
         random = Constants.random.nextFloat()*30;
-        refireInterval = Constants.ENEMY_FIGHTER_FIRING_INTERVAL + Constants.random.nextFloat();
+        //refireInterval = Constants.ENEMY_FIGHTER_FIRING_INTERVAL - (RadarSite.numberOfLockedOnRadars*0.25f);
         //image.setCenterOfRotation(image.getWidth()/2, image.getHeight()/2);
         health = Constants.ENEMY_FIGHTER_HEALTH;
         isDestroyed = false;
@@ -79,7 +79,6 @@ public class EnemyFighter extends Entity {
 
         if (wasHit || isDestroyed) {
             explosionTimer += delta;
-
         }
 
         if (isDestroyed) {
@@ -99,7 +98,8 @@ public class EnemyFighter extends Entity {
                 diff = Constants.calculateDifferenceBetweenAngles(angleToTarget, rotation);
                 refireElapsedTime += delta;
 
-                if (!isDestroyed && !isReadyToFire && (refireElapsedTime > Constants.ENEMY_FIGHTER_FIRING_INTERVAL)) {
+                if (!isDestroyed && !isReadyToFire && (refireElapsedTime >
+                        (Constants.ENEMY_FIGHTER_FIRING_INTERVAL - (RadarSite.numberOfLockedOnRadars*0.25f)))) {
                     isReadyToFire = true;
                     refireElapsedTime = 0;
                 }

@@ -1,9 +1,9 @@
 package com.iantria.raidgame.util;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import java.util.LinkedList;
@@ -19,6 +19,7 @@ import com.iantria.raidgame.entity.Factory;
 import com.iantria.raidgame.entity.GameMap;
 import com.iantria.raidgame.entity.Helicopter;
 import com.iantria.raidgame.entity.Projectile;
+import com.iantria.raidgame.entity.RadarSite;
 import com.iantria.raidgame.entity.ScrollingCombatText;
 
 public class Constants {
@@ -53,6 +54,7 @@ public class Constants {
     public static final int ENEMY_SHIP_HEALTH = 120;
     public static final int ENEMY_FACTORY_HEALTH = 120;
     public static final int ENEMY_AA_GUN_HEALTH = 10;
+    public static final int ENEMY_RADAR_HEALTH = 10;
     public static final int ENEMY_CRUISE_MISSILE_HEALTH = 10;
     public static final int ENEMY_BOMBER_HEALTH = 10;
     public static final int ENEMY_FIGHTER_HEALTH = 10;
@@ -68,30 +70,32 @@ public class Constants {
     public static final int ENEMY_FIGHTER_GUN_DAMAGE = 10;
 
     // Timing
-    public static final int FIRING_INTERVAL_BOMB = 1100;
-    public static final int FIRING_INTERVAL_CANNON = 500;
-    public static final int ENEMY_SHIP_FIRING_INTERVAL = 3;
     public static final int ENEMY_SHIP_RESPAWN_TIMER = 20;
-    public static final int ENEMY_FIGHTER_RESPAWN_TIMER = 10;
-    public static final int ENEMY_FIGHTER_FIRING_INTERVAL = 5;
-    public static final int ENEMY_CRUISE_MISSILE_FIRING_INTERVAL = 15;
-    public static final int ENEMY_CRUISE_MISSILE_FUEL = 12;
     public static final int ENEMY_BOMBER_RESPAWN_TIMER = 15;
-    public static final int ENEMY_AA_GUN_FIRING_INTERVAL = 2;
+    public static final int ENEMY_FIGHTER_RESPAWN_TIMER = 10;
+    public static final int ENEMY_CRUISE_MISSILE_FUEL = 12;
+
+    public static final int ENEMY_FIGHTER_FIRING_INTERVAL = 5;
+    public static final int ENEMY_AA_GUN_FIRING_INTERVAL = 4;
+    public static final int ENEMY_CRUISE_MISSILE_FIRING_INTERVAL = 15;
+    public static final int ENEMY_SHIP_FIRING_INTERVAL = 3;
+    public static final int MY_BOMB_FIRING_INTERVAL = 1100;
+    public static final int MY_CANNON_FIRING_INTERVAL = 500;
 
     // Speeds
+    public static final float MAX_HELICOPTER_SPEED = MAP_HEIGHT/10f;
+    public static final float MIN_HELICOPTER_SPEED = -MAP_HEIGHT/28f;
     public static final float CARRIER_SPEED = MAP_HEIGHT/200f;
     public static final float ENEMY_SHIP_SPEED = MAP_WIDTH/200f; // Enemy ship travels horizontally
     public static final float MISSILE_SPEED = MAP_HEIGHT/12f;;
     public static final float BULLET_SPEED = MAP_HEIGHT/4f;;
-    public static final float MAX_HELICOPTER_SPEED = MAP_HEIGHT/10f;
-    public static final float MIN_HELICOPTER_SPEED = -MAP_HEIGHT/28f;
     public static final float ENEMY_FIGHTER_SPEED = MAP_HEIGHT/9f;
     public static final float ENEMY_BOMBER_SPEED = MAP_HEIGHT/12f;
 
     //Score
     public static final int SCORE_ENEMY_SHIP = 1000;
     public static final int SCORE_AA_GUN = 25;
+    public static final int SCORE_RADAR_SITE = 30;
     public static final int SCORE_FACTORY = 1000;
     public static final int SCORE_BOMBER = 50;
     public static final int SCORE_CRUISE_MISSILE = 125;
@@ -101,17 +105,22 @@ public class Constants {
     public static final int SCORE_PER_PLANE_REMAINING = 500;
 
     // Enemy starting Co-ordinates
-    public static final float[] FACTORY_X = {3440/2, 2992/2, 5844/2, 2469, 1776/2, 1952/2};
-    public static final float[] FACTORY_Y = {2000 - 2284/2, 2000 -1164/2, 2000 - 780/2, 2000 - 1710, 2000 -3292/2, 2000 -1516/2};
-    public static final float[] AA_GUN_X = {2676, 2441, 429, 904, 1706, 1787, 1322, 2675, 2618, 2976, 1802, 1582, 964, 917};
-    public static final float[] AA_GUN_Y = {2000 - 1464,  2000 - 1704, 2000 - 1664, 2000 - 1699,  2000 - 1357, 2000 - 1096, 2000 - 1047,
-                                            2000 - 258,  2000 - 561, 2000 - 366, 2000 - 465, 2000 - 572, 2000 - 974, 2000 - 768};
-    public static final float[] BOMBER_X = {1135 ,1180};
-    public static final float[] BOMBER_Y = {2000 - 487, 2000 - 487};
-    public static final float[] FIGHTER_X = {2640 ,2690};
-    public static final float[] FIGHTER_Y = {2000 - 1508, 2000 - 1508};
+    public static final float[] FACTORY_X =     {3440/2, 2992/2, 5844/2, 2469, 1776/2, 1952/2};
+    public static final float[] FACTORY_Y =     {2000 - 2284/2, 2000 -1164/2, 2000 - 780/2, 2000 - 1710, 2000 -3292/2, 2000 -1516/2};
+    public static final float[] AA_GUN_X =      {2676, 2441, 429, 904, 1706, 1787, 1322, 2675, 2618, 2976, 1802, 1582, 964, 917};
+    public static final float[] AA_GUN_Y =      {2000 - 1464,  2000 - 1704, 2000 - 1664, 2000 - 1699,  2000 - 1357, 2000 - 1096, 2000 - 1047,
+                                                 2000 - 258,  2000 - 561, 2000 - 366, 2000 - 465, 2000 - 572, 2000 - 974, 2000 - 768};
+    public static final float[] BOMBER_X =      {1135 , 1180};
+    public static final float[] BOMBER_Y =      {2000 - 487, 2000 - 487};
+    public static final float[] FIGHTER_X =     {2640 ,2690};
+    public static final float[] FIGHTER_Y =     {2000 - 1508, 2000 - 1508};
     public static final float[] ENEMY_SHIP_XY = {2580 ,2000 - 222};
     public static final float[] SECRET_BASE_XY = {2210, 1064};
+
+    public static final float[] RADAR_X =       {2791, 2342, 947, 405, 1888, 1852 , 1414, 729, 654, 1331, 1618, 2181, 2601 ,3132, 3111};
+    public static final float[] RADAR_Y =       {2000-1980, 2000-1464, 2000-1462, 2000-1785, 2000-1045, 2000-1357, 2000-1100, 2000-443,
+                                                 2000-833, 2000-707, 2000-449,
+                                                 2000-764 ,  2000-310 , 2000-254, 2000- 559 };
 
     // TextureRegions
     public static TextureRegion mapTextureRegion, retroMapTextureRegion, retroGreenMapTextureRegion,
@@ -124,7 +133,7 @@ public class Constants {
             introScreenFrontApache, introScreenFrontBlade, introScreenName, introScreenTitle,
             playButton, demoButton, scoresButton, fireButton, bombButton, exitButton, mapButton, pauseButton,
             newspaperLost, newspaperPerfect, newspaperCarrier, newspaperMarginal, helpInfoDesktop,
-            helpInfoMobile;
+            helpInfoMobile, radarIcon;
 
     //Music
     public static Music youWinSound, drumsSound, drumsOutcomeSound, takeOffSound, chopperSound, stopEngineSound,
@@ -134,14 +143,20 @@ public class Constants {
     public static Sound outOfFuelCrashSound, bulletHitLand, AAGunFireSound, mediumExplosion,
             bigExplosion, carrierAlarm, projectileImpact, fighterFire, enemyCruise,
             bombsDroppingSound, cruiseOutOfFuel, fireCannonEffect, singleBombDrop, fireMissileEffect,
-            m61Sound;
+            m61Sound, radarBeep;
 
-    //All explosion animations
+    //Animations
     public static Animation<TextureRegion>[] explosionAnimations;
+    public static Animation<TextureRegion> radarAnimation;
+
+    //Particle Effects
+    public static ParticleEffect carrierWakeEffect;
+    public static ParticleEffect enemyShipWakeEffect;
 
     // Entities
     public static Factory[] factories = new Factory[6];
     public static AAGun[] aaGuns = new AAGun[14];
+    public static RadarSite[] radarSites = new RadarSite[15];
     public static EnemyFighter[] enemyFighters = new EnemyFighter[2];
     public static EnemyBomber[] enemyBombers = new EnemyBomber[2];
     public static Random random = new Random();
@@ -160,7 +175,7 @@ public class Constants {
     public static String NETWORK_SERVICES_USAGE_API = NETWORK_SERVICES_URI + "usage.php";  // 1 = start, 2 = end, 3 = reset
     public static String NETWORK_SERVICES_SCORES_API = NETWORK_SERVICES_URI + "scores.php"; // 1 = save, 2 = get, 3 = truncate
 
-    // Timers and Ids
+    // Timers, Ids, Game Mechanics
     public static int mapID;
     public static boolean isReadyToFireCruiseMissile;
     public static float cruiseMissileDelayTimer;

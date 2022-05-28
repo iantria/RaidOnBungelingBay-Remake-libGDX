@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.iantria.raidgame.entity.RadarSite;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.entity.ScrollingCombatText;
 import com.iantria.raidgame.util.Network;
@@ -124,6 +125,14 @@ public class GameScreen implements Screen {
             Constants.aaGuns[i] = a;
         }
 
+        // Radar Sites
+        for (int i =0 ; i < Constants.radarSites.length; i++){
+            Vector2 v = new Vector2(Constants.RADAR_X[i]  , Constants.RADAR_Y[i] );
+            RadarSite a = new RadarSite("RadarSite"+i, 0.070f, false,  v, 0, Constants.radarIcon);
+            //Constants.random.nextFloat()*360
+            Constants.radarSites[i] = a;
+        }
+
         //Planes
         Constants.enemyFighters[0] = new EnemyFighter("EnemyFighter1", 0.15f, true,
                 new Vector2(Constants.FIGHTER_X[0] + Constants.WINDOW_WIDTH/2 - 200, Constants.FIGHTER_Y[0]), 270,
@@ -183,6 +192,9 @@ public class GameScreen implements Screen {
             for (AAGun a : Constants.aaGuns) {
                 a.update(deltaTime);
             }
+            for (RadarSite a : Constants.radarSites) {
+                a.update(deltaTime);
+            }
             Constants.projectileList.removeAll(Constants.removeProjectileList);
             Constants.removeProjectileList.clear();
             projectiles = Constants.projectileList.listIterator();
@@ -221,6 +233,9 @@ public class GameScreen implements Screen {
         for (AAGun a: Constants.aaGuns){
             a.draw(batch);
         }
+        for (RadarSite a: Constants.radarSites){
+            a.draw(batch);
+        }
 
         Constants.helicopter.draw(batch);
 
@@ -254,12 +269,15 @@ public class GameScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
             Constants.mapID = 1;
             Constants.gameMap.image = Constants.mapTextureRegion;
+            Constants.combatTextList.add(new ScrollingCombatText("MAP1", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("Modern Map"), Color.GREEN, Constants.scrollingCombatFont, false));
         } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
             Constants.mapID = 2;
             Constants.gameMap.image = Constants.retroMapTextureRegion;
+            Constants.combatTextList.add(new ScrollingCombatText("MAP2", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("Original Map"), Color.GREEN, Constants.scrollingCombatFont, false));
         } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
             Constants.mapID = 3;
             Constants.gameMap.image = Constants.retroGreenMapTextureRegion;
+            Constants.combatTextList.add(new ScrollingCombatText("MAP3", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("NES Green Map"), Color.GREEN, Constants.scrollingCombatFont, false));
         }
 
         // Pause and Exit
@@ -409,11 +427,16 @@ public class GameScreen implements Screen {
                 Constants.helicopter.livesCount--;
                 Statistics.numberOfLivesLost++;
 
-                if (Constants.helicopter.fuelCount < 1) Statistics.numberOfRanOutFuel++;
+                if (Constants.helicopter.fuelCount < 1) {
+                    Statistics.numberOfRanOutFuel++;
+                    Constants.combatTextList.add(new ScrollingCombatText("RANOUTFUEL", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU RAN OUT OF FUEL!"), Color.RED, Constants.scrollingCombatFont, false));
+                }
                 if (Constants.helicopter.livesCount <= 0 && !Constants.drumsSound.isPlaying()) {
                     Statistics.carrierSurvived = !Constants.carrier.isDestroyed && !Constants.carrier.isSinking;
                     Constants.combatTextList.add(new ScrollingCombatText("YOULOST", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU HAVE BEEN DEFEATED!"), Color.RED, Constants.scrollingCombatFont, false));
                     Constants.drumsSound.play();
+                } else{
+                    Constants.combatTextList.add(new ScrollingCombatText("YOUCRAHSED", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("HELICOPTER DESTROYED!"), Color.RED, Constants.scrollingCombatFont, false));
                 }
             }
             Constants.helicopter.generalDelayTime += delta;
@@ -497,12 +520,15 @@ public class GameScreen implements Screen {
                 if (Constants.mapID == 3){
                     Constants.gameMap.image = Constants.mapTextureRegion;
                     Constants.mapID = 1;
+                    Constants.combatTextList.add(new ScrollingCombatText("MAP1", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("Modern Map"), Color.GREEN, Constants.scrollingCombatFont, false));
                 } else if (Constants.mapID == 1){
                     Constants.gameMap.image = Constants.retroMapTextureRegion;
                     Constants.mapID = 2;
+                    Constants.combatTextList.add(new ScrollingCombatText("MAP2", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("Original Map"), Color.GREEN, Constants.scrollingCombatFont, false));
                 } else {
                     Constants.gameMap.image = Constants.retroGreenMapTextureRegion;
                     Constants.mapID = 3;
+                    Constants.combatTextList.add(new ScrollingCombatText("MAP3", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("NES Green Map"), Color.GREEN, Constants.scrollingCombatFont, false));
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
@@ -605,5 +631,6 @@ public class GameScreen implements Screen {
         bombButtonStage.dispose();
         fireButtonStage.dispose();
         pauseButtonStage.dispose();
+
     }
 }

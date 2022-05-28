@@ -52,6 +52,8 @@ public class Carrier extends Entity {
 
     public void update(float delta) {
 
+        Constants.carrierWakeEffect.update(delta);
+
         if (health < 1 && !isSinking)
             isSinking = true;
         if (isDestroyed && Constants.helicopter.livesCount > 1) {
@@ -172,10 +174,14 @@ public class Carrier extends Entity {
                 explosionElapsedTime = 0;
             }
         } else {
+            Constants.carrierWakeEffect.setPosition(vector1.x + image.getRegionWidth()*scale/2, vector1.y + 5);
+            Constants.carrierWakeEffect.draw(batch);
+
             batch.draw(image, vector1.x, vector1.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
             batch.draw(image, vector2.x, vector2.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
             batch.draw(image, vector3.x, vector3.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
             batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
+
 
 //            healthRenderer = new ShapeDrawer(batch, Constants.singlePixelTextureRegion);
 //            healthRenderer.filledRectangle(vector1.x ,

@@ -34,7 +34,7 @@ import javax.swing.text.View;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
-public class HowToScoresScreen implements Screen {
+public class HowToScreen implements Screen {
 
 
     private ShaderProgram shader;
@@ -44,7 +44,6 @@ public class HowToScoresScreen implements Screen {
     private GlyphLayout layout;
     private float shaderTime, aspectRatio;
     private int fboScale;
-    private Label.LabelStyle labelSmallStyle;
     private FitViewport viewport;
     private Stage info;
     private Image infoImage;
@@ -127,6 +126,7 @@ public class HowToScoresScreen implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) || Gdx.input.isTouched()) {
             Constants.game.setScreen(new IntroScreen(false));
+            //Constants.game.setScreen(new IntroScreen(true));
         }
     }
 
@@ -155,7 +155,11 @@ public class HowToScoresScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        info.dispose();
+        batch.dispose();
+        fbo.dispose();
+        shader.dispose();
+        shaderTexture.dispose();
     }
 
 }
