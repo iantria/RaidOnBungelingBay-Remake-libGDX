@@ -12,9 +12,11 @@ import com.badlogic.gdx.audio.Music;
 import com.iantria.raidgame.RaidGame;
 import com.iantria.raidgame.entity.AAGun;
 import com.iantria.raidgame.entity.Carrier;
+import com.iantria.raidgame.entity.EnemyBoat;
 import com.iantria.raidgame.entity.EnemyBomber;
 import com.iantria.raidgame.entity.EnemyFighter;
 import com.iantria.raidgame.entity.EnemyShip;
+import com.iantria.raidgame.entity.EnemyTank;
 import com.iantria.raidgame.entity.Factory;
 import com.iantria.raidgame.entity.GameMap;
 import com.iantria.raidgame.entity.Helicopter;
@@ -46,12 +48,14 @@ public class Constants {
     // Plane
     public static final int BOMBS_PER_PLANE = 9;
     public static final int CANNON_ROUNDS = 100;
-    public static final int FUEL_CAPACITY = 100;
+    public static final int FUEL_CAPACITY = 1000;
     public static final int FUEL_DURATION = 1;
     public static final int NUMBER_OF_LIVES = 3;
 
     // Health
     public static final int ENEMY_SHIP_HEALTH = 120;
+    public static final int ENEMY_BOAT_HEALTH = 10;
+    public static final int ENEMY_TANK_HEALTH = 10;
     public static final int ENEMY_FACTORY_HEALTH = 120;
     public static final int ENEMY_AA_GUN_HEALTH = 10;
     public static final int ENEMY_RADAR_HEALTH = 10;
@@ -65,6 +69,8 @@ public class Constants {
     public static final int CANNON_DAMAGE = 10;
     public static final int BOMB_DAMAGE = 20;
     public static final int ENEMY_AA_GUN_DAMAGE = 10;
+    public static final int ENEMY_BOAT_DAMAGE = 1;
+    public static final int ENEMY_TANK_DAMAGE = 1;
     public static final int ENEMY_BOMBER_BOMB_DMG = 15;
     public static final int ENEMY_CRUISE_MISSILE_DAMAGE = 20;
     public static final int ENEMY_FIGHTER_GUN_DAMAGE = 10;
@@ -73,10 +79,14 @@ public class Constants {
     public static final int ENEMY_SHIP_RESPAWN_TIMER = 20;
     public static final int ENEMY_BOMBER_RESPAWN_TIMER = 15;
     public static final int ENEMY_FIGHTER_RESPAWN_TIMER = 10;
+    public static final int ENEMY_BOAT_RESPAWN_TIMER = 10;
+    public static final int ENEMY_TANK_RESPAWN_TIMER = 10;
     public static final int ENEMY_CRUISE_MISSILE_FUEL = 12;
 
-    public static final int ENEMY_FIGHTER_FIRING_INTERVAL = 5;
-    public static final int ENEMY_AA_GUN_FIRING_INTERVAL = 4;
+    public static final int ENEMY_FIGHTER_FIRING_INTERVAL = 4;
+    public static final int ENEMY_AA_GUN_FIRING_INTERVAL = 2;
+    public static final int ENEMY_BOAT_FIRING_INTERVAL = 2;
+    public static final int ENEMY_TANK_FIRING_INTERVAL = 2;
     public static final int ENEMY_CRUISE_MISSILE_FIRING_INTERVAL = 15;
     public static final int ENEMY_SHIP_FIRING_INTERVAL = 3;
     public static final int MY_BOMB_FIRING_INTERVAL = 1100;
@@ -87,6 +97,8 @@ public class Constants {
     public static final float MIN_HELICOPTER_SPEED = -MAP_HEIGHT/28f;
     public static final float CARRIER_SPEED = MAP_HEIGHT/200f;
     public static final float ENEMY_SHIP_SPEED = MAP_WIDTH/200f; // Enemy ship travels horizontally
+    public static final float ENEMY_BOAT_SPEED = MAP_WIDTH/400f;
+    public static final float ENEMY_TANK_SPEED = MAP_WIDTH/200f;
     public static final float MISSILE_SPEED = MAP_HEIGHT/12f;;
     public static final float BULLET_SPEED = MAP_HEIGHT/4f;;
     public static final float ENEMY_FIGHTER_SPEED = MAP_HEIGHT/9f;
@@ -96,6 +108,8 @@ public class Constants {
     public static final int SCORE_ENEMY_SHIP = 1000;
     public static final int SCORE_AA_GUN = 25;
     public static final int SCORE_RADAR_SITE = 30;
+    public static final int SCORE_ENEMY_BOAT = 25;
+    public static final int SCORE_ENEMY_TANK = 25;
     public static final int SCORE_FACTORY = 1000;
     public static final int SCORE_BOMBER = 50;
     public static final int SCORE_CRUISE_MISSILE = 125;
@@ -106,21 +120,30 @@ public class Constants {
 
     // Enemy starting Co-ordinates
     public static final float[] FACTORY_X =     {3440/2, 2992/2, 5844/2, 2469, 1776/2, 1952/2};
-    public static final float[] FACTORY_Y =     {2000 - 2284/2, 2000 -1164/2, 2000 - 780/2, 2000 - 1710, 2000 -3292/2, 2000 -1516/2};
+    public static final float[] FACTORY_Y =     {2000-2284/2, 2000-1164/2, 2000-780/2, 2000-1710, 2000-3292/2, 2000-1516/2};
     public static final float[] AA_GUN_X =      {2676, 2441, 429, 904, 1706, 1787, 1322, 2675, 2618, 2976, 1802, 1582, 964, 917};
-    public static final float[] AA_GUN_Y =      {2000 - 1464,  2000 - 1704, 2000 - 1664, 2000 - 1699,  2000 - 1357, 2000 - 1096, 2000 - 1047,
-                                                 2000 - 258,  2000 - 561, 2000 - 366, 2000 - 465, 2000 - 572, 2000 - 974, 2000 - 768};
-    public static final float[] BOMBER_X =      {1135 , 1180};
-    public static final float[] BOMBER_Y =      {2000 - 487, 2000 - 487};
-    public static final float[] FIGHTER_X =     {2640 ,2690};
-    public static final float[] FIGHTER_Y =     {2000 - 1508, 2000 - 1508};
-    public static final float[] ENEMY_SHIP_XY = {2580 ,2000 - 222};
+    public static final float[] AA_GUN_Y =      {2000-1464, 2000-1704, 2000-1664, 2000-1699, 2000-1357, 2000-1096, 2000-1047,
+                                                 2000-258, 2000-561, 2000-366, 2000-465, 2000-572, 2000-974, 2000-768};
+    public static final float[] BOMBER_X =      {1135, 1180};
+    public static final float[] BOMBER_Y =      {2000-487, 2000-487};
+    public static final float[] FIGHTER_X =     {2640, 2690};
+    public static final float[] FIGHTER_Y =     {2000-1508, 2000-1508};
+    public static final float[] ENEMY_SHIP_XY = {2580, 2000 - 222};
     public static final float[] SECRET_BASE_XY = {2210, 1064};
 
     public static final float[] RADAR_X =       {2791, 2342, 947, 405, 1888, 1852 , 1414, 729, 654, 1331, 1618, 2181, 2601 ,3132, 3111};
     public static final float[] RADAR_Y =       {2000-1980, 2000-1464, 2000-1462, 2000-1785, 2000-1045, 2000-1357, 2000-1100, 2000-443,
-                                                 2000-833, 2000-707, 2000-449,
-                                                 2000-764 ,  2000-310 , 2000-254, 2000- 559 };
+                                                 2000-833, 2000-707, 2000-449, 2000-764, 2000-310, 2000-254, 2000-559};
+
+    public static final float[] ENEMY_BOAT_DIRECTION = {0, 0, 0, 0, 0, 0};
+    public static final float[] ENEMY_BOAT_X = {1190, 1700, 2470, 2666, 1855, 2185};
+    public static final float[] ENEMY_BOAT_Y = {2000-1080, 2000-1474, 2000-912, 2000-646, 2000-779, 2000-1472};
+    public static final float[] ENEMY_BOAT_PATH_TIMER = {31, 30, 35, 16, 18, 24};
+
+    public static final float[] ENEMY_TANK_DIRECTION = {90, 0f, 0f, 0f, 90, 90};
+    public static final float[] ENEMY_TANK_X = {420, 944, 1480, 1744, 2306, 2614};
+    public static final float[] ENEMY_TANK_Y = {2000-1637, 2000-760, 2000-564, 2000-1177, 2000-1733, 2000-573};
+    public static final float[] ENEMY_TANK_PATH_TIMER = {25, 11, 10, 9, 26, 18};
 
     // TextureRegions
     public static TextureRegion mapTextureRegion, retroMapTextureRegion, retroGreenMapTextureRegion,
@@ -133,7 +156,7 @@ public class Constants {
             introScreenFrontApache, introScreenFrontBlade, introScreenName, introScreenTitle,
             playButton, demoButton, scoresButton, fireButton, bombButton, exitButton, mapButton, pauseButton,
             newspaperLost, newspaperPerfect, newspaperCarrier, newspaperMarginal, helpInfoDesktop,
-            helpInfoMobile, radarIcon;
+            helpInfoMobile, radarIcon, enemyBoat, enemyTank;
 
     //Music
     public static Music youWinSound, drumsSound, drumsOutcomeSound, takeOffSound, chopperSound, stopEngineSound,
@@ -143,7 +166,7 @@ public class Constants {
     public static Sound outOfFuelCrashSound, bulletHitLand, AAGunFireSound, mediumExplosion,
             bigExplosion, carrierAlarm, projectileImpact, fighterFire, enemyCruise,
             bombsDroppingSound, cruiseOutOfFuel, fireCannonEffect, singleBombDrop, fireMissileEffect,
-            m61Sound, radarBeep;
+            m61Sound, radarBeep, machineGunFire;
 
     //Animations
     public static Animation<TextureRegion>[] explosionAnimations;
@@ -152,11 +175,14 @@ public class Constants {
     //Particle Effects
     public static ParticleEffect carrierWakeEffect;
     public static ParticleEffect enemyShipWakeEffect;
+    public static ParticleEffect enemyBoatWakeEffect;
 
     // Entities
     public static Factory[] factories = new Factory[6];
     public static AAGun[] aaGuns = new AAGun[14];
     public static RadarSite[] radarSites = new RadarSite[15];
+    public static EnemyBoat[] enemyBoats = new EnemyBoat[6];
+    public static EnemyTank[] enemyTanks = new EnemyTank[6];
     public static EnemyFighter[] enemyFighters = new EnemyFighter[2];
     public static EnemyBomber[] enemyBombers = new EnemyBomber[2];
     public static Random random = new Random();

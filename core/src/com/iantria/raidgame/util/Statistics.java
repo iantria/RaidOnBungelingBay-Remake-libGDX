@@ -6,6 +6,8 @@ public class Statistics {
 	public static int numberOfTimesHitByCruiseMissile;
 	public static int numberOfTimesHitByAAGun;
 	public static int numberOfTimesHitByFighter;
+	public static int numberOfTimesHitByBoats;
+	public static int numberOfTimesHitByTanks;
 	public static int numberOfRanOutFuel;
 	public static int numberOfBombsDropped;
 	public static int numberOfBombsLanded;
@@ -35,17 +37,23 @@ public class Statistics {
 	public static int amountOfFuelUsed;
 	public static int numberOfTimesAAGunFired;
 	public static int numberOfTimesFighterFired;
-	public static int numberOfTimesCruiseMissileFired;		
+	public static int numberOfTimesCruiseMissileFired;
+	public static int numberOfTimesBoatFired;
+	public static int numberOfTimesTankFired;
 
 	public static void resetScores() {
 		numberOfTimesHitByAAGun = 0;
 		numberOfTimesHitByFighter = 0;
 		numberOfRanOutFuel = 0;
 		numberOfTimesHitByCruiseMissile = 0;
-		
+		numberOfTimesHitByBoats = 0;
+		numberOfTimesHitByTanks = 0;
+
 		numberOfTimesAAGunFired = 0;
 		numberOfTimesFighterFired = 0;
-		numberOfTimesCruiseMissileFired = 0;		
+		numberOfTimesCruiseMissileFired = 0;
+		numberOfTimesBoatFired = 0;
+		numberOfTimesTankFired = 0;
 		
 		numberOfBombsDropped = 0;
 		numberOfBombsLanded = 0;

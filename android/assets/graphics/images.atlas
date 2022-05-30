@@ -6,7 +6,7 @@ filter: Nearest, Nearest
 repeat: none
 AAGun
   rotate: false
-  xy: 1984, 1940
+  xy: 919, 335
   size: 44, 48
   orig: 44, 48
   offset: 0, 0
@@ -20,7 +20,7 @@ Carrier
   index: -1
 CruiseMissle
   rotate: false
-  xy: 1016, 348
+  xy: 1615, 500
   size: 132, 459
   orig: 132, 459
   offset: 0, 0
@@ -41,14 +41,14 @@ Frontsideapache_blade
   index: -1
 Heli_Blade
   rotate: false
-  xy: 1161, 188
+  xy: 707, 169
   size: 210, 214
   orig: 210, 214
   offset: 0, 0
   index: -1
 Helicopter
   rotate: false
-  xy: 1373, 104
+  xy: 1457, 256
   size: 118, 298
   orig: 118, 298
   offset: 0, 0
@@ -69,7 +69,7 @@ Sideviewapache_blade
   index: -1
 arrow
   rotate: false
-  xy: 1363, 2
+  xy: 573, 34
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
@@ -90,14 +90,14 @@ bomber
   index: -1
 bullets
   rotate: false
-  xy: 1984, 1906
+  xy: 1937, 1478
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 bullets2
   rotate: false
-  xy: 120, 48
+  xy: 1749, 596
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -111,7 +111,7 @@ ddg
   index: -1
 ddgIcon
   rotate: false
-  xy: 573, 21
+  xy: 1726, 1046
   size: 200, 55
   orig: 200, 55
   offset: 0, 0
@@ -125,35 +125,49 @@ demo_button
   index: -1
 emptyBomb
   rotate: false
-  xy: 1184, 927
+  xy: 1577, 522
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enemyFighter
   rotate: false
-  xy: 1001, 118
+  xy: 1749, 816
   size: 158, 228
   orig: 158, 228
   offset: 0, 0
   index: -1
+enemy_boat
+  rotate: false
+  xy: 1016, 222
+  size: 225, 585
+  orig: 225, 585
+  offset: 0, 0
+  index: -1
+enemy_tank
+  rotate: false
+  xy: 573, 136
+  size: 132, 244
+  orig: 132, 244
+  offset: 0, 0
+  index: -1
 exit_button
   rotate: false
-  xy: 1984, 1990
+  xy: 2, 24
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
   index: -1
 factoryIcon
   rotate: false
-  xy: 1725, 1480
+  xy: 573, 2
   size: 32, 30
   orig: 32, 30
   offset: 0, 0
   index: -1
 factoryNew
   rotate: false
-  xy: 1161, 2
+  xy: 1749, 630
   size: 200, 184
   orig: 200, 184
   offset: 0, 0
@@ -167,21 +181,21 @@ fire_button
   index: -1
 heliIcon
   rotate: false
-  xy: 787, 94
+  xy: 1577, 209
   size: 212, 289
   orig: 212, 289
   offset: 0, 0
   index: -1
 lost_newspaper
   rotate: false
-  xy: 1150, 404
+  xy: 1243, 556
   size: 370, 403
   orig: 370, 403
   offset: 0, 0
   index: -1
 map_button
   rotate: false
-  xy: 61, 24
+  xy: 1984, 1990
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
@@ -195,7 +209,7 @@ name
   index: -1
 pause_button
   rotate: false
-  xy: 2, 24
+  xy: 1184, 903
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
@@ -209,14 +223,14 @@ play_button
   index: -1
 projectile
   rotate: false
-  xy: 1363, 154
+  xy: 1158, 1120
   size: 8, 32
   orig: 8, 32
   offset: 0, 0
   index: -1
 radar_icon
   rotate: false
-  xy: 573, 78
+  xy: 1243, 252
   size: 212, 302
   orig: 212, 302
   offset: 0, 0
@@ -230,14 +244,14 @@ scores_button
   index: -1
 sideBackProps
   rotate: false
-  xy: 1726, 922
+  xy: 1725, 1331
   size: 210, 179
   orig: 210, 179
   offset: 0, 0
   index: -1
 singlePoint
   rotate: false
-  xy: 644, 382
+  xy: 1612, 1621
   size: 1, 1
   orig: 1, 1
   offset: 0, 0

@@ -24,7 +24,6 @@ public class AAGun extends Entity {
     public void init() {
         health = Constants.ENEMY_AA_GUN_HEALTH;
         isDestroyed = false;
-        //refireInterval = Constants.ENEMY_AA_GUN_FIRING_INTERVAL - (RadarSite.numberOfLockedOnRadars*0.25f);
         vector1 = new Vector2(position);
         vector2 = new Vector2(position);
         vector3 = new Vector2(position);
@@ -52,7 +51,6 @@ public class AAGun extends Entity {
         this.position.x = Constants.gameMap.position.x + startingPosition.x;
         this.position.y = Constants.gameMap.position.y + startingPosition.y;
         updateVectorsForStationaryObjects();
-
     }
 
     public void update(float delta) {
@@ -64,7 +62,7 @@ public class AAGun extends Entity {
 
         if (!isDestroyed && !isReadyToFire &&
                 !(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED) &&
-                (elapsedTime >= Constants.ENEMY_AA_GUN_FIRING_INTERVAL - (RadarSite.numberOfLockedOnRadars*0.25f))) {
+                (elapsedTime >= Constants.ENEMY_AA_GUN_FIRING_INTERVAL)) {
             elapsedTime = 0;
             isReadyToFire = true;
         }
@@ -137,7 +135,6 @@ public class AAGun extends Entity {
             Constants.isReadyToFireCruiseMissile = false;
             isReadyToFire = false;
         } else {
-            //System.out.println(this.id + " " + isReadyToFire + " elp:" + elapsedTime  + " int:" + refireInterval);
             firedCount++;
             Statistics.numberOfTimesAAGunFired++;
             Projectile p= new Projectile(id + "_Bullet" + firedCount, 0.25f, true,

@@ -125,8 +125,8 @@ public class HowToScreen implements Screen {
         info.draw();
 
         if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) || Gdx.input.isTouched()) {
-            Constants.game.setScreen(new IntroScreen(false));
-            //Constants.game.setScreen(new IntroScreen(true));
+            //Constants.game.setScreen(new IntroScreen(false));
+            Constants.game.setScreen(new IntroScreen(true));
         }
     }
 

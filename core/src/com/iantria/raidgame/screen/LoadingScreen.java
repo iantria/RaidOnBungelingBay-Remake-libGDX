@@ -114,6 +114,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("sounds/MissleLaunch.ogg", Sound.class);
         assetManager.load("sounds/m61.ogg", Sound.class);
         assetManager.load("sounds/radar_beep.mp3", Sound.class);
+        assetManager.load("sounds/M60.ogg", Sound.class);
 
         //Large Sounds (>100KB)
         assetManager.load("sounds/youwin.ogg", Music.class);
@@ -209,6 +210,7 @@ public class LoadingScreen implements Screen {
         }
 
         if (assetManager.update()) { // Load some, will return true if done loading
+
             //Textures
             textureAtlas = assetManager.get("graphics/images.atlas", TextureAtlas.class);
             Constants.enemyShipIcon = new TextureRegion(assetManager.get("graphics/ddgIcon.gif", Texture.class));
@@ -256,6 +258,8 @@ public class LoadingScreen implements Screen {
             Constants.newspaperMarginal = new TextureRegion(textureAtlas.findRegion("victory_not_perfect"));
             Constants.newspaperPerfect = new TextureRegion(textureAtlas.findRegion("victory_perfect"));
             Constants.radarIcon = new TextureRegion(textureAtlas.findRegion("radar_icon"));
+            Constants.enemyBoat = new TextureRegion(textureAtlas.findRegion("enemy_boat"));
+            Constants.enemyTank = new TextureRegion(textureAtlas.findRegion("enemy_tank"));
 
             //Sounds
             Constants.outOfFuelCrashSound = assetManager.get("sounds/jetcrashfuel.ogg", Sound.class);
@@ -274,6 +278,7 @@ public class LoadingScreen implements Screen {
             Constants.fireMissileEffect = assetManager.get("sounds/MissleLaunch.ogg", Sound.class);
             Constants.m61Sound = assetManager.get("sounds/m61.ogg", Sound.class);
             Constants.radarBeep = assetManager.get("sounds/radar_beep.mp3", Sound.class);
+            Constants.machineGunFire = assetManager.get("sounds/M60.ogg", Sound.class);
 
             // Long sounds (>100kB)
             Constants.youWinSound = assetManager.get("sounds/youwin.ogg", Music.class);
@@ -295,6 +300,8 @@ public class LoadingScreen implements Screen {
             Constants.carrierWakeEffect.load(Gdx.files.internal("particles/carrier_wake.p"),textureAtlas);
             Constants.enemyShipWakeEffect = new ParticleEffect();
             Constants.enemyShipWakeEffect.load(Gdx.files.internal("particles/enemy_ship_wake.p"),textureAtlas);
+            Constants.enemyBoatWakeEffect = new ParticleEffect();
+            Constants.enemyBoatWakeEffect.load(Gdx.files.internal("particles/enemy_boat_wake.p"),textureAtlas);
 
             // Animations
             loadExplosionAnimations();

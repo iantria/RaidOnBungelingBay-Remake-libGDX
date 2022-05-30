@@ -240,7 +240,6 @@ public class Projectile extends Entity {
                 }
             }
 
-
             for (RadarSite f : Constants.radarSites){
                 if (f.isDestroyed) continue;
                 if (f.intersects(this)){
@@ -258,7 +257,37 @@ public class Projectile extends Entity {
                 }
             }
 
+            for (EnemyBoat f : Constants.enemyBoats){
+                if (f.isDestroyed) continue;
+                if (f.intersects(this)){
+                    updateEntityForHit(f);
+                    if (f.health < 1) {
+                        f.isDestroyed = true;
+                        Constants.bigExplosion.play();
+                        Statistics.numberOfBoatsDestroyed++;
+                        Statistics.score += Constants.SCORE_ENEMY_BOAT;
+                        Constants.combatTextList.add(new ScrollingCombatText("EnemyBoatScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_ENEMY_BOAT + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
+                    }
+                    Constants.removeProjectileList.add(this);
+                    return;
+                }
+            }
 
+            for (EnemyTank f : Constants.enemyTanks){
+                if (f.isDestroyed) continue;
+                if (f.intersects(this)){
+                    updateEntityForHit(f);
+                    if (f.health < 1) {
+                        f.isDestroyed = true;
+                        Constants.bigExplosion.play();
+                        Statistics.numberOfTanksDestroyed++;
+                        Statistics.score += Constants.SCORE_ENEMY_TANK;
+                        Constants.combatTextList.add(new ScrollingCombatText("EnemyTankScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_ENEMY_TANK + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
+                    }
+                    Constants.removeProjectileList.add(this);
+                    return;
+                }
+            }
 
             for (EnemyFighter f : Constants.enemyFighters) {
                 if (f.isDestroyed) continue;

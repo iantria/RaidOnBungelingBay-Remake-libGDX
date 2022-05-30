@@ -16,8 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.iantria.raidgame.entity.EnemyBoat;
+import com.iantria.raidgame.entity.EnemyTank;
 import com.iantria.raidgame.entity.RadarSite;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.entity.ScrollingCombatText;
@@ -121,7 +124,6 @@ public class GameScreen implements Screen {
         for (int i =0 ; i < Constants.aaGuns.length; i++){
             Vector2 v = new Vector2(Constants.AA_GUN_X[i]  , Constants.AA_GUN_Y[i] );
             AAGun a = new AAGun("AAGun"+i, 0.5f, false,  v, 0, Constants.aaGunTextureRegion);
-            //Constants.random.nextFloat()*360
             Constants.aaGuns[i] = a;
         }
 
@@ -129,8 +131,21 @@ public class GameScreen implements Screen {
         for (int i =0 ; i < Constants.radarSites.length; i++){
             Vector2 v = new Vector2(Constants.RADAR_X[i]  , Constants.RADAR_Y[i] );
             RadarSite a = new RadarSite("RadarSite"+i, 0.070f, false,  v, 0, Constants.radarIcon);
-            //Constants.random.nextFloat()*360
             Constants.radarSites[i] = a;
+        }
+
+        // Enemy Boats
+        for (int i =0 ; i < Constants.enemyBoats.length; i++){
+            Vector2 v = new Vector2(Constants.ENEMY_BOAT_X[i], Constants.ENEMY_BOAT_Y[i]);
+            EnemyBoat a = new EnemyBoat("EnemyBoat"+i, 0.0666f, true,  v, Constants.ENEMY_BOAT_DIRECTION[i], Constants.enemyBoat, Constants.ENEMY_BOAT_PATH_TIMER[i]);
+            Constants.enemyBoats[i] = a;
+        }
+
+        // Enemy Tanks
+        for (int i =0 ; i < Constants.enemyTanks.length; i++){
+            Vector2 v = new Vector2(Constants.ENEMY_TANK_X[i], Constants.ENEMY_TANK_Y[i]);
+            EnemyTank a = new EnemyTank("EnemyTank"+i, 0.075f, true, v, Constants.ENEMY_TANK_DIRECTION[i], Constants.enemyTank, Constants.ENEMY_TANK_PATH_TIMER[i]);
+            Constants.enemyTanks[i] = a;
         }
 
         //Planes
@@ -195,6 +210,13 @@ public class GameScreen implements Screen {
             for (RadarSite a : Constants.radarSites) {
                 a.update(deltaTime);
             }
+            for (EnemyBoat a : Constants.enemyBoats) {
+                a.update(deltaTime);
+            }
+            for (EnemyTank a : Constants.enemyTanks) {
+                a.update(deltaTime);
+            }
+
             Constants.projectileList.removeAll(Constants.removeProjectileList);
             Constants.removeProjectileList.clear();
             projectiles = Constants.projectileList.listIterator();
@@ -234,6 +256,12 @@ public class GameScreen implements Screen {
             a.draw(batch);
         }
         for (RadarSite a: Constants.radarSites){
+            a.draw(batch);
+        }
+        for (EnemyBoat a: Constants.enemyBoats){
+            a.draw(batch);
+        }
+        for (EnemyTank a: Constants.enemyTanks){
             a.draw(batch);
         }
 
@@ -429,7 +457,7 @@ public class GameScreen implements Screen {
 
                 if (Constants.helicopter.fuelCount < 1) {
                     Statistics.numberOfRanOutFuel++;
-                    Constants.combatTextList.add(new ScrollingCombatText("RANOUTFUEL", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU RAN OUT OF FUEL!"), Color.RED, Constants.scrollingCombatFont, false));
+                    //Constants.combatTextList.add(new ScrollingCombatText("RANOUTFUEL", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU RAN OUT OF FUEL!"), Color.RED, Constants.scrollingCombatFont, false));
                 }
                 if (Constants.helicopter.livesCount <= 0 && !Constants.drumsSound.isPlaying()) {
                     Statistics.carrierSurvived = !Constants.carrier.isDestroyed && !Constants.carrier.isSinking;

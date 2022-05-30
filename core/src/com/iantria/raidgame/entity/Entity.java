@@ -15,7 +15,7 @@ public class Entity  {
     public String id;
 
     public enum EntityType {
-        FACTORY, AA_GUN, ENEMY_BOMBER, ENEMY_FIGHTER, HELICOPTER, CARRIER, CRUISE_MISSILE, FIGHTER_BULLET, MY_BULLET, MY_BOMB, RADAR_SITE
+        FACTORY, AA_GUN, ENEMY_BOMBER, ENEMY_FIGHTER, HELICOPTER, CARRIER, CRUISE_MISSILE, FIGHTER_BULLET, MY_BULLET, MY_BOMB, RADAR_SITE, ENEMY_BOAT, ENEMY_TANK
     }
     public EntityType type;
 
@@ -31,10 +31,10 @@ public class Entity  {
 
     // Timers
     public float elapsedTime;
-    //public float refireInterval;
     public float refireElapsedTime;
     public float respawnElapsedTime;
     public float respawnTime;
+    public float animationTime;
 
     // Boolean
     public boolean isMovingObject;
@@ -179,6 +179,17 @@ public class Entity  {
         vector4.y = temp3_y;
     }
 
+
+    public void updateVectorForStationaryObject(Vector2 inVector) {
+        inVector.x = Constants.gameMap.position.x + relativePositionToMap.x;
+        inVector.y = Constants.gameMap.position.y + relativePositionToMap.y;
+
+        if (inVector.y < -(Constants.MAP_HEIGHT/2)) inVector.y = (Constants.MAP_HEIGHT/2) + (inVector.y + Constants.MAP_HEIGHT/2);
+        if (inVector.y > (Constants.MAP_HEIGHT/2)) inVector.y = -(Constants.MAP_HEIGHT/2) + (inVector.y - Constants.MAP_HEIGHT/2);
+        if (inVector.x < -(Constants.MAP_WIDTH/2)) inVector.x = (Constants.MAP_WIDTH/2) + (inVector.x + Constants.MAP_WIDTH/2);
+        if (inVector.x > (Constants.MAP_WIDTH/2)) inVector.x = -(Constants.MAP_WIDTH/2) + (inVector.x - Constants.MAP_WIDTH/2);
+    }
+
     public void updateVectorsForStationaryObjects(){
 
         position.x = Constants.gameMap.vector1.x + relativePositionToMap.x;
@@ -192,7 +203,6 @@ public class Entity  {
         vector3.y = Constants.gameMap.vector3.y + relativePositionToMap.y;
         vector4.x = Constants.gameMap.vector4.x + relativePositionToMap.x;
         vector4.y = Constants.gameMap.vector4.y + relativePositionToMap.y;
-
 
         // Added Jan2nd
         if (position.y < -(Constants.MAP_HEIGHT/2)) position.y = (Constants.MAP_HEIGHT/2) + (position.y + Constants.MAP_HEIGHT/2);

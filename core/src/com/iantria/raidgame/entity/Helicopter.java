@@ -404,6 +404,15 @@ public class Helicopter extends Entity {
             p.position =new Vector2((Constants.gameMap.position.x -old.x) + p.position.x,
                             (Constants.gameMap.position.y -old.y)  + p.position.y);
         }
+        for (EnemyBoat p : Constants.enemyBoats) {
+            p.position =new Vector2((Constants.gameMap.position.x -old.x) + p.position.x,
+                    (Constants.gameMap.position.y -old.y)  + p.position.y);
+        }
+        for (EnemyTank p : Constants.enemyTanks) {
+            p.position =new Vector2((Constants.gameMap.position.x -old.x) + p.position.x,
+                    (Constants.gameMap.position.y -old.y)  + p.position.y);
+        }
+
         Constants.combatTextList.add(new ScrollingCombatText("Ready", 1f, new Vector2(Constants.helicopter.position), "READY FOR TAKEOFF!", Color.GREEN, Constants.scrollingCombatFont, true));
     }
 

@@ -38,8 +38,6 @@ public class EnemyFighter extends Entity {
         relativePositionToMap = new Vector2(position);
         speed = 0;
         random = Constants.random.nextFloat()*30;
-        //refireInterval = Constants.ENEMY_FIGHTER_FIRING_INTERVAL - (RadarSite.numberOfLockedOnRadars*0.25f);
-        //image.setCenterOfRotation(image.getWidth()/2, image.getHeight()/2);
         health = Constants.ENEMY_FIGHTER_HEALTH;
         isDestroyed = false;
         isLanded = true;
@@ -124,17 +122,17 @@ public class EnemyFighter extends Entity {
                 }
 
                 if (isReadyToFire) {  // turn towards heli
-                    if (this.intersects(Constants.helicopter) && refireElapsedTime > 5) numberOfTurns++;
+                    if (this.intersects(Constants.helicopter) && refireElapsedTime >
+                            (Constants.ENEMY_FIGHTER_FIRING_INTERVAL - (RadarSite.numberOfLockedOnRadars*0.25f))) numberOfTurns++;
                     if (numberOfTurns > 3) {
                         isReadyToFire = false;
                         refireElapsedTime = 0;
                         numberOfTurns = 0;
-                        //System.out.println("Detected looping...");
                     }
 
-                    if (diff < -5) {
+                    if (diff < -2.5) {
                         rotation = rotation + 180f * delta;
-                    } else if (diff > 5) {
+                    } else if (diff > 2.5) {
                         rotation = rotation - 180f * delta;
                     }
                 } // else cruise
