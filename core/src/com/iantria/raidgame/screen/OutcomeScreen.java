@@ -97,7 +97,7 @@ public class OutcomeScreen implements Screen {
         }
 
         if (outcome != Outcome.YOU_LOSE){
-            Constants.fireworksSound.setLooping(true);
+            //Constants.fireworksSound.setLooping(true);
             Constants.fireworksSound.setVolume(0.5f);
             Constants.fireworksSound.play();
         }
@@ -267,8 +267,8 @@ public class OutcomeScreen implements Screen {
         topTable.add(new TypingLabel ("{WAIT}Radar Sites Destroyed:", labelSmallStyle));
         topTable.add(new TypingLabel ("{WAIT}" + Statistics.numberOfRadarsDestroyed, labelSmallStyle));
 
-        topTable.add(new TypingLabel ("{WAIT}", labelSmallStyle));
-        topTable.add(new TypingLabel ( "{WAIT}", labelSmallStyle));
+        topTable.add(new TypingLabel ("{WAIT} ", labelSmallStyle));
+        topTable.add(new TypingLabel ("{WAIT} ", labelSmallStyle));
 
         topTableStage = new Stage(viewport);
         topTableStage.addActor(topTable);
@@ -361,6 +361,7 @@ public class OutcomeScreen implements Screen {
         Constants.HUDLargeFont.setColor(Color.YELLOW);
         rankLayout = new GlyphLayout(Constants.HUDLargeFont, "RANK: 100");
         //System.out.println("tex:" + shaderTexture.getWidth() + "x" + shaderTexture.getHeight() + "       screen:" + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + "    aspRatio:" + aspectRatio);
+
     }
 
     @Override

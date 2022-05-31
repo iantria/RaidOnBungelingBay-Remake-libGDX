@@ -334,31 +334,40 @@ public class Helicopter extends Entity {
         if (!(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED)
                 && !Constants.carrier.isDestroyed
                 && Constants.helicopter.mode == Helicopter.FlyingMode.FLYING
-                && (Constants.helicopter.carrierLanding() || Constants.helicopter.secretBaseLanding())){
-            if ((Constants.helicopter.speed <= 20 && Constants.helicopter.speed >= -20)){
+                && Constants.helicopter.carrierLanding()) {
+            if ((Constants.helicopter.speed <= 20 && Constants.helicopter.speed >= -20)) {
                 Constants.helicopter.mode = Helicopter.FlyingMode.LANDING;
                 Constants.stopEngineSound.play();
 
                 Constants.helicopter.fuelCount = Constants.FUEL_CAPACITY;
                 Constants.helicopter.bombCount = Constants.BOMBS_PER_PLANE;
                 Constants.helicopter.cannonCount = Constants.CANNON_ROUNDS;
-                if (Constants.helicopter.carrierLanding()) {
-                    Constants.helicopter.health = Constants.MAX_HIT_POINTS_HELICOPTER;
-                    Constants.helicopter.speed = Constants.CARRIER_SPEED;
-                    Constants.gameMap.direction = Constants.carrier.direction;
-                    Statistics.numberOfCarrierLandings++;
-                    Constants.combatTextList.add(new ScrollingCombatText("LandedOnCarrier" + Statistics.numberOfCarrierLandings, 1f, new Vector2(Constants.helicopter.position), ("Repaired, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
-                } else{
-                    Constants.helicopter.speed = 0;
-                    Statistics.numberOfSecretBaseLandings++;
-                    Constants.combatTextList.add(new ScrollingCombatText("LandedOnSecretBase" + Statistics.numberOfCarrierLandings, 1f, new Vector2(Constants.helicopter.position), ("Secret Base, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
-                }
 
+                Constants.helicopter.health = Constants.MAX_HIT_POINTS_HELICOPTER;
+                Constants.helicopter.speed = Constants.CARRIER_SPEED;
+                Constants.gameMap.direction = Constants.carrier.direction;
+                Statistics.numberOfCarrierLandings++;
+                Constants.combatTextList.add(new ScrollingCombatText("LandedOnCarrier" + Statistics.numberOfCarrierLandings, 1f, new Vector2(Constants.helicopter.position), ("Repaired, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
+            }
+        }
+
+        //Can you land on Secret Base?
+        if (!(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED)
+                && Constants.helicopter.mode == Helicopter.FlyingMode.FLYING
+                && Constants.helicopter.secretBaseLanding()) {
+            if ((Constants.helicopter.speed <= 20 && Constants.helicopter.speed >= -20)) {
+                Constants.helicopter.mode = Helicopter.FlyingMode.LANDING;
+                Constants.stopEngineSound.play();
+
+                Constants.helicopter.fuelCount = Constants.FUEL_CAPACITY;
+                Constants.helicopter.bombCount = Constants.BOMBS_PER_PLANE;
+                Constants.helicopter.cannonCount = Constants.CANNON_ROUNDS;
+                Constants.helicopter.speed = 0;
+                Statistics.numberOfSecretBaseLandings++;
+                Constants.combatTextList.add(new ScrollingCombatText("LandedOnSecretBase" + Statistics.numberOfCarrierLandings, 1f, new Vector2(Constants.helicopter.position), ("Secret Base, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
             }
         }
     }
-
-
 
     public void updatePositionsAfterCrash() {
         Vector2 old = new Vector2(Constants.gameMap.position);

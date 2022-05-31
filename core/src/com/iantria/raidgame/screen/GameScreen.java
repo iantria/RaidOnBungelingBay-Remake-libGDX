@@ -177,6 +177,7 @@ public class GameScreen implements Screen {
         Constants.combatTextList.add(new ScrollingCombatText("Start", 0.02f, new Vector2(Constants.helicopter.position), ("GOOD LUCK!"), Color.GREEN, Constants.scrollingCombatFont, true));
         Constants.isReadyToFireCruiseMissile = false;
         Statistics.resetScores();
+        ScrollingCombatText.lastCombatTextAddedToQueue = Statistics.gameTime;
 
         //Mobile Buttons
         doMobileButtons();
@@ -303,22 +304,22 @@ public class GameScreen implements Screen {
 
     private void detectInput(float delta) {
         // Map Change
-        if(Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)){
             Constants.mapID = 1;
             Constants.gameMap.image = Constants.mapTextureRegion;
             Constants.combatTextList.add(new ScrollingCombatText("MAP1", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("Modern Map"), Color.GREEN, Constants.scrollingCombatFont, false));
-        } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             Constants.mapID = 2;
             Constants.gameMap.image = Constants.retroMapTextureRegion;
             Constants.combatTextList.add(new ScrollingCombatText("MAP2", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("Original Map"), Color.GREEN, Constants.scrollingCombatFont, false));
-        } else if(Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)){
             Constants.mapID = 3;
             Constants.gameMap.image = Constants.retroGreenMapTextureRegion;
             Constants.combatTextList.add(new ScrollingCombatText("MAP3", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("NES Green Map"), Color.GREEN, Constants.scrollingCombatFont, false));
         }
 
         // Pause and Exit
-        if ((Gdx.input.isKeyPressed(Input.Keys.ESCAPE) && delayTime > 2f)) {
+        if ((Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && delayTime > 2f)) {
             Constants.oceanSound.stop();
             Constants.chopperSound.stop();
             Constants.takeOffSound.stop();
