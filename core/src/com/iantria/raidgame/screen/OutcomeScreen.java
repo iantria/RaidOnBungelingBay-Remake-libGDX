@@ -254,7 +254,7 @@ public class OutcomeScreen implements Screen {
         topTable.add(new TypingLabel ("{WAIT}Cruise Missiles Destroyed:", labelSmallStyle));
         topTable.add(new TypingLabel ("{WAIT}" + Statistics.numberOfCruiseMissilesDestroyed, labelSmallStyle));
         topTable.add(new TypingLabel ("{WAIT}Carrier Landings:", labelSmallStyle));
-        topTable.add(new TypingLabel ("{WAIT}" +  "" + Statistics.numberOfLandings, labelSmallStyle));
+        topTable.add(new TypingLabel ("{WAIT}" +  "" + Statistics.numberOfCarrierLandings, labelSmallStyle));
 
         topTable.row();
         topTable.add(new TypingLabel ("{WAIT}Factories Destroyed:", labelSmallStyle));

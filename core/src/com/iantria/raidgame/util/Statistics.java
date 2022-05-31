@@ -13,7 +13,8 @@ public class Statistics {
 	public static int numberOfBombsLanded;
 	public static int numberOfCannonRoundsFired;
 	public static int numberOfCannonRoundsLanded;
-	public static int numberOfLandings;
+	public static int numberOfCarrierLandings;
+	public static int numberOfSecretBaseLandings;
 	public static int numberOfFightersDestroyed;
 	public static int numberOfBombersDestroyed;
 	public static int numberOfAAGunsDestroyed;
@@ -60,7 +61,8 @@ public class Statistics {
 		numberOfCannonRoundsFired = 0;
 		numberOfCannonRoundsLanded = 0;
 
-		numberOfLandings = 0;
+		numberOfCarrierLandings = 0;
+		numberOfSecretBaseLandings = 0;
 		
 		numberOfFactoriesDestroyed = 0;
 		numberOfFightersDestroyed = 0;

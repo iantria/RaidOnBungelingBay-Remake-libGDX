@@ -1,13 +1,10 @@
 package com.iantria.raidgame.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.iantria.raidgame.util.Constants;
-
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Entity  {
@@ -15,7 +12,8 @@ public class Entity  {
     public String id;
 
     public enum EntityType {
-        FACTORY, AA_GUN, ENEMY_BOMBER, ENEMY_FIGHTER, HELICOPTER, CARRIER, CRUISE_MISSILE, FIGHTER_BULLET, MY_BULLET, MY_BOMB, RADAR_SITE, ENEMY_BOAT, ENEMY_TANK
+        FACTORY, AA_GUN, ENEMY_BOMBER, ENEMY_FIGHTER, HELICOPTER, CARRIER, CRUISE_MISSILE, FIGHTER_BULLET, MY_BULLET, MY_BOMB,
+        RADAR_SITE, ENEMY_BOAT, ENEMY_TANK, SECRET_BASE
     }
     public EntityType type;
 
@@ -109,7 +107,7 @@ public class Entity  {
         return e.boundingBox.overlaps(boundingBox);
     }
 
-    public boolean carrierLandingIntersect() {
+    public boolean carrierLanding() {
         Rectangle carrier = new Rectangle(Constants.carrier.position.x + 15, Constants.carrier.position.y + 15,
                 Constants.carrier.image.getRegionWidth()*Constants.carrier.scale - 30,
                 Constants.carrier.image.getRegionHeight()*Constants.carrier.scale - 30);
@@ -141,7 +139,27 @@ public class Entity  {
         return carrier.overlaps(boundingBox);
     }
 
+    public boolean secretBaseLanding() {
+        Rectangle secretbase = new Rectangle(Constants.secretBase.position.x, Constants.secretBase.position.y,57, 11);
+        this.boundingBox = new Rectangle(position.x, position.y, image.getRegionWidth()*scale, image.getRegionHeight()*scale);
+        if (secretbase.overlaps(boundingBox)) return true;
 
+        secretbase = new Rectangle(Constants.secretBase.vector1.x, Constants.secretBase.vector1.y,57, 11);
+        this.boundingBox = new Rectangle(vector1.x, vector1.y, image.getRegionWidth()*scale, image.getRegionHeight()*scale);
+        if (secretbase.overlaps(boundingBox)) return true;
+
+        secretbase = new Rectangle(Constants.secretBase.vector2.x, Constants.secretBase.vector2.y,57, 11);
+        this.boundingBox = new Rectangle(vector2.x, vector2.y, image.getRegionWidth()*scale, image.getRegionHeight()*scale);
+        if (secretbase.overlaps(boundingBox)) return true;
+
+        secretbase = new Rectangle(Constants.secretBase.vector3.x, Constants.secretBase.vector3.y,57, 11);
+        this.boundingBox = new Rectangle(vector3.x, vector3.y, image.getRegionWidth()*scale, image.getRegionHeight()*scale);
+        if (secretbase.overlaps(boundingBox)) return true;
+
+        secretbase = new Rectangle(Constants.secretBase.vector4.x, Constants.secretBase.vector4.y,57, 11);
+        this.boundingBox = new Rectangle(vector4.x, vector4.y, image.getRegionWidth()*scale, image.getRegionHeight()*scale);
+        return secretbase.overlaps(boundingBox);
+    }
 
     public void updateVectorsForMovingObjects() {
 
@@ -213,7 +231,6 @@ public class Entity  {
 
     }
 
-
     public boolean isTargetVisibleOnScreen(Entity e) {
         this.boundingBox = new Rectangle(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         e.boundingBox = new Rectangle(e.position.x, e.position.y, e.image.getRegionWidth()*e.scale, e.image.getRegionHeight()*e.scale);
@@ -230,7 +247,5 @@ public class Entity  {
 
         e.boundingBox = new Rectangle(e.vector4.x, e.vector4.y, e.image.getRegionWidth()*e.scale, e.image.getRegionHeight()*e.scale);
         return e.boundingBox.overlaps(boundingBox);
-
     }
-
 }

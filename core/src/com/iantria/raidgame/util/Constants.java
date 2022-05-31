@@ -23,6 +23,7 @@ import com.iantria.raidgame.entity.Helicopter;
 import com.iantria.raidgame.entity.Projectile;
 import com.iantria.raidgame.entity.RadarSite;
 import com.iantria.raidgame.entity.ScrollingCombatText;
+import com.iantria.raidgame.entity.SecretBase;
 
 public class Constants {
 
@@ -48,7 +49,7 @@ public class Constants {
     // Plane
     public static final int BOMBS_PER_PLANE = 9;
     public static final int CANNON_ROUNDS = 100;
-    public static final int FUEL_CAPACITY = 1000;
+    public static final int FUEL_CAPACITY = 100;
     public static final int FUEL_DURATION = 1;
     public static final int NUMBER_OF_LIVES = 3;
 
@@ -128,8 +129,8 @@ public class Constants {
     public static final float[] BOMBER_Y =      {2000-487, 2000-487};
     public static final float[] FIGHTER_X =     {2640, 2690};
     public static final float[] FIGHTER_Y =     {2000-1508, 2000-1508};
-    public static final float[] ENEMY_SHIP_XY = {2580, 2000 - 222};
-    public static final float[] SECRET_BASE_XY = {2210, 1064};
+    public static final float[] ENEMY_SHIP_XY = {2580, 2000-222};
+    public static final float[] SECRET_BASE_XY= {1100, 2000-543};
 
     public static final float[] RADAR_X =       {2791, 2342, 947, 405, 1888, 1852 , 1414, 729, 654, 1331, 1618, 2181, 2601 ,3132, 3111};
     public static final float[] RADAR_Y =       {2000-1980, 2000-1464, 2000-1462, 2000-1785, 2000-1045, 2000-1357, 2000-1100, 2000-443,
@@ -190,6 +191,7 @@ public class Constants {
     public static Carrier carrier;
     public static EnemyShip enemyShip;
     public static GameMap gameMap;
+    public static SecretBase secretBase;
     public static LinkedList<Projectile> projectileList;
     public static LinkedList<Projectile> removeProjectileList;
     public static LinkedList<ScrollingCombatText> combatTextList = new LinkedList<ScrollingCombatText>();

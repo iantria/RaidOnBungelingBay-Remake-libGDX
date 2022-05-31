@@ -199,8 +199,6 @@ public class Helicopter extends Entity {
     }
 
 
-
-
     public void tryToFire(String weapon) {
         if (mode == FlyingMode.LANDED || mode == FlyingMode.LANDING || mode == FlyingMode.TAKING_OFF || mode == FlyingMode.CRASHED) return;
         if (weapon.equals("fireBomb")){
@@ -239,10 +237,6 @@ public class Helicopter extends Entity {
             }
         }
     }
-
-
-
-
 
     public void doAIFlying(float delta) {
         // If landed... take off
@@ -289,7 +283,7 @@ public class Helicopter extends Entity {
             if (isTargetVisibleOnScreen(primaryTarget))
                 if (this.intersects(primaryTarget)){
                     slowSpeedDown(delta, Constants.MAX_HELICOPTER_SPEED/16);
-                    if (this.carrierLandingIntersect()) slowSpeedDown(delta, 0);
+                    if (this.carrierLanding()) slowSpeedDown(delta, 0);
                     checkIfYouCanLand();
                 } else {
                     slowSpeedDown(delta, Constants.MAX_HELICOPTER_SPEED / 6);
@@ -340,36 +334,28 @@ public class Helicopter extends Entity {
         if (!(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED)
                 && !Constants.carrier.isDestroyed
                 && Constants.helicopter.mode == Helicopter.FlyingMode.FLYING
-                && Constants.helicopter.carrierLandingIntersect()){
+                && (Constants.helicopter.carrierLanding() || Constants.helicopter.secretBaseLanding())){
             if ((Constants.helicopter.speed <= 20 && Constants.helicopter.speed >= -20)){
                 Constants.helicopter.mode = Helicopter.FlyingMode.LANDING;
                 Constants.stopEngineSound.play();
-                Statistics.numberOfLandings++;
+
                 Constants.helicopter.fuelCount = Constants.FUEL_CAPACITY;
                 Constants.helicopter.bombCount = Constants.BOMBS_PER_PLANE;
                 Constants.helicopter.cannonCount = Constants.CANNON_ROUNDS;
-                Constants.helicopter.health = Constants.MAX_HIT_POINTS_HELICOPTER;
-                Constants.helicopter.speed = Constants.CARRIER_SPEED;
-                Constants.gameMap.direction = Constants.carrier.direction;
-                Constants.combatTextList.add(new ScrollingCombatText("LandedOnCarrier" + Statistics.numberOfLandings, 1f, new Vector2(Constants.helicopter.position), ("Repaired, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
+                if (Constants.helicopter.carrierLanding()) {
+                    Constants.helicopter.health = Constants.MAX_HIT_POINTS_HELICOPTER;
+                    Constants.helicopter.speed = Constants.CARRIER_SPEED;
+                    Constants.gameMap.direction = Constants.carrier.direction;
+                    Statistics.numberOfCarrierLandings++;
+                    Constants.combatTextList.add(new ScrollingCombatText("LandedOnCarrier" + Statistics.numberOfCarrierLandings, 1f, new Vector2(Constants.helicopter.position), ("Repaired, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
+                } else{
+                    Constants.helicopter.speed = 0;
+                    Statistics.numberOfSecretBaseLandings++;
+                    Constants.combatTextList.add(new ScrollingCombatText("LandedOnSecretBase" + Statistics.numberOfCarrierLandings, 1f, new Vector2(Constants.helicopter.position), ("Secret Base, Refueled, Reloaded!"), Color.GREEN, Constants.scrollingCombatFont, true));
+                }
+
             }
         }
-
-//        //Can you land on SecretBase?
-//        if (!isCrashed && !isLanded && main.secretBase.collidesWith(this)){
-//            float angle = getRotation();
-//            angle = Math.abs(angle % 360);
-//
-//            if (main.gameMap.speed == Constants.MIN_PLANE_SPEED){
-//                setLanded(true);
-//                setAfterburner(false);
-//                main.landEffect1.play();
-//                main.cruiseSpeedEffect.stop();
-//                missileCount = Constants.MISSILES_PER_PLANE;
-//                cannonCount = Constants.CANNON_ROUNDS;
-//                main.combatText.add(new ScrollingCombatText("LandedOnSecretBase" + main.statistics.numberOfLandings, 1f, main.plane.position.copy(), ("Reloaded!"), Color.green, main.ttfTiny, true));
-//            }
-//        }
     }
 
 

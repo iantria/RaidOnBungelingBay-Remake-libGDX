@@ -9,19 +9,22 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.iantria.raidgame.entity.EnemyBoat;
 import com.iantria.raidgame.entity.EnemyTank;
 import com.iantria.raidgame.entity.RadarSite;
+import com.iantria.raidgame.entity.SecretBase;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.entity.ScrollingCombatText;
 import com.iantria.raidgame.util.Network;
@@ -37,6 +40,7 @@ import com.iantria.raidgame.entity.GameMap;
 import com.iantria.raidgame.entity.HeadsUpDisplay;
 import com.iantria.raidgame.entity.Helicopter;
 import com.iantria.raidgame.entity.Projectile;
+import com.badlogic.gdx.graphics.Pixmap;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -148,6 +152,9 @@ public class GameScreen implements Screen {
             Constants.enemyTanks[i] = a;
         }
 
+        //Secret Base
+        Constants.secretBase = new SecretBase("SecretBase", 1f, false, new Vector2(Constants.SECRET_BASE_XY[0], Constants.SECRET_BASE_XY[1]), 0f, Constants.singlePixelTextureRegion);
+
         //Planes
         Constants.enemyFighters[0] = new EnemyFighter("EnemyFighter1", 0.15f, true,
                 new Vector2(Constants.FIGHTER_X[0] + Constants.WINDOW_WIDTH/2 - 200, Constants.FIGHTER_Y[0]), 270,
@@ -194,6 +201,7 @@ public class GameScreen implements Screen {
                 Constants.gameMap.update(deltaTime, Constants.helicopter.rotation);
             Constants.carrier.update(deltaTime);
             Constants.enemyShip.update(deltaTime);
+            Constants.secretBase.update(deltaTime);
 
             for (EnemyFighter a : Constants.enemyFighters) {
                 a.update(deltaTime);
@@ -264,6 +272,7 @@ public class GameScreen implements Screen {
         for (EnemyTank a: Constants.enemyTanks){
             a.draw(batch);
         }
+        Constants.secretBase.draw(batch);
 
         Constants.helicopter.draw(batch);
 

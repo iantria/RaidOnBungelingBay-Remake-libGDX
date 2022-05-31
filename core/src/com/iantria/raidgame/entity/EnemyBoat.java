@@ -10,7 +10,6 @@ import com.iantria.raidgame.util.Statistics;
 
 public class EnemyBoat extends Entity {
 
-    float angleToTarget = 0f;
     float diff = 0;
     public Animation<TextureRegion> boatExploded;
     public Animation<TextureRegion> machineGunFiring;
