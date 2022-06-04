@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">10.88.111.19</domain>
+        <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">iantria.com</domain>
     </domain-config>
 </network-security-config>

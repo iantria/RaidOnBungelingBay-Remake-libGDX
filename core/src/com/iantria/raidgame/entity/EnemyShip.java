@@ -40,6 +40,7 @@ public class EnemyShip extends Entity {
 		this.isSinking = false;
 		this.isAttacking = false;
 		this.speed = 0;
+		this.type = EntityType.ENEMY_SHIP;
 		vector1 = new Vector2(position);
 		vector2 = new Vector2(position);
 		vector3 = new Vector2(position);
@@ -103,7 +104,7 @@ public class EnemyShip extends Entity {
 
     	elapsedTime += delta;
         if (isAttacking && !isSinking && !isDestroyed && !isReadyToFire
-        		&& !(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED) && (elapsedTime >= Constants.ENEMY_SHIP_FIRING_INTERVAL)) {
+        		&& !(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED) && (elapsedTime >= Constants.ENEMY_SHIP_CRUISE_MISSILE_FIRING_INTERVAL)) {
         	elapsedTime = 0;
         	isReadyToFire = true;  // Cruise Missile
         }
@@ -274,7 +275,7 @@ public class EnemyShip extends Entity {
 	
     private void fireCruiseMissile(Projectile.MainTarget target) {
     	if (target == CruiseMissile.MainTarget.CARRIER_IS_TARGET){
-			soundId = Constants.carrierAlarm.play();
+			soundId = Constants.carrierAlarm.play(Constants.volume);
     	}
 		Statistics.numberOfTimesCruiseMissileFired++;
 		CruiseMissile projectile = new CruiseMissile(id + "_CruiseMissile" + firedCount, 0.05f, true,
@@ -282,7 +283,7 @@ public class EnemyShip extends Entity {
 						position.y + image.getRegionHeight()*scale/2f - Constants.cruiseMissileTexture.getRegionHeight()*0.05f/2f),
 				rotation, Constants.MISSILE_SPEED, Constants.cruiseMissileTexture ,
 				Projectile.Type.ENEMY_CRUISE_MISSILE,  target);
-		Constants.fireMissileEffect.play();
+		Constants.fireMissileEffect.play(Constants.volume);
 		Constants.projectileList.add(projectile);
 		isReadyToFire = false;
 		elapsedTime = 0;
@@ -293,7 +294,7 @@ public class EnemyShip extends Entity {
 				new Vector2(position.x + image.getRegionWidth()*scale/2f - Constants.enemyBulletTextureRegion.getRegionWidth()*0.25f/2f ,
 						position.y + image.getRegionHeight()*scale/2f - Constants.enemyBulletTextureRegion.getRegionHeight()*0.25f/2f),
 				rotation, Constants.BULLET_SPEED, Constants.enemyBulletTextureRegion, Projectile.Type.AA_GUN_BULLET);
-		Constants.AAGunFireSound.play();
+		Constants.AAGunFireSound.play(Constants.volume);
 		Constants.projectileList.add(p);
 		isCannonReadyToFire = false;
     }

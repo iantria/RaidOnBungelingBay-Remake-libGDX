@@ -80,7 +80,7 @@ public class EnemyBomber extends Entity {
 
         if (intersects(Constants.carrier) && !isDestroyed && !isLanded && !Constants.carrier.isDestroyed) {
             if (bombingExplosionTimer == 0) {
-                Constants.bombsDroppingSound.play(0.5f);
+                Constants.bombsDroppingSound.play(Constants.volume*0.5f);
             }
             isAttacking = true;
         } else {

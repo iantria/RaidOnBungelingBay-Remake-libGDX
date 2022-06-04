@@ -63,6 +63,7 @@ public class Carrier extends Entity {
 
         if (isSinking && Constants.helicopter.mode == Helicopter.FlyingMode.LANDED) {
             Constants.helicopter.mode = Helicopter.FlyingMode.TAKING_OFF;
+            Constants.takeOffSound.setVolume(Constants.volume);
             Constants.takeOffSound.play();
         }
 
@@ -113,7 +114,7 @@ public class Carrier extends Entity {
         }
         if (soundID == -1 && isUnderAttack) {
             elapsedTime = 0;
-            soundID = Constants.carrierAlarm.play(0.5f);
+            soundID = Constants.carrierAlarm.play(Constants.volume*0.5f);
             Constants.combatTextList.add(new ScrollingCombatText("BombersAttacking_" + Constants.carrier.health, 1f, new Vector2(Constants.helicopter.position), ("CARRIER UNDER ATTACK!"), Color.YELLOW, Constants.scrollingCombatFont, true));
         } else {
             if (elapsedTime > 2.5f) {

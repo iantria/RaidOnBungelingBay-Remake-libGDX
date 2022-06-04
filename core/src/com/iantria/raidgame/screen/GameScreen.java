@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -40,7 +37,6 @@ import com.iantria.raidgame.entity.GameMap;
 import com.iantria.raidgame.entity.HeadsUpDisplay;
 import com.iantria.raidgame.entity.Helicopter;
 import com.iantria.raidgame.entity.Projectile;
-import com.badlogic.gdx.graphics.Pixmap;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -90,8 +86,13 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
 
         //Map
-        Constants.mapID = 1;
-        Constants.gameMap = new GameMap("Game Map", 1f, true, new Vector2(Constants.WINDOW_WIDTH/2 - 200,0), 0f, Constants.mapTextureRegion);
+        Constants.mapID = Constants.defaultMapID;
+        if (Constants.mapID == 1)
+            Constants.gameMap = new GameMap("Game Map", 1f, true, new Vector2(Constants.WINDOW_WIDTH/2 - 200,0), 0f, Constants.mapTextureRegion);
+        else if (Constants.mapID == 2)
+            Constants.gameMap = new GameMap("Game Map", 1f, true, new Vector2(Constants.WINDOW_WIDTH/2 - 200,0), 0f, Constants.retroMapTextureRegion);
+        else
+            Constants.gameMap = new GameMap("Game Map", 1f, true, new Vector2(Constants.WINDOW_WIDTH/2 - 200,0), 0f, Constants.retroGreenMapTextureRegion);
 
         //Helicopter
         Constants.helicopter = new Helicopter("Helicopter", 0.125f, true,
@@ -328,7 +329,7 @@ public class GameScreen implements Screen {
             exitButton.removeListener(exitButton.getListeners().first());
             mapButton.removeListener(mapButton.getListeners().first());
             //pauseButton.removeListener(pauseButton.getListeners().first());
-            Constants.game.setScreen(new IntroScreen(true));
+            Constants.game.setScreen(new MainMenuScreen(true));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.P)){
             paused = true;
             try {
@@ -351,6 +352,7 @@ public class GameScreen implements Screen {
                     || touchDirectionPieMenu.menu.getHighlightedIndex() == 2)
                     && Constants.helicopter.mode == Helicopter.FlyingMode.LANDED) {
                 Constants.helicopter.mode = Helicopter.FlyingMode.TAKING_OFF;
+                Constants.takeOffSound.setVolume(Constants.volume);
                 Constants.takeOffSound.play();
             }
 
@@ -414,7 +416,7 @@ public class GameScreen implements Screen {
         if (Constants.helicopter.mode == Helicopter.FlyingMode.LANDED) {
             if (!Constants.oceanSound.isPlaying()){
                 Constants.oceanSound.setLooping(true);
-                Constants.oceanSound.setVolume(0.3f);
+                Constants.oceanSound.setVolume(Constants.volume*0.3f);
                 Constants.oceanSound.play();
             }
             return;
@@ -435,6 +437,7 @@ public class GameScreen implements Screen {
         if (Constants.getRemainingFactories() == 0){
             winDelayTime += delta;
             if (!Constants.youWinSound.isPlaying()) {
+                Constants.youWinSound.setVolume(Constants.volume);
                 Constants.youWinSound.play();
                 Constants.combatTextList.add(new ScrollingCombatText("BIGWIN", 1f, new Vector2(Constants.WINDOW_WIDTH/2, 50), ("YOU HAVE WON!"), Color.GREEN, Constants.scrollingCombatFont, false));
             }
@@ -459,9 +462,10 @@ public class GameScreen implements Screen {
         if (Constants.helicopter.fuelCount < 1 || Constants.helicopter.health < 1) {
             if (!(Constants.helicopter.mode == Helicopter.FlyingMode.CRASHED)) {
                 Constants.chopperSound.stop();
-                Constants.outOfFuelCrashSound.play();
+                Constants.outOfFuelCrashSound.play(Constants.volume);
                 Constants.projectileImpact.stop();
                 Constants.helicopter.mode = Helicopter.FlyingMode.CRASHED;
+                Constants.helicopter.explosionTimer = 0; // May 31 test **** //TODO
                 Constants.helicopter.livesCount--;
                 Statistics.numberOfLivesLost++;
 
@@ -472,6 +476,7 @@ public class GameScreen implements Screen {
                 if (Constants.helicopter.livesCount <= 0 && !Constants.drumsSound.isPlaying()) {
                     Statistics.carrierSurvived = !Constants.carrier.isDestroyed && !Constants.carrier.isSinking;
                     Constants.combatTextList.add(new ScrollingCombatText("YOULOST", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("YOU HAVE BEEN DEFEATED!"), Color.RED, Constants.scrollingCombatFont, false));
+                    Constants.drumsSound.setVolume(Constants.volume);
                     Constants.drumsSound.play();
                 } else{
                     Constants.combatTextList.add(new ScrollingCombatText("YOUCRAHSED", 1f, new Vector2(Constants.WINDOW_WIDTH / 2, 50), ("HELICOPTER DESTROYED!"), Color.RED, Constants.scrollingCombatFont, false));
@@ -594,7 +599,7 @@ public class GameScreen implements Screen {
                 fireButton.removeListener(fireButton.getListeners().first());
                 bombButton.removeListener(bombButton.getListeners().first());
                 //pauseButton.removeListener(pauseButton.getListeners().first());
-                Constants.game.setScreen(new IntroScreen(true));
+                Constants.game.setScreen(new MainMenuScreen(true));
                 return super.touchDown(event, x, y, pointer, button);
             }
             @Override

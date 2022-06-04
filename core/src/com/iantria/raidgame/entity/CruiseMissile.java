@@ -94,7 +94,7 @@ public class CruiseMissile extends Projectile {
 			batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
         } else {
         	if (soundID == -1)
-				soundID = Constants.cruiseOutOfFuel.play();
+				soundID = Constants.cruiseOutOfFuel.play(Constants.volume);
 			batch.draw(ranOutOfFuel.getKeyFrame(elapsedTime),
 					position.x + image.getRegionWidth() / 2 * scale - ranOutOfFuel.getKeyFrame(elapsedTime).getRegionWidth() / 2,
 					position.y + image.getRegionHeight() / 2 * scale - ranOutOfFuel.getKeyFrame(elapsedTime).getRegionHeight() / 2);

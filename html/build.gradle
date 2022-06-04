@@ -8,8 +8,10 @@ gwt {
     devModules 'com.iantria.raidgame.GdxDefinitionSuperdev'
     project.webAppDirName = 'webapp'
 
+
     compiler {
         strict = true;
+        style = org.wisepersist.gradle.plugins.gwt.Style.DETAILED;
         disableCastChecking = true;
     }
 }

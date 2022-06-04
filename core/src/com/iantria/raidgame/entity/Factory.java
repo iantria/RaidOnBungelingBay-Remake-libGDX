@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.iantria.raidgame.util.Constants;
@@ -17,11 +18,13 @@ public class Factory extends Entity {
     private float destroyedExplosionElapsedTime;
     private Animation<TextureRegion> explodeAnimation;
     private int explosionIndex;
+    private ParticleEffect bombEffect;
 
     public Factory(String id, float scale, boolean isMovingObj, Vector2 position, float rotation, TextureRegion image) {
         super(id, scale, isMovingObj, position, rotation, image);
         this.scale = scale;
         type = EntityType.FACTORY;
+        this.bombEffect = new ParticleEffect(Constants.bombFlashEffect);
         init();
     }
 
@@ -74,13 +77,18 @@ public class Factory extends Entity {
         }
 
         if (isDestroyed) destroyedExplosionElapsedTime += delta;
+
+        if (isDestroyed && explosionIndex > 0) {
+            bombEffect.update(delta);
+        }
+
         if (wasHitByBomb) {
+            bombEffect.update(delta);
             bombExplosionElapsedTime += delta;
         }
     }
 
     public void draw(Batch batch) {
-
         if (isDestroyed) {
             wasHitByBomb = false;
             batch.draw(explodeAnimation.getKeyFrame(destroyedExplosionElapsedTime),
@@ -95,6 +103,11 @@ public class Factory extends Entity {
             batch.draw(explodeAnimation.getKeyFrame(destroyedExplosionElapsedTime),
                     vector4.x + random + image.getRegionWidth() / 2 * scale - explodeAnimation.getKeyFrame(destroyedExplosionElapsedTime).getRegionWidth() / 2,
                     vector4.y + random + image.getRegionHeight() / 2 * scale - explodeAnimation.getKeyFrame(destroyedExplosionElapsedTime).getRegionHeight() / 2);
+
+            if (explosionIndex > 0) {
+                bombEffect.setPosition(vector1.x + image.getRegionWidth()/2f * scale, vector1.y + image.getRegionHeight()/2f * scale);
+                bombEffect.draw(batch);
+            }
             if (explodeAnimation.isAnimationFinished(destroyedExplosionElapsedTime) && explosionIndex > 0) {
                 explosionIndex--;
                 random = Constants.random.nextInt(12) - 6;
@@ -114,6 +127,8 @@ public class Factory extends Entity {
             batch.draw(image, vector4.x, vector4.y, image.getRegionWidth()*scale/2, image.getRegionHeight()*scale/2 , image.getRegionWidth()*scale , image.getRegionHeight()*scale, 1f, 1f, direction);
 
             if (wasHitByBomb){
+                bombEffect.setPosition(vector1.x + image.getRegionWidth() / 2 * scale, vector1.y + image.getRegionHeight() / 2 * scale);
+                bombEffect.draw(batch);
                 if (!wasHitByBombAnimation.isAnimationFinished(bombExplosionElapsedTime)){
                     batch.draw(wasHitByBombAnimation.getKeyFrame(bombExplosionElapsedTime),
                             vector1.x + image.getRegionWidth()/2*scale  - wasHitByBombAnimation.getKeyFrame(bombExplosionElapsedTime).getRegionWidth()/2,

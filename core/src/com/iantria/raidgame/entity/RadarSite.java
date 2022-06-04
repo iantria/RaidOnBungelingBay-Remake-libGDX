@@ -90,7 +90,7 @@ public class RadarSite extends Entity {
                         isLockedOn = true;
                         Constants.combatTextList.add(new ScrollingCombatText("RadarLock_" + id, 1f, new Vector2(Constants.helicopter.position), ("RADAR SITE LOCKED ON!"), Color.YELLOW, Constants.scrollingCombatFont, true));
                         RadarSite.numberOfLockedOnRadars++;
-                        Constants.radarBeep.play();
+                        Constants.radarBeep.play(Constants.volume);
                     }
                 }
             }

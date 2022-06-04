@@ -71,7 +71,7 @@ public class Projectile extends Entity {
     public void draw(Batch batch) {
          if (bombHitNothing && type == Type.MY_BOMB) {
              if (soundID == -1)
-                soundID = Constants.cruiseOutOfFuel.play();
+                soundID = Constants.cruiseOutOfFuel.play(Constants.volume);
              batch.draw(bombHitNothingAnimation.getKeyFrame(elapsedTime),
                      position.x + image.getRegionWidth() / 2 * scale - bombHitNothingAnimation.getKeyFrame(elapsedTime).getRegionWidth() / 2,
                      position.y + image.getRegionHeight() / 2 * scale - bombHitNothingAnimation.getKeyFrame(elapsedTime).getRegionHeight() / 2);
@@ -100,13 +100,13 @@ public class Projectile extends Entity {
             x = x - Constants.BOMB_DAMAGE;
             Statistics.amountOfDamageDealt += Constants.BOMB_DAMAGE;
             Statistics.numberOfBombsLanded++;
-            Constants.mediumExplosion.play();
+            Constants.mediumExplosion.play(Constants.volume);
             f.wasHitByBomb = true;
             f.wasHit = true;
         }
         if (type == Type.MY_BULLET) {
             x = x - Constants.CANNON_DAMAGE;
-            Constants.bulletHitLand.play();
+            Constants.bulletHitLand.play(Constants.volume);
             Statistics.amountOfDamageDealt += Constants.CANNON_DAMAGE;
             Statistics.numberOfCannonRoundsLanded++;
             f.wasHitByCannon = true;
@@ -120,7 +120,7 @@ public class Projectile extends Entity {
         if (type == Type.AA_GUN_BULLET){
             if(intersects(Constants.helicopter)) {
                 Constants.helicopter.wasHit = true;
-                Constants.projectileImpact.play();
+                Constants.projectileImpact.play(Constants.volume);
                 Statistics.amountOfDamageTaken += Constants.ENEMY_AA_GUN_DAMAGE;
                 Constants.helicopter.health -= Constants.ENEMY_AA_GUN_DAMAGE;
                 Constants.combatTextList.add(new ScrollingCombatText("AAGun" + Constants.helicopter.health, 1f, new Vector2(Constants.helicopter.position), ("-" + Constants.ENEMY_AA_GUN_DAMAGE + " Health"), Color.RED, Constants.scrollingCombatFont, true));
@@ -132,7 +132,7 @@ public class Projectile extends Entity {
         } else if (type == Type.ENEMY_FIGHTER_BULLET){
             if(intersects(Constants.helicopter)) {
                 Constants.helicopter.wasHit = true;
-                Constants.projectileImpact.play();
+                Constants.projectileImpact.play(Constants.volume);
                 Statistics.amountOfDamageTaken += Constants.ENEMY_FIGHTER_GUN_DAMAGE;
                 Constants.helicopter.health -= Constants.ENEMY_FIGHTER_GUN_DAMAGE;
                 Constants.combatTextList.add(new ScrollingCombatText("EnemyFighter" + Constants.helicopter.health, 1f, new Vector2(Constants.helicopter.position), ("-" + Constants.ENEMY_FIGHTER_GUN_DAMAGE + " Health"), Color.RED, Constants.scrollingCombatFont, true));
@@ -145,7 +145,7 @@ public class Projectile extends Entity {
         else if (type == Type.ENEMY_CRUISE_MISSILE){
             if(!wasHit && !isDestroyed && intersects(Constants.helicopter) && mainTarget == MainTarget.PLAYER_IS_TARGET) {
                 Constants.helicopter.wasHit = true;
-                Constants.projectileImpact.play();
+                Constants.projectileImpact.play(Constants.volume);
                 Constants.removeProjectileList.add(this);
                 wasHit = true; // added Jan 19
                 Statistics.amountOfDamageTaken += Constants.ENEMY_CRUISE_MISSILE_DAMAGE;
@@ -156,7 +156,7 @@ public class Projectile extends Entity {
             }
             if(!wasHit && !isDestroyed && intersects(Constants.carrier) && mainTarget == MainTarget.CARRIER_IS_TARGET) {
                 Constants.carrier.wasHit = true;
-                Constants.projectileImpact.play();
+                Constants.projectileImpact.play(Constants.volume);
                 Constants.removeProjectileList.add(this);
                 wasHit = true;  // added Jan 19
                 Statistics.amountOfCarrierDamageTaken += Constants.ENEMY_CRUISE_MISSILE_DAMAGE;
@@ -175,7 +175,7 @@ public class Projectile extends Entity {
                         if (Constants.enemyShip.isAttacking) {
                             Constants.enemyShip.isSinking = true;
                             Constants.enemyShip.isAttacking = false;
-                            Constants.bigExplosion.play();
+                            Constants.bigExplosion.play(Constants.volume);
                             Statistics.score = Statistics.score + Constants.SCORE_ENEMY_SHIP;
                             Constants.combatTextList.add(new ScrollingCombatText("BomberScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_ENEMY_SHIP + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
                         } else Constants.enemyShip.health = 1;
@@ -193,7 +193,7 @@ public class Projectile extends Entity {
                     if (f.health < 1) {
                         f.isDestroyed = true;
                         f.wasHitByBomb = true;
-                        Constants.bigExplosion.play();
+                        Constants.bigExplosion.play(Constants.volume);
                         Statistics.numberOfFactoriesDestroyed++;
                         if (Statistics.numberOfFactoriesDestroyed == 6) {
                             Constants.combatTextList.add(new ScrollingCombatText("YouWon", 1f, new Vector2(Constants.helicopter.position), ("YOU HAVE WON!"), Color.GREEN, Constants.scrollingCombatFont, true));
@@ -215,7 +215,7 @@ public class Projectile extends Entity {
                     if (f.health < 1) {
                         f.wasHit = true;
                         if (f.soundID == -1)
-                            f.soundID = Constants.cruiseOutOfFuel.play();
+                            f.soundID = Constants.cruiseOutOfFuel.play(Constants.volume);
                         Statistics.numberOfCruiseMissilesDestroyed++;
                         Statistics.score += Constants.SCORE_CRUISE_MISSILE;
                         Constants.combatTextList.add(new ScrollingCombatText("CruiseScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_CRUISE_MISSILE + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
@@ -230,7 +230,7 @@ public class Projectile extends Entity {
                     updateEntityForHit(f);
                     if (f.health < 1) {
                         f.isDestroyed = true;
-                        Constants.bigExplosion.play();
+                        Constants.bigExplosion.play(Constants.volume);
                         Statistics.numberOfAAGunsDestroyed++;
                         Statistics.score += Constants.SCORE_AA_GUN;
                         Constants.combatTextList.add(new ScrollingCombatText("AAGunScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_AA_GUN + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
@@ -246,7 +246,7 @@ public class Projectile extends Entity {
                     updateEntityForHit(f);
                     if (f.health < 1) {
                         f.isDestroyed = true;
-                        Constants.bigExplosion.play();
+                        Constants.bigExplosion.play(Constants.volume);
                         Statistics.numberOfRadarsDestroyed++;
                         Statistics.score += Constants.SCORE_RADAR_SITE;
                         Constants.combatTextList.add(new ScrollingCombatText("RadarSiteScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_RADAR_SITE + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
@@ -263,7 +263,7 @@ public class Projectile extends Entity {
                     updateEntityForHit(f);
                     if (f.health < 1) {
                         f.isDestroyed = true;
-                        Constants.bigExplosion.play();
+                        Constants.bigExplosion.play(Constants.volume);
                         Statistics.numberOfBoatsDestroyed++;
                         Statistics.score += Constants.SCORE_ENEMY_BOAT;
                         Constants.combatTextList.add(new ScrollingCombatText("EnemyBoatScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_ENEMY_BOAT + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
@@ -279,7 +279,7 @@ public class Projectile extends Entity {
                     updateEntityForHit(f);
                     if (f.health < 1) {
                         f.isDestroyed = true;
-                        Constants.bigExplosion.play();
+                        Constants.bigExplosion.play(Constants.volume);
                         Statistics.numberOfTanksDestroyed++;
                         Statistics.score += Constants.SCORE_ENEMY_TANK;
                         Constants.combatTextList.add(new ScrollingCombatText("EnemyTankScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_ENEMY_TANK + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
@@ -296,7 +296,7 @@ public class Projectile extends Entity {
                     updateEntityForHit(f);
                     if (f.health < 1) {
                         f.isDestroyed = true;
-                        Constants.bigExplosion.play();
+                        Constants.bigExplosion.play(Constants.volume);
                         Statistics.numberOfFightersDestroyed++;
                         Statistics.score = Statistics.score + Constants.SCORE_FIGHTER;
                         Constants.combatTextList.add(new ScrollingCombatText("FighterScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_FIGHTER + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));
@@ -312,7 +312,7 @@ public class Projectile extends Entity {
                     updateEntityForHit(f);
                     if (f.health < 1) {
                         f.isDestroyed = true;
-                        Constants.bigExplosion.play();
+                        Constants.bigExplosion.play(Constants.volume);
                         Statistics.numberOfBombersDestroyed++;
                         Statistics.score = Statistics.score + Constants.SCORE_BOMBER;
                         Constants.combatTextList.add(new ScrollingCombatText("BomberScore" , 1f, new Vector2(Constants.helicopter.position), ("+" + Constants.SCORE_BOMBER + " Score"), Color.WHITE, Constants.scrollingCombatFont, true));

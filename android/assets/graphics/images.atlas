@@ -6,280 +6,294 @@ filter: Nearest, Nearest
 repeat: none
 AAGun
   rotate: false
-  xy: 919, 335
+  xy: 573, 83
   size: 44, 48
   orig: 44, 48
   offset: 0, 0
   index: -1
 Carrier
   rotate: false
-  xy: 2, 82
+  xy: 2, 79
   size: 197, 946
   orig: 197, 946
   offset: 0, 0
   index: -1
 CruiseMissle
   rotate: false
-  xy: 1615, 500
+  xy: 1615, 497
   size: 132, 459
   orig: 132, 459
   offset: 0, 0
   index: -1
 Frontsideapache
   rotate: false
-  xy: 2, 1483
+  xy: 2, 1480
   size: 1165, 563
   orig: 1165, 563
   offset: 0, 0
   index: -1
 Frontsideapache_blade
   rotate: false
-  xy: 2, 1030
+  xy: 2, 1027
   size: 1165, 75
   orig: 1165, 75
   offset: 0, 0
   index: -1
 Heli_Blade
   rotate: false
-  xy: 707, 169
+  xy: 707, 166
   size: 210, 214
   orig: 210, 214
   offset: 0, 0
   index: -1
 Helicopter
   rotate: false
-  xy: 1457, 256
+  xy: 1457, 253
   size: 118, 298
   orig: 118, 298
   offset: 0, 0
   index: -1
 Sideviewapache
   rotate: false
-  xy: 2, 1107
+  xy: 2, 1104
   size: 1154, 374
   orig: 1154, 374
   offset: 0, 0
   index: -1
 Sideviewapache_blade
   rotate: false
-  xy: 1169, 1103
+  xy: 1169, 1100
   size: 765, 49
   orig: 765, 49
   offset: 0, 0
   index: -1
 arrow
   rotate: false
-  xy: 573, 34
+  xy: 1475, 151
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 bomb_button
   rotate: false
-  xy: 1169, 1621
+  xy: 1169, 1618
   size: 441, 425
   orig: 441, 425
   offset: 0, 0
   index: -1
 bomber
   rotate: false
-  xy: 1725, 1512
+  xy: 1725, 1509
   size: 289, 110
   orig: 289, 110
   offset: 0, 0
   index: -1
 bullets
   rotate: false
-  xy: 1937, 1478
+  xy: 1870, 1066
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 bullets2
   rotate: false
-  xy: 1749, 596
+  xy: 919, 348
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 ddg
   rotate: false
-  xy: 201, 809
+  xy: 201, 806
   size: 964, 106
   orig: 964, 106
   offset: 0, 0
   index: -1
 ddgIcon
   rotate: false
-  xy: 1726, 1046
+  xy: 1749, 497
   size: 200, 55
   orig: 200, 55
   offset: 0, 0
   index: -1
 demo_button
   rotate: false
-  xy: 1158, 1154
+  xy: 919, 77
   size: 554, 140
   orig: 554, 140
   offset: 0, 0
   index: -1
 emptyBomb
   rotate: false
-  xy: 1577, 522
+  xy: 1577, 519
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enemyFighter
   rotate: false
-  xy: 1749, 816
+  xy: 1749, 740
   size: 158, 228
   orig: 158, 228
   offset: 0, 0
   index: -1
 enemy_boat
   rotate: false
-  xy: 1016, 222
+  xy: 1016, 219
   size: 225, 585
   orig: 225, 585
   offset: 0, 0
   index: -1
 enemy_tank
   rotate: false
-  xy: 573, 136
+  xy: 573, 133
   size: 132, 244
   orig: 132, 244
   offset: 0, 0
   index: -1
 exit_button
   rotate: false
-  xy: 2, 24
+  xy: 2, 21
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
   index: -1
 factoryIcon
   rotate: false
-  xy: 573, 2
+  xy: 1725, 1477
   size: 32, 30
   orig: 32, 30
   offset: 0, 0
   index: -1
 factoryNew
   rotate: false
-  xy: 1749, 630
+  xy: 1749, 554
   size: 200, 184
   orig: 200, 184
   offset: 0, 0
   index: -1
 fire_button
   rotate: false
-  xy: 201, 382
+  xy: 201, 379
   size: 441, 425
   orig: 441, 425
   offset: 0, 0
   index: -1
 heliIcon
   rotate: false
-  xy: 1577, 209
+  xy: 1577, 206
   size: 212, 289
   orig: 212, 289
   offset: 0, 0
   index: -1
+inital-flash
+  rotate: false
+  xy: 1740, 970
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 lost_newspaper
   rotate: false
-  xy: 1243, 556
+  xy: 1243, 553
   size: 370, 403
   orig: 370, 403
   offset: 0, 0
   index: -1
 map_button
   rotate: false
-  xy: 1984, 1990
+  xy: 1984, 1987
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
   index: -1
 name
   rotate: false
-  xy: 1158, 1296
+  xy: 1158, 1293
   size: 549, 181
   orig: 549, 181
   offset: 0, 0
   index: -1
 pause_button
   rotate: false
-  xy: 1184, 903
+  xy: 1184, 900
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
   index: -1
 play_button
   rotate: false
-  xy: 1169, 1479
+  xy: 1158, 1151
   size: 554, 140
   orig: 554, 140
   offset: 0, 0
   index: -1
 projectile
   rotate: false
-  xy: 1158, 1120
+  xy: 1709, 1442
   size: 8, 32
   orig: 8, 32
   offset: 0, 0
   index: -1
 radar_icon
   rotate: false
-  xy: 1243, 252
+  xy: 1243, 249
   size: 212, 302
   orig: 212, 302
   offset: 0, 0
   index: -1
 scores_button
   rotate: false
-  xy: 1184, 961
-  size: 540, 140
-  orig: 540, 140
+  xy: 1184, 958
+  size: 554, 140
+  orig: 554, 140
+  offset: 0, 0
+  index: -1
+settings_button
+  rotate: false
+  xy: 1169, 1476
+  size: 554, 140
+  orig: 554, 140
   offset: 0, 0
   index: -1
 sideBackProps
   rotate: false
-  xy: 1725, 1331
+  xy: 1791, 316
   size: 210, 179
   orig: 210, 179
   offset: 0, 0
   index: -1
 singlePoint
   rotate: false
-  xy: 1612, 1621
+  xy: 1612, 1618
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 201, 917
+  xy: 201, 914
   size: 981, 111
   orig: 981, 111
   offset: 0, 0
   index: -1
 victory_carrier_lost
   rotate: false
-  xy: 201, 5
+  xy: 201, 2
   size: 370, 375
   orig: 370, 375
   offset: 0, 0
   index: -1
 victory_not_perfect
   rotate: false
-  xy: 644, 385
+  xy: 644, 382
   size: 370, 422
   orig: 370, 422
   offset: 0, 0
   index: -1
 victory_perfect
   rotate: false
-  xy: 1612, 1624
+  xy: 1612, 1621
   size: 370, 422
   orig: 370, 422
   offset: 0, 0

@@ -50,7 +50,7 @@ public class ScoreManager {
 
         if (Constants.isPlayer) {
             myScore.isPlayer = 1;
-            myScore.name = "Human";
+            myScore.name = Constants.userName;
         }
         else {
             myScore.isPlayer = 0;

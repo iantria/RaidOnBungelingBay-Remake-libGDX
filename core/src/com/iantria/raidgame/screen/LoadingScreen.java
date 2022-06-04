@@ -1,5 +1,6 @@
 package com.iantria.raidgame.screen;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.iantria.raidgame.entity.LoadingBar;
 import com.iantria.raidgame.util.Constants;
 import com.iantria.raidgame.util.Network;
@@ -248,6 +250,7 @@ public class LoadingScreen implements Screen {
             Constants.playButton = new TextureRegion(textureAtlas.findRegion("play_button"));
             Constants.demoButton = new TextureRegion(textureAtlas.findRegion("demo_button"));
             Constants.scoresButton = new TextureRegion(textureAtlas.findRegion("scores_button"));
+            Constants.settingsButton = new TextureRegion(textureAtlas.findRegion("settings_button"));
             Constants.bombButton = new TextureRegion(textureAtlas.findRegion("bomb_button"));
             Constants.fireButton = new TextureRegion(textureAtlas.findRegion("fire_button"));
             Constants.exitButton = new TextureRegion(textureAtlas.findRegion("exit_button"));
@@ -302,18 +305,41 @@ public class LoadingScreen implements Screen {
             Constants.enemyShipWakeEffect.load(Gdx.files.internal("particles/enemy_ship_wake.p"),textureAtlas);
             Constants.enemyBoatWakeEffect = new ParticleEffect();
             Constants.enemyBoatWakeEffect.load(Gdx.files.internal("particles/enemy_boat_wake.p"),textureAtlas);
+            Constants.bombFlashEffect = new ParticleEffect();
+            Constants.bombFlashEffect.load(Gdx.files.internal("particles/bomb_flash.p"),textureAtlas);
 
             // Animations
             loadExplosionAnimations();
             loadRadarAnimation();
 
-            // List of screens for easy testing
+            // Skins
+            Constants.skin = new Skin(Gdx.files.internal("skins/neutralizer-ui.json"));
 
-            Constants.game.setScreen(new HowToScreen());
-            //Constants.game.setScreen(new OutcomeScreen());
-            //Constants.game.setScreen(new HighScoresScreen());
-            //Constants.game.setScreen(new IntroScreen(false));
-            //Constants.game.setScreen(new GameScreen());
+            // Load preferences
+            Constants.preferences = Gdx.app.getPreferences("RaidGame");
+            Constants.userName =  Constants.preferences.getString("userName", "NotSet");
+            Constants.quickMainMenu = Constants.preferences.getBoolean("quickMainMenu", false);
+            Constants.showHelpScreen = Constants.preferences.getBoolean("showHelpScreen", true);
+            Constants.volume = Constants.preferences.getFloat("volume", 0.75f);
+            Constants.defaultMapID = Constants.preferences.getInteger("defaultMapID",3);
+
+            // Next Screen
+            if (Gdx.app.getType() != Application.ApplicationType.WebGL && Gdx.app.getType() != Application.ApplicationType.Applet) {
+                if (Constants.showHelpScreen) {
+                    Constants.game.setScreen(new HowToScreen());
+                    //Constants.game.setScreen(new OutcomeScreen());
+                    //Constants.game.setScreen(new HighScoresScreen());
+                    //Constants.game.setScreen(new MainMenuScreen(false));
+                    //Constants.game.setScreen(new GameScreen());
+                } else {
+                    if (Constants.quickMainMenu)
+                        Constants.game.setScreen(new MainMenuScreen(true));
+                    else
+                        Constants.game.setScreen(new MainMenuScreen(false));
+                }
+            } else {
+                Constants.game.setScreen(new HowToScreen());
+            }
         }
 
         // Interpolate the percentage to make it more smooth

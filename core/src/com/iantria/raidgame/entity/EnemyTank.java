@@ -163,7 +163,7 @@ public class EnemyTank extends Entity {
             Statistics.numberOfTimesHitByTanks++;
             Constants.helicopter.health = Constants.helicopter.health - Constants.ENEMY_TANK_DAMAGE;
         }
-        Constants.machineGunFire.play();
+        Constants.machineGunFire.play(Constants.volume);
     }
 }
 

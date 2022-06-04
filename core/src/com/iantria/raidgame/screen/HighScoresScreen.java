@@ -64,6 +64,7 @@ public class HighScoresScreen implements Screen {
             updateTable = 0;
         }
 
+        Constants.drumsOutcomeSound.setVolume(Constants.volume);
         Constants.drumsOutcomeSound.play();
         TypingConfig.DEFAULT_SPEED_PER_CHAR = 0.1f;
         TypingConfig.DEFAULT_WAIT_VALUE = 1.0f;
@@ -126,7 +127,7 @@ public class HighScoresScreen implements Screen {
                 Constants.fireworksSound.stop();
                 Constants.fireworksSound.setLooping(false);
                 exitButton.removeListener(exitButton.getListeners().first());
-                Constants.game.setScreen(new IntroScreen(true));
+                Constants.game.setScreen(new MainMenuScreen(true));
                 return super.touchDown(event, x, y, pointer, button);
             }
             @Override
@@ -230,7 +231,7 @@ public class HighScoresScreen implements Screen {
             Constants.fireworksSound.stop();
             Constants.fireworksSound.setLooping(false);
             exitButton.removeListener(exitButton.getListeners().first());
-            Constants.game.setScreen(new IntroScreen(true));
+            Constants.game.setScreen(new MainMenuScreen(true));
         }
     }
 

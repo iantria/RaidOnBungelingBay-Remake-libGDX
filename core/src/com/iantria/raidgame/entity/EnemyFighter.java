@@ -105,7 +105,7 @@ public class EnemyFighter extends Entity {
                 if ((position.x <= Constants.WINDOW_WIDTH && position.x >= 0) &&
                         (position.y <= Constants.WINDOW_HEIGHT && position.y >= 0)) {
                      if (soundID == -1) {
-                         soundID = Constants.enemyCruise.play(0.5f);
+                         soundID = Constants.enemyCruise.play(Constants.volume*0.5f);
                          Constants.enemyCruise.setLooping(soundID, true);
                      }
 
@@ -203,7 +203,7 @@ public class EnemyFighter extends Entity {
         projectile.rotation = rotation;
         projectile.direction = direction + 180;// todo
         Constants.projectileList.add(projectile);
-        Constants.fireCannonEffect.play();
+        Constants.fireCannonEffect.play(Constants.volume);
     }
 
 }

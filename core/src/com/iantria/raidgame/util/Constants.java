@@ -1,5 +1,6 @@
 package com.iantria.raidgame.util;
 
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.LinkedList;
 import java.util.Random;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.iantria.raidgame.RaidGame;
 import com.iantria.raidgame.entity.AAGun;
 import com.iantria.raidgame.entity.Carrier;
@@ -27,7 +29,7 @@ import com.iantria.raidgame.entity.SecretBase;
 
 public class Constants {
 
-    public static final String VERSION = "V0.1";
+    public static final String VERSION = "V0.2";
     public static final int SEASON = 1;
     public static int lowestFPS = 1000;
     public static boolean isNetworkAvailable = false;
@@ -69,12 +71,12 @@ public class Constants {
     // Damage
     public static final int CANNON_DAMAGE = 10;
     public static final int BOMB_DAMAGE = 20;
-    public static final int ENEMY_AA_GUN_DAMAGE = 10;
+    public static final int ENEMY_AA_GUN_DAMAGE = 15;
     public static final int ENEMY_BOAT_DAMAGE = 1;
     public static final int ENEMY_TANK_DAMAGE = 1;
     public static final int ENEMY_BOMBER_BOMB_DMG = 15;
     public static final int ENEMY_CRUISE_MISSILE_DAMAGE = 20;
-    public static final int ENEMY_FIGHTER_GUN_DAMAGE = 10;
+    public static final int ENEMY_FIGHTER_GUN_DAMAGE = 15;
 
     // Timing
     public static final int ENEMY_SHIP_RESPAWN_TIMER = 20;
@@ -90,6 +92,7 @@ public class Constants {
     public static final int ENEMY_TANK_FIRING_INTERVAL = 2;
     public static final int ENEMY_CRUISE_MISSILE_FIRING_INTERVAL = 15;
     public static final int ENEMY_SHIP_FIRING_INTERVAL = 3;
+    public static final int ENEMY_SHIP_CRUISE_MISSILE_FIRING_INTERVAL = 9;
     public static final int MY_BOMB_FIRING_INTERVAL = 1100;
     public static final int MY_CANNON_FIRING_INTERVAL = 500;
 
@@ -155,9 +158,12 @@ public class Constants {
             singlePixelTextureRegion, helicopterIcon, factoryIcon, enemyShipIcon,
             carrierDirectionArrow, introScreenSideApache, introScreenSideApacheBlade, introScreenBackProps,
             introScreenFrontApache, introScreenFrontBlade, introScreenName, introScreenTitle,
-            playButton, demoButton, scoresButton, fireButton, bombButton, exitButton, mapButton, pauseButton,
+            playButton, demoButton, scoresButton, settingsButton, fireButton, bombButton, exitButton, mapButton, pauseButton,
             newspaperLost, newspaperPerfect, newspaperCarrier, newspaperMarginal, helpInfoDesktop,
             helpInfoMobile, radarIcon, enemyBoat, enemyTank;
+
+    // Skins
+    public static Skin skin;
 
     //Music
     public static Music youWinSound, drumsSound, drumsOutcomeSound, takeOffSound, chopperSound, stopEngineSound,
@@ -177,6 +183,15 @@ public class Constants {
     public static ParticleEffect carrierWakeEffect;
     public static ParticleEffect enemyShipWakeEffect;
     public static ParticleEffect enemyBoatWakeEffect;
+    public static ParticleEffect bombFlashEffect;
+
+    // Preferences
+    public static Preferences preferences;
+    public static String userName;
+    public static boolean quickMainMenu;
+    public static boolean showHelpScreen;  // only for non-HTML games
+    public static float volume;
+    public static int defaultMapID;
 
     // Entities
     public static Factory[] factories = new Factory[6];

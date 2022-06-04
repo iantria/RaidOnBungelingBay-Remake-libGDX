@@ -36,7 +36,7 @@ public class ScrollingCombatText {
         this.isScroll = scroll;
         this.isFinished = false;
         this.isReadyToStart = false;
-        this.font.getData().setScale(0.25f);
+        this.font.getData().setScale(0.225f);
         init();
     }
 	
@@ -96,31 +96,31 @@ public class ScrollingCombatText {
     	if (!isFinished ) {
     		if (isScroll){
     			if (timer >= 0.6f) {
-					if (color == Color.RED) c = new Color(1f, .10f, .10f, (1f - (timer / 1.600f)));
-					if (color == Color.WHITE) c = new Color(1f, 1f, 1f, (1f - (timer / 1.600f)));
-					if (color == Color.YELLOW) c = new Color(1f, 1f, .10f, (1f - (timer / 1.600f)));
-					if (color == Color.GREEN) c = new Color(.10f, 1f, .10f, (1f - (timer / 1.600f)));
+					if (color == Color.RED) 	c = new Color(1f, .10f, .10f, (1f - (timer / 1.600f)));
+					if (color == Color.WHITE) 	c = new Color(1f, 1f, 1f, (1f - (timer / 1.600f)));
+					if (color == Color.YELLOW) 	c = new Color(1f, 1f, .10f, (1f - (timer / 1.600f)));
+					if (color == Color.GREEN) 	c = new Color(.10f, 1f, .10f, (1f - (timer / 1.600f)));
 				} else {
-					if (color == Color.RED) c = new Color(1f, .10f, .10f, 1f);
-					if (color == Color.WHITE) c = new Color(1f, 1f, 1f, 1f);
-					if (color == Color.YELLOW) c = new Color(1f, 1f, .10f, 1f);
-					if (color == Color.GREEN) c = new Color(.10f, 1f, .10f, 1f);
+					if (color == Color.RED) 	c = new Color(1f, .10f, .10f, 1f);
+					if (color == Color.WHITE) 	c = new Color(1f, 1f, 1f, 1f);
+					if (color == Color.YELLOW) 	c = new Color(1f, 1f, .10f, 1f);
+					if (color == Color.GREEN) 	c = new Color(.10f, 1f, .10f, 1f);
 				}
 	    		font.setColor(c);
 				font.draw(batch, text, position.x, position.y);
 	    	} else {
 	    		if (timer <= 1.40f){
-		    		if (color == Color.RED)	c = new Color(1f, .10f, .10f,  (0 + (timer/1.40f)));
+		    		if (color == Color.RED)		c = new Color(1f, .10f, .10f,  (0 + (timer/1.40f)));
 		    		if (color == Color.WHITE)	c = new Color(1f, 1f, 1f,  (0 + (timer/1.40f)));
 		    		if (color == Color.YELLOW)	c = new Color(1f, 1f, .10f,  (0 + (timer/1.40f)));
 		    		if (color == Color.GREEN)	c = new Color(.1f, 1f, .10f,  (0 + (timer/1.40f)));
 	    		} else if (timer > 1.40f && timer <= 3.00f) {
-		    		if (color == Color.RED)	c = new Color(1f, .10f, .10f, 1f);
+		    		if (color == Color.RED)		c = new Color(1f, .10f, .10f, 1f);
 		    		if (color == Color.WHITE)	c = new Color(1f, 1f, 1f,  1f);
 		    		if (color == Color.YELLOW)	c = new Color(1f, 1f, .10f,  1f);
 		    		if (color == Color.GREEN)	c = new Color(.10f, 1f, .10f, 1f);
 	    		} else {
-					if (color == Color.RED)	c = new Color(1f, .10f, .10f, (1f - ((timer-3.00f)/1.40f)));
+					if (color == Color.RED)		c = new Color(1f, .10f, .10f, (1f - ((timer-3.00f)/1.40f)));
 					if (color == Color.WHITE)	c = new Color(1f, 1f, 1f,  (1f - ((timer-3.00f)/1.40f)));
 					if (color == Color.YELLOW)	c = new Color(1f, 1f, .10f,  (1f - ((timer-3.00f)/1.40f)));
 					if (color == Color.GREEN)	c = new Color(.10f, 1f, .10f, (1f - ((timer-3.00f)/1.40f)));

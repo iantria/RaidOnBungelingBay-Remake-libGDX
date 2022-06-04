@@ -69,6 +69,7 @@ public class OutcomeScreen implements Screen {
             scoreManager.saveScore();
         }
 
+        Constants.drumsOutcomeSound.setVolume(Constants.volume);
         Constants.drumsOutcomeSound.play();
         TypingConfig.DEFAULT_SPEED_PER_CHAR = 0.1f;
         TypingConfig.DEFAULT_WAIT_VALUE = 1.0f;
@@ -98,7 +99,7 @@ public class OutcomeScreen implements Screen {
 
         if (outcome != Outcome.YOU_LOSE){
             //Constants.fireworksSound.setLooping(true);
-            Constants.fireworksSound.setVolume(0.5f);
+            Constants.fireworksSound.setVolume(Constants.volume*0.5f);
             Constants.fireworksSound.play();
         }
 
@@ -288,7 +289,7 @@ public class OutcomeScreen implements Screen {
                 Constants.fireworksSound.setLooping(false);
                 scoresButton.removeListener(scoresButton.getListeners().first());
                 exitButton.removeListener(exitButton.getListeners().first());
-                Constants.game.setScreen(new IntroScreen(true));
+                Constants.game.setScreen(new MainMenuScreen(true));
                 return super.touchDown(event, x, y, pointer, button);
             }
             @Override
@@ -417,7 +418,7 @@ public class OutcomeScreen implements Screen {
             Constants.fireworksSound.setLooping(false);
             exitButton.removeListener(exitButton.getListeners().first());
             scoresButton.removeListener(scoresButton.getListeners().first());
-            Constants.game.setScreen(new IntroScreen(true));
+            Constants.game.setScreen(new MainMenuScreen(true));
         }
     }
 
