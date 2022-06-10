@@ -264,12 +264,12 @@ public class Helicopter extends Entity {
             primaryTarget = Constants.carrier;
         } else if ((fuelCount < 20 || bombCount == 0 || cannonCount == 0) && Constants.carrier.isDestroyed) {
             primaryTarget = Constants.secretBase;
-        } else if (!Constants.enemyShip.isDestroyed  && primaryTarget != Constants.enemyShip && Constants.enemyShip.health > 90 && Constants.enemyShip.health < Constants.ENEMY_SHIP_HEALTH) {
+        } else if (!Constants.enemyShip.isDestroyed && primaryTarget != Constants.enemyShip && Constants.enemyShip.health > 90 && Constants.enemyShip.health < Constants.ENEMY_SHIP_HEALTH) {
             primaryTarget = Constants.enemyShip;
         } else if (!Constants.enemyShip.isDestroyed && primaryTarget == Constants.enemyShip && Constants.enemyShip.health > 10  && Constants.enemyShip.health < Constants.ENEMY_SHIP_HEALTH) {
             primaryTarget = Constants.enemyShip;
-        } else if (Constants.getRemainingFactories() > 0 ){
-             //Attack factory
+        } else if (Constants.getRemainingFactories() > 0){
+            //Attack factory
             for (Factory f: Constants.factories){
                 if (!f.isDestroyed) {
                     primaryTarget = f;

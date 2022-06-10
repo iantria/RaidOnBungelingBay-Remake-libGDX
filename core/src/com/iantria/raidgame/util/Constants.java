@@ -227,6 +227,7 @@ public class Constants {
     public static BitmapFont scrollingCombatFont;
     public static BitmapFont HUDFont;
     public static BitmapFont HUDLargeFont;
+    public static BitmapFont HUDScoreFont;
 
     public static int getRemainingFactories() {
         int number = 0;

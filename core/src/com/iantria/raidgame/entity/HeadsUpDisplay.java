@@ -153,8 +153,8 @@ public class HeadsUpDisplay {
         setTextAndLayout("Score:", Constants.HUDFont, 0.10f);
         Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 65, 8);
         String s = "000000".substring(Integer.toString(Statistics.score).length(), 6);
-        setTextAndLayout(s + Statistics.score, Constants.HUDLargeFont, 0.25f);
-        Constants.HUDLargeFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 4, 14);
+        setTextAndLayout(s + Statistics.score, Constants.HUDScoreFont, 0.25f);
+        Constants.HUDScoreFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 4, 14);
 
         // Carrier Poistion HUD
         if (!Constants.carrier.isDestroyed){

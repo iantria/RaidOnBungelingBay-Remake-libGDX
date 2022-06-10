@@ -391,7 +391,7 @@ public class OutcomeScreen implements Screen {
                     Constants.WINDOW_HEIGHT - layout.height);
 
             if (Constants.isNetworkAvailable && scoreManager.networkSaveScore != null && scoreManager.networkSaveScore.statusCode == 200) {
-                rankLayout.setText(Constants.HUDLargeFont, "RANK: " + scoreManager.networkSaveScore.result);
+                rankLayout.setText(Constants.HUDLargeFont, "RANK: " + scoreManager.networkSaveScore.result );
                 Constants.HUDLargeFont.draw(batch, "RANK: " + scoreManager.networkSaveScore.result,
                         Constants.WINDOW_WIDTH - scoresButton.getWidth()*scoresButton.getScaleX() + (scoresButton.getWidth()*scoresButton.getScaleX() - rankLayout.width)/2f - 5,
                         Constants.WINDOW_HEIGHT*0.65f + scoresButton.getHeight()*scoresButton.getScaleY() + 4 + rankLayout.height);

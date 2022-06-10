@@ -297,6 +297,7 @@ public class LoadingScreen implements Screen {
             Constants.scrollingCombatFont = assetManager.get("graphics/font1.fnt", BitmapFont.class);
             Constants.HUDFont = assetManager.get("graphics/font2.fnt", BitmapFont.class);
             Constants.HUDLargeFont = assetManager.get("graphics/font3.fnt", BitmapFont.class);
+            Constants.HUDScoreFont = assetManager.get("graphics/font3.fnt", BitmapFont.class);
 
             // Particle Effects
             Constants.carrierWakeEffect = new ParticleEffect();

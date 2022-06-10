@@ -111,10 +111,10 @@ public class EnemyShip extends Entity {
 
         //if (!isDestroyed && wasHitByMissile) main.missleImpact.update(delta);
         
-        if (isDestroyed && elapsedTime > Constants.ENEMY_SHIP_RESPAWN_TIMER){
-        	elapsedTime = 0;
-        	reset();
-        }
+//        if (isDestroyed && elapsedTime > Constants.ENEMY_SHIP_RESPAWN_TIMER){
+//        	elapsedTime = 0;
+//        	reset();
+//        }
         
     	cannonElapsedTime = cannonElapsedTime + delta; 
         if (isAttacking && !isSinking && !isDestroyed && !isReadyToFire

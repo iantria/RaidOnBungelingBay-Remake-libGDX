@@ -446,8 +446,8 @@ public class GameScreen implements Screen {
                 Statistics.youWon = true;
                 Statistics.carrierSurvived = !Constants.carrier.isDestroyed && !Constants.carrier.isSinking;;
                 //Constants.drumsSound.play();
-                if (!Constants.carrier.isDestroyed) Statistics.score = Statistics.score + Constants.SCORE_ENEMY_SHIP_NOT_COMPLETED;
-                if (!Statistics.enemyShipWasCompleted) Statistics.score = Statistics.score + Constants.SCORE_CARRIER_ALIVE;
+                if (!Constants.carrier.isDestroyed) Statistics.score = Statistics.score + Constants.SCORE_CARRIER_ALIVE;
+                if (!Statistics.enemyShipWasCompleted) Statistics.score = Statistics.score + Constants.SCORE_ENEMY_SHIP_NOT_COMPLETED;
                 Statistics.score = Statistics.score + (Constants.SCORE_PER_PLANE_REMAINING * Constants.helicopter.livesCount);
                 Constants.stopAllSounds();
                 exitButton.removeListener(exitButton.getListeners().first());

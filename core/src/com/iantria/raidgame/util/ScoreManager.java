@@ -79,6 +79,7 @@ public class ScoreManager {
     }
 
     public void saveScore(){
+        //System.out.println(Constants.NETWORK_SERVICES_SCORES_API + "?service=1&data=" + toString());
         networkSaveScore = new Network(Constants.NETWORK_SERVICES_SCORES_API, "service=1&data=" + toString());
     }
 
@@ -95,6 +96,7 @@ public class ScoreManager {
     public LinkedList<Score> getHighScoresList() {
         LinkedList<Score> scores = new LinkedList<Score>();
         String[] lines = networkGetHighScores.result.split("\n");
+        if (lines[0].length() == 0) return scores;
 
         for (int x = 0 ; x < lines.length ; x++){
             String[] parts = lines[x].split(";");
