@@ -25,8 +25,8 @@ public class Helicopter extends Entity {
     public float generalDelayTime = 0;
     public float bladesSpinUpDownTime;
     public float FUEL_DURATION = Constants.FUEL_DURATION;
-    public float YOU_CRASHED_DELAY_DURATION = 2.5f;
-    public float YOU_LOST_DELAY_DURATION = 5.5f;
+    public float YOU_CRASHED_DELAY_DURATION = 2.75f;
+    public float YOU_LOST_DELAY_DURATION = 6.5f;
     public float dmg;
     public float percent;
     public Vector2 temp;

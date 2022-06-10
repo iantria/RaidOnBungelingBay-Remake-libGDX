@@ -178,6 +178,7 @@ public class GameScreen implements Screen {
         Constants.combatTextList.add(new ScrollingCombatText("Start", 0.02f, new Vector2(Constants.helicopter.position), ("GOOD LUCK!"), Color.GREEN, Constants.scrollingCombatFont, true));
         Constants.isReadyToFireCruiseMissile = false;
         Statistics.resetScores();
+        RadarSite.numberOfLockedOnRadars = 0;
         ScrollingCombatText.lastCombatTextAddedToQueue = Statistics.gameTime;
 
         //Mobile Buttons
@@ -485,7 +486,7 @@ public class GameScreen implements Screen {
             Constants.helicopter.generalDelayTime += delta;
             if (Constants.helicopter.generalDelayTime >= Constants.helicopter.YOU_CRASHED_DELAY_DURATION) {
                 if (Constants.helicopter.livesCount <= 0) {
-                    if (!Constants.drumsSound.isPlaying()) {
+                    if (Constants.helicopter.generalDelayTime >= Constants.helicopter.YOU_LOST_DELAY_DURATION) {
                         Constants.stopAllSounds();
                         exitButton.removeListener(exitButton.getListeners().first());
                         mapButton.removeListener(mapButton.getListeners().first());
@@ -494,6 +495,7 @@ public class GameScreen implements Screen {
                     }
                 } else {
                     Constants.helicopter.generalDelayTime = 0;
+                    Constants.helicopter.wasHit = false; // June 10
                     Constants.helicopter.updatePositionsAfterCrash();
                     Constants.helicopter.mode = Helicopter.FlyingMode.LANDED;
                 }
