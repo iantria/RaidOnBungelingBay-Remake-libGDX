@@ -16,7 +16,7 @@ public class Network implements Net.HttpResponseListener
         //Gdx.app.log("Network", "Object Created > Query:" + URL + "?" + q);
         HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
         request = requestBuilder.newRequest().method(Net.HttpMethods.GET).url(URL).content(q).build();
-        //Gdx.net.sendHttpRequest(request, this);
+        Gdx.net.sendHttpRequest(request, this);
     }
 
     @Override
