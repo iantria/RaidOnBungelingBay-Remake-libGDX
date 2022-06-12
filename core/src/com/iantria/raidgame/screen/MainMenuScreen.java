@@ -359,7 +359,7 @@ public class MainMenuScreen implements Screen {
             if ((1f - pan) < 1f &&  (1f - pan) > 0f) vol = pan;
             else vol = (1f + (1f-pan));
             if (vol < 0) vol = 0f;
-            Constants.chopperSound.setPan(1 - pan, vol*0.3f);
+            Constants.chopperSound.setPan(1 - pan, vol*0.3f*Constants.volume);
         }
 
         // Setup next pass
@@ -407,7 +407,7 @@ public class MainMenuScreen implements Screen {
             else vol = 1 - pan;
             if (vol < 0) vol = 0f;
 
-            Constants.chopperSound.setPan(pan, vol*0.6f);
+            Constants.chopperSound.setPan(pan, vol*0.6f*Constants.volume);
         }
         // Setup next pass
         if (introStep == 3 && group2.getActions().size == 0) {
@@ -428,7 +428,7 @@ public class MainMenuScreen implements Screen {
 
             vol += delta/3f;
             if (vol > 1) vol = 1f;
-            Constants.chopperSound.setPan(0,vol);
+            Constants.chopperSound.setPan(0,vol*Constants.volume);
         }
         if (group3.getActions().size == 0 && introStep == 4){
             fireAnim.setPosition(548, 0);
@@ -438,7 +438,7 @@ public class MainMenuScreen implements Screen {
             stage3.draw();
             z += delta;
             if (soundID == -1) {
-                soundID = Constants.m61Sound.play(0.25f);
+                soundID = Constants.m61Sound.play(0.25f*Constants.volume);
                 Constants.m61Sound.setLooping(soundID, true);
             }
             if (z > 2f){

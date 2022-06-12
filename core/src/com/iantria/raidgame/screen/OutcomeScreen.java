@@ -98,7 +98,7 @@ public class OutcomeScreen implements Screen {
         }
 
         if (outcome != Outcome.YOU_LOSE){
-            //Constants.fireworksSound.setLooping(true);
+            Constants.fireworksSound.setLooping(true);
             Constants.fireworksSound.setVolume(Constants.volume*0.5f);
             Constants.fireworksSound.play();
         }

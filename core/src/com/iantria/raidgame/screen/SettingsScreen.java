@@ -312,6 +312,8 @@ public class SettingsScreen implements Screen {
 
     private void savePreferences() {
         Constants.userName = usernameTextField.getText();
+        if (Constants.userName == null || Constants.userName == "" || Constants.userName.length() == 0) Constants.userName = "NotSet";
+
         Constants.preferences.putString("userName",Constants.userName);
         Constants.preferences.putBoolean("quickMainMenu", Constants.quickMainMenu);
         Constants.preferences.putBoolean("showHelpScreen",Constants.showHelpScreen);

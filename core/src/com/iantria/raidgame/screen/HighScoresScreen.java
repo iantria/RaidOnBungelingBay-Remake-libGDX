@@ -64,6 +64,8 @@ public class HighScoresScreen implements Screen {
             updateTable = 0;
         }
 
+        //Gdx.app.log("Network available:", "" + Constants.isNetworkAvailable);
+
         Constants.drumsOutcomeSound.setVolume(Constants.volume);
         Constants.drumsOutcomeSound.play();
         TypingConfig.DEFAULT_SPEED_PER_CHAR = 0.1f;

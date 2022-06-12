@@ -156,7 +156,7 @@ public class HeadsUpDisplay {
         setTextAndLayout(s + Statistics.score, Constants.HUDScoreFont, 0.25f);
         Constants.HUDScoreFont.draw(batch, text, Constants.WINDOW_WIDTH - layout.width - 4, 14);
 
-        // Carrier Poistion HUD
+        // Carrier Position HUD
         if (!Constants.carrier.isDestroyed){
             //Constants.carrierDirectionArrow.setRotation((float) Constants.getUnsignedSignedDegreesToCarrier(Constants.helicopter.getPosition()));
             batch.draw(Constants.carrierDirectionArrow, Constants.WINDOW_WIDTH/2 - Constants.carrierDirectionArrow.getRegionWidth()/12/2 ,
