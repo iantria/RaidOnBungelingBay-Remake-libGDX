@@ -96,6 +96,15 @@ public class SettingsScreen implements Screen {
 
         // UI Elements
         usernameTextField.setMaxLength(7);
+        usernameTextField.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char key) {
+                if((int) key == 10  || (int) key == 13){
+                    Constants.userName = usernameTextField.getText();
+                    tableStage.unfocus(usernameTextField);
+                }
+            }
+        });
 
         if (Constants.defaultMapID == 1) map1CheckBox.setChecked(true);
         if (Constants.defaultMapID == 2) map2CheckBox.setChecked(true);
@@ -156,7 +165,7 @@ public class SettingsScreen implements Screen {
             }
         });
         buttonGroup.setMaxCheckCount(1);
-        buttonGroup.setMinCheckCount(0);
+        buttonGroup.setMinCheckCount(1);
         buttonGroup.setUncheckLast(true);
 
         // Table stuff
@@ -286,9 +295,9 @@ public class SettingsScreen implements Screen {
         batch.setShader(null);
         batch.begin();
         batch.draw(fbo.getColorBufferTexture(),0,0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
-                Constants.WINDOW_WIDTH - exitButton.getWidth()*exitButton.getScaleX() - layout.width - 2,
-                Constants.WINDOW_HEIGHT - layout.height);
+//        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
+//                Constants.WINDOW_WIDTH - exitButton.getWidth()*exitButton.getScaleX() - layout.width - 2,
+//                Constants.WINDOW_HEIGHT - layout.height);
         batch.end();
 
         tableStage.act();

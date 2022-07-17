@@ -386,9 +386,9 @@ public class OutcomeScreen implements Screen {
             batch.setShader(null);
             batch.begin();
             batch.draw(fbo.getColorBufferTexture(),0,0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-            Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
-                    Constants.WINDOW_WIDTH - exitButton.getWidth()*exitButton.getScaleX() - layout.width - 2,
-                    Constants.WINDOW_HEIGHT - layout.height);
+//            Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
+//                    Constants.WINDOW_WIDTH - exitButton.getWidth()*exitButton.getScaleX() - layout.width - 2,
+//                    Constants.WINDOW_HEIGHT - layout.height);
 
             if (Constants.isNetworkAvailable && scoreManager.networkSaveScore != null && scoreManager.networkSaveScore.statusCode == 200) {
                 rankLayout.setText(Constants.HUDLargeFont, "RANK: " + scoreManager.networkSaveScore.result );

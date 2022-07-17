@@ -146,8 +146,8 @@ public class HeadsUpDisplay {
         batch.setColor(Color.WHITE);
 
         // FPS
-        setTextAndLayout("FPS:" + Gdx.graphics.getFramesPerSecond(), Constants.HUDFont, 0.10f);
-        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH/2f - layout.width/2, Constants.WINDOW_HEIGHT - layout.height -1);
+//        setTextAndLayout("FPS:" + Gdx.graphics.getFramesPerSecond(), Constants.HUDFont, 0.10f);
+//        Constants.HUDFont.draw(batch, text, Constants.WINDOW_WIDTH/2f - layout.width/2, Constants.WINDOW_HEIGHT - layout.height -1);
 
         //Score
         setTextAndLayout("Score:", Constants.HUDFont, 0.10f);

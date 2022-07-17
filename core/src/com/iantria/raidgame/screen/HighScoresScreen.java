@@ -190,9 +190,9 @@ public class HighScoresScreen implements Screen {
         batch.setShader(null);
         batch.begin();
         batch.draw(fbo.getColorBufferTexture(),0,0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
-                Constants.WINDOW_WIDTH - exitButton.getWidth()*exitButton.getScaleX() - layout.width - 2,
-                Constants.WINDOW_HEIGHT - layout.height);
+//        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
+//                Constants.WINDOW_WIDTH - exitButton.getWidth()*exitButton.getScaleX() - layout.width - 2,
+//                Constants.WINDOW_HEIGHT - layout.height);
         batch.end();
 
         if (Constants.isNetworkAvailable

@@ -102,9 +102,9 @@ public class HowToScreen implements Screen {
         batch.begin();
         batch.draw(fbo.getColorBufferTexture(),0,0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         //layout.setText(Constants.HUDFont, "FPS: " + Gdx.graphics.getFramesPerSecond());
-        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
-                Constants.WINDOW_WIDTH - layout.width - 2,
-                Constants.WINDOW_HEIGHT - layout.height);
+//        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
+//                Constants.WINDOW_WIDTH - layout.width - 2,
+//                Constants.WINDOW_HEIGHT - layout.height);
         batch.end();
 
         info.act();

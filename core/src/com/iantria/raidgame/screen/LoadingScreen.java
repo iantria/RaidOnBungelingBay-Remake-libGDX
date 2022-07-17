@@ -2,6 +2,7 @@ package com.iantria.raidgame.screen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -46,6 +47,11 @@ public class LoadingScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
+        Gdx.input.setCatchKey(Input.Keys.SPACE, true);
+        Gdx.input.setCatchKey(Input.Keys.UP, true);
+        Gdx.input.setCatchKey(Input.Keys.DOWN, true);
+        Gdx.input.setCatchKey(Input.Keys.LEFT, true);
+        Gdx.input.setCatchKey(Input.Keys.RIGHT, true);
 
         network = new Network(Constants.NETWORK_SERVICES_USAGE_API, "service=0");
 

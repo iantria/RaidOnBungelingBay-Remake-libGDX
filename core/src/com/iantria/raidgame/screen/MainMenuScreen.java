@@ -128,8 +128,8 @@ public class MainMenuScreen implements Screen {
         group3.addActor(frontBlade2);
 
         group3.setScale(0.25f);
-        group3.addAction(sequence(moveTo(Constants.WINDOW_WIDTH/2f - frontBlade.getWidth()/2f*0.25f , -Constants.WINDOW_HEIGHT),
-                moveTo(Constants.WINDOW_WIDTH/2f - frontBlade.getWidth()/2f*0.25f, Constants.WINDOW_HEIGHT/2f - front.getHeight()*0.25f/2f + 5, 4.5f),
+        group3.addAction(sequence(moveTo(Constants.WINDOW_WIDTH/2f - frontBlade.getWidth()/2f*0.25f , -Constants.WINDOW_HEIGHT*0.75f),
+                moveTo(Constants.WINDOW_WIDTH/2f - frontBlade.getWidth()/2f*0.25f, Constants.WINDOW_HEIGHT/2f - front.getHeight()*0.25f/2f + 5, 3.5f),
                 delay(0.5f)));
         stage3.addActor(group3);
 
@@ -260,7 +260,7 @@ public class MainMenuScreen implements Screen {
         blade2.setPosition(7, 250);
         blade2.setOrigin(394, 0);
         blade3.setPosition(945, 195);
-        blade3.setOrigin( 105, 90);
+        blade3.setOrigin(105, 90);
 
         stage = new Stage(viewport);;
         group = new Group();
@@ -314,7 +314,7 @@ public class MainMenuScreen implements Screen {
 
         batch.begin();
         batch.draw(fbo.getColorBufferTexture(),0,0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-        Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), Constants.WINDOW_WIDTH - layout.width - 2, Constants.WINDOW_HEIGHT - layout.height);
+        //Constants.HUDFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), Constants.WINDOW_WIDTH - layout.width - 2, Constants.WINDOW_HEIGHT - layout.height);
         batch.end();
 
         this.scale += delta * y * 5f;

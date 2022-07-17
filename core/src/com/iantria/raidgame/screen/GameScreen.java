@@ -428,7 +428,7 @@ public class GameScreen implements Screen {
     }
 
     private void checkGameLogic(float delta) {
-        Statistics.gameTime += delta;
+
         Constants.cruiseMissileDelayTimer += delta;
         if (Constants.getRemainingFactories() < 4 && Constants.cruiseMissileDelayTimer > Constants.ENEMY_CRUISE_MISSILE_FIRING_INTERVAL){
             Constants.isReadyToFireCruiseMissile = true;

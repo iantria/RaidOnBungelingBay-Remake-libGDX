@@ -187,8 +187,6 @@ public class EnemyFighter extends Entity {
 //                    getPlaneWasHitAnimation().restart();
                 }
             }
-
-
         }
 
     private void fireGun() {

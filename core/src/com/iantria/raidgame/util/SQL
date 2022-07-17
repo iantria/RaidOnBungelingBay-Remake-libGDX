@@ -1,0 +1,36 @@
+
+##Ranking SQL:
+
+select xxx
+    FROM (SELECT ROW_NUMBER() OVER(ORDER BY is_win desc, is_carrier_lost asc, heli_lost asc, time_to_win asc, score desc)
+        AS xxx, is_win, is_carrier_lost, heli_lost, time_to_win, score FROM raid.scores)
+        sub WHERE sub.is_win = $is_win AND sub.is_carrier_lost = $is_carrier_lost AND sub.heli_lost = $heli_lost
+        AND sub.time_to_win = $time_to_win AND sub.score = $score
+
+
+
+
+##Get High Scores SQL:
+
+SELECT is_player, name, device_type, score, is_win, time_to_win,
+        is_carrier_lost, heli_lost, is_enemy_ship_completed, game_date
+        FROM raid.scores
+        WHERE season = ?
+        order by is_win desc, is_carrier_lost asc, heli_lost asc, time_to_win asc, score desc
+        LIMIT 0,12;
+
+
+
+[Gdx version] 1.11.0
+[Network Object Created > Query:] https://iantria.com/services/usage.php?service=0
+[Network] Failed: Received fatal alert: handshake_failure
+ javax.net.ssl.SSLHandshakeException: Received fatal alert: handshake_failure
+
+javax.net.ssl.SSLHandshakeException: Received fatal alert: handshake_failure
+        at com.iantria.raidgame.util.Network.failed(Network.java:38)
+        at com.badlogic.gdx.net.NetJavaImpl$2.run(NetJavaImpl.java:239)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+        at java.base/java.lang.Thread.run(Thread.java:833)
